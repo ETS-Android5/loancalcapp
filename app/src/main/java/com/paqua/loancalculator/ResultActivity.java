@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -13,8 +14,10 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -26,9 +29,15 @@ import com.paqua.loancalculator.domain.LoanAmortization;
 import com.paqua.loancalculator.domain.MonthlyPayment;
 
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
+
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
 
 public class ResultActivity extends AppCompatActivity {
     private static final String GET_LOAN_AMROTIZATION_URL ="https://loan-amortization-server.herokuapp.com/loanAmortization";
@@ -39,11 +48,14 @@ public class ResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result_set);
 
+        setVisibilityForAll(INVISIBLE);
+
         getLoanAmortizationData();
     }
 
     private void getLoanAmortizationData() {
         RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
+
         final Map<String, String> params = new HashMap<>();
         Intent intent = getIntent();
         params.put("loanAmount", intent.getStringExtra("loanAmount"));
@@ -53,16 +65,11 @@ public class ResultActivity extends AppCompatActivity {
         // TODO
         String uri = GET_LOAN_AMROTIZATION_URL + "?loanAmount=" + params.get("loanAmount") + "&interestRate=" +params.get("interestRate") + "&monthTerm=" + params.get("monthTerm");
 
-        JSONObject loanRequestParams = null;// new JSONObject(params);
-
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, uri, loanRequestParams, new Response.Listener<JSONObject>() {
+                (Request.Method.GET, uri, null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Gson gson = new Gson();
-                        amortization = gson.fromJson(response.toString(), LoanAmortization.class);
-                        System.out.println(amortization);
-                        buildAmortizationTable();
+                        getAmortizationDataCallback(response);
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -72,7 +79,56 @@ public class ResultActivity extends AppCompatActivity {
                     }
                 }) {
         };
+
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
+                5,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        ));
+
         queue.add(jsonObjectRequest);
+    }
+
+    /**
+     * Callback on amortization data request
+     * Sets values on views
+     *
+     * @param response
+     */
+    private void getAmortizationDataCallback(JSONObject response) {
+        Gson gson = new Gson();
+        amortization = gson.fromJson(response.toString(), LoanAmortization.class);
+        System.out.println(amortization);
+
+        fillHeaderValues();
+
+        buildAmortizationTable();
+
+        setVisibilityForAll(VISIBLE);
+        setOverpaymentAmountVisibility();
+    }
+
+    /**
+     * Sets visibility according to value
+     */
+    private void setOverpaymentAmountVisibility() {
+        TextView overPaymentAmountWithEarly = (TextView) findViewById(R.id.overPaymentWithEarly);
+        if (overPaymentAmountWithEarly.getText() == null || overPaymentAmountWithEarly.getText().length() == 0) {
+            overPaymentAmountWithEarly.setVisibility(INVISIBLE);
+        }
+    }
+
+
+    /**
+     * Fills headers with values from request
+     */
+    private void fillHeaderValues() {
+        TextView monthlyPaymentAmount = (TextView) findViewById(R.id.monthlyPaymentValue);
+        monthlyPaymentAmount.setText(amortization.getMonthlyPaymentAmount().setScale(2, RoundingMode.HALF_UP).toString()); // TODO appropriate format
+
+
+        TextView overPaymentAmount = (TextView) findViewById(R.id.overPaymentAmount);
+        overPaymentAmount.setText(amortization.getOverPaymentAmount().setScale(2, RoundingMode.HALF_UP).toString()); // TODO appropriate format
     }
 
     /**
@@ -100,49 +156,49 @@ public class ResultActivity extends AppCompatActivity {
             TableRow row = new TableRow(ResultActivity.this);
 
             row.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+            row.setMinimumHeight(57);
 
-
-//            row.setPadding(25, 25, 25,25);
-
+            int minHeight = 150; // TODO temp
             TextView currentPaymentNumber = new TextView(ResultActivity.this);
             currentPaymentNumber.setText((++paymentNumber).toString());
             currentPaymentNumber.setTypeface(typeface);
             currentPaymentNumber.setTextColor(textColor);
             currentPaymentNumber.setBackground(cellBackground);
-//            currentPaymentNumber.setSingleLine();
-            currentPaymentNumber.setPadding(10, 10, 10, 10);
+            currentPaymentNumber.setPadding(30, 10, 10, 10);
+            currentPaymentNumber.setMinHeight(minHeight);
 
-            TextView paymentAmount = new TextView(ResultActivity.this);
-            paymentAmount.setText(payment.getPaymentAmount().toString());
-            paymentAmount.setTypeface(typeface);
-            paymentAmount.setTextColor(textColor);
-            paymentAmount.setBackground(cellBackground);
-//            paymentAmount.setSingleLine();
-            paymentAmount.setPadding(10, 10, 10, 10);
 
             TextView loanAmount = new TextView(ResultActivity.this);
             loanAmount.setText(payment.getLoanBalanceAmount().toString());
             loanAmount.setTypeface(typeface);
             loanAmount.setTextColor(textColor);
             loanAmount.setBackground(cellBackground);
-//            loanAmount.setSingleLine();
             loanAmount.setPadding(10, 10 ,10 ,10);
+            loanAmount.setMinHeight(minHeight);
 
             TextView interestAmount = new TextView(ResultActivity.this);
             interestAmount.setText(payment.getInterestPaymentAmount().toString());
             interestAmount.setTypeface(typeface);
             interestAmount.setTextColor(textColor);
             interestAmount.setBackground(cellBackground);
-//            interestAmount.setSingleLine();
             interestAmount.setPadding(10, 10 ,10 ,10);
+            interestAmount.setMinHeight(minHeight);
 
             TextView principalAmount = new TextView(ResultActivity.this);
             principalAmount.setText(payment.getDebtPaymentAmount().toString());
             principalAmount.setTypeface(typeface);
             principalAmount.setTextColor(textColor);
             principalAmount.setBackground(cellBackground);
-//            principalAmount.setSingleLine();
             principalAmount.setPadding(10, 10 ,10 ,10);
+            principalAmount.setMinHeight(minHeight);
+
+            TextView paymentAmount = new TextView(ResultActivity.this);
+            paymentAmount.setText(payment.getPaymentAmount().toString());
+            paymentAmount.setTypeface(typeface);
+            paymentAmount.setTextColor(textColor);
+            paymentAmount.setBackground(cellBackground);
+            paymentAmount.setPadding(10, 10, 20, 10);
+            paymentAmount.setMinHeight(minHeight);
 
             row.addView(currentPaymentNumber);
             row.addView(loanAmount);
@@ -169,14 +225,14 @@ public class ResultActivity extends AppCompatActivity {
 
         header.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
         header.setBackground(background);
-        header.setPadding(10, 50, 10, 50);
+        header.setPadding(20, 50, 10, 50);
 
         TextView paymentNumberColumn = new TextView(ResultActivity.this);
         paymentNumberColumn.setText("№   ");
         paymentNumberColumn.setTextSize(headerFontSize);
         paymentNumberColumn.setTextColor(textColor);
         paymentNumberColumn.setTypeface(typeface);
-        paymentNumberColumn.setPadding(20, 0, 0 , 0);
+        paymentNumberColumn.setPadding(30, 0, 0 , 0);
 
         TextView loanBalanceAmountColumn = new TextView(ResultActivity.this);
         loanBalanceAmountColumn.setText("Остаток основного долга");
@@ -231,5 +287,17 @@ public class ResultActivity extends AppCompatActivity {
             typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.base_font);
         }
         return typeface;
+    }
+
+    /**
+     * Sets visibilty for all child for base layout
+     * @param value
+     */
+    private void setVisibilityForAll(int value) {
+        ConstraintLayout layout = (ConstraintLayout) findViewById(R.id.base_layout);
+        for (int i = 0; i < layout.getChildCount(); i++) {
+            View child = layout.getChildAt(i);
+            child.setVisibility(value);
+        }
     }
 }
