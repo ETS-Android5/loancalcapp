@@ -1,14 +1,11 @@
 package com.paqua.loancalculator;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -29,10 +26,10 @@ import com.paqua.loancalculator.domain.LoanAmortization;
 import com.paqua.loancalculator.domain.MonthlyPayment;
 
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
-import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,6 +38,15 @@ import static android.view.View.VISIBLE;
 
 public class ResultActivity extends AppCompatActivity {
     private static final String GET_LOAN_AMROTIZATION_URL ="https://loan-amortization-server.herokuapp.com/loanAmortization";
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.00");
+    private static final DecimalFormatSymbols SYMBOLS = DECIMAL_FORMAT.getDecimalFormatSymbols();
+
+    static {
+        SYMBOLS.setGroupingSeparator(' ');
+        DECIMAL_FORMAT.setDecimalFormatSymbols(SYMBOLS);
+        DECIMAL_FORMAT.setGroupingUsed(true);
+        DECIMAL_FORMAT.setGroupingSize(3);
+    }
 
     private LoanAmortization amortization;
     @Override
@@ -124,11 +130,21 @@ public class ResultActivity extends AppCompatActivity {
      */
     private void fillHeaderValues() {
         TextView monthlyPaymentAmount = (TextView) findViewById(R.id.monthlyPaymentValue);
-        monthlyPaymentAmount.setText(amortization.getMonthlyPaymentAmount().setScale(2, RoundingMode.HALF_UP).toString()); // TODO appropriate format
+
+        monthlyPaymentAmount.setText(
+                DECIMAL_FORMAT.format(amortization
+                            .getMonthlyPaymentAmount()
+                            .setScale(2, RoundingMode.HALF_UP))
+        );
 
 
         TextView overPaymentAmount = (TextView) findViewById(R.id.overPaymentAmount);
-        overPaymentAmount.setText(amortization.getOverPaymentAmount().setScale(2, RoundingMode.HALF_UP).toString()); // TODO appropriate format
+
+        overPaymentAmount.setText(
+                DECIMAL_FORMAT.format(amortization
+                        .getOverPaymentAmount()
+                        .setScale(2, RoundingMode.HALF_UP))
+        );
     }
 
     /**
@@ -169,7 +185,7 @@ public class ResultActivity extends AppCompatActivity {
 
 
             TextView loanAmount = new TextView(ResultActivity.this);
-            loanAmount.setText(payment.getLoanBalanceAmount().toString());
+            loanAmount.setText(DECIMAL_FORMAT.format(payment.getLoanBalanceAmount()));
             loanAmount.setTypeface(typeface);
             loanAmount.setTextColor(textColor);
             loanAmount.setBackground(cellBackground);
@@ -177,7 +193,7 @@ public class ResultActivity extends AppCompatActivity {
             loanAmount.setMinHeight(minHeight);
 
             TextView interestAmount = new TextView(ResultActivity.this);
-            interestAmount.setText(payment.getInterestPaymentAmount().toString());
+            interestAmount.setText(DECIMAL_FORMAT.format(payment.getInterestPaymentAmount()));
             interestAmount.setTypeface(typeface);
             interestAmount.setTextColor(textColor);
             interestAmount.setBackground(cellBackground);
@@ -185,7 +201,7 @@ public class ResultActivity extends AppCompatActivity {
             interestAmount.setMinHeight(minHeight);
 
             TextView principalAmount = new TextView(ResultActivity.this);
-            principalAmount.setText(payment.getDebtPaymentAmount().toString());
+            principalAmount.setText(DECIMAL_FORMAT.format(payment.getDebtPaymentAmount()));
             principalAmount.setTypeface(typeface);
             principalAmount.setTextColor(textColor);
             principalAmount.setBackground(cellBackground);
@@ -193,7 +209,7 @@ public class ResultActivity extends AppCompatActivity {
             principalAmount.setMinHeight(minHeight);
 
             TextView paymentAmount = new TextView(ResultActivity.this);
-            paymentAmount.setText(payment.getPaymentAmount().toString());
+            paymentAmount.setText(DECIMAL_FORMAT.format(payment.getPaymentAmount()));
             paymentAmount.setTypeface(typeface);
             paymentAmount.setTextColor(textColor);
             paymentAmount.setBackground(cellBackground);
