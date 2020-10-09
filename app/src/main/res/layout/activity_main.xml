@@ -64,13 +64,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/term"
-        app:layout_constraintVertical_bias="0.168" />
+        app:layout_constraintVertical_bias="0.296" />
 
     <EditText
         android:id="@+id/term"
         android:layout_width="224dp"
         android:layout_height="42dp"
-        android:layout_marginBottom="224dp"
         android:background="@drawable/edit_text_design"
         android:ems="10"
         android:hint="Срок"
@@ -80,7 +79,7 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/interestRest"
-        app:layout_constraintVertical_bias="0.084" />
+        app:layout_constraintVertical_bias="0.039" />
 
     <EditText
         android:id="@+id/interestRest"
@@ -97,5 +96,38 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/loanAmount"
         app:layout_constraintVertical_bias="0.107" />
+
+    <RadioGroup
+        android:id="@+id/termType"
+        android:layout_width="222dp"
+        android:layout_height="38dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/calc"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/term"
+        app:layout_constraintVertical_bias="0.13999999">
+
+        <RadioButton
+            android:id="@+id/monthTermType"
+            android:layout_width="120dp"
+            android:layout_height="match_parent"
+            android:fontFamily="sans-serif-condensed"
+            android:text="в месяцах"
+            android:textColor="#333333"
+            android:buttonTint="@color/coolDarkColor"
+            android:textCursorDrawable="@drawable/calc_button" />
+
+        <RadioButton
+            android:id="@+id/yearTermType"
+            android:layout_width="wrap_content"
+            android:layout_height="38dp"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-condensed"
+            android:buttonTint="@color/coolDarkColor"
+            android:text="в годах"
+            android:textColor="#333333" />
+
+    </RadioGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

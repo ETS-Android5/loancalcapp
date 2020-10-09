@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -38,10 +40,18 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
+
+                Integer term = Integer.parseInt(((EditText) findViewById(R.id.term)).getText().toString());
+
+                RadioButton yearTerm = (RadioButton) findViewById(R.id.yearTermType);
+                if (yearTerm.isChecked()) {
+                    term *= 12;
+                }
+
                 Intent intent = new Intent(MainActivity.this, ResultActivity.class);
                 intent.putExtra("loanAmount", ((EditText) findViewById(R.id.loanAmount)).getText().toString());
                 intent.putExtra("interestRate", ((EditText) findViewById(R.id.interestRest)).getText().toString());
-                intent.putExtra("monthTerm", ((EditText) findViewById(R.id.term)).getText().toString());
+                intent.putExtra("monthTerm", term.toString()); // Convention: using string to pass all params for no reason at all
 
                 startActivity(intent);
             }
