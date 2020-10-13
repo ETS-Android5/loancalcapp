@@ -6,6 +6,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -21,23 +24,30 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.paqua.loancalculator.domain.LoanAmortization;
-import com.paqua.loancalculator.domain.MonthlyPayment;
+import com.paqua.loancalculator.dto.Loan;
+import com.paqua.loancalculator.dto.LoanAmortization;
+import com.paqua.loancalculator.dto.LoanAmortizationRq;
+import com.paqua.loancalculator.dto.MonthlyPayment;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
 public class ResultActivity extends AppCompatActivity {
     private static final String GET_LOAN_AMROTIZATION_URL ="https://loan-amortization-server.herokuapp.com/loanAmortization";
+
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.00");
     private static final DecimalFormatSymbols SYMBOLS = DECIMAL_FORMAT.getDecimalFormatSymbols();
 
@@ -56,23 +66,30 @@ public class ResultActivity extends AppCompatActivity {
 
         setVisibilityForAll(INVISIBLE);
 
-        getLoanAmortizationData();
+        try {
+            getLoanAmortizationData();
+        } catch (JSONException | IOException e) {
+            e.printStackTrace(); // TODO
+        }
     }
 
-    private void getLoanAmortizationData() {
+    private void getLoanAmortizationData() throws JSONException, IOException {
         RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
 
-        final Map<String, String> params = new HashMap<>();
         Intent intent = getIntent();
-        params.put("loanAmount", intent.getStringExtra("loanAmount"));
-        params.put("interestRate", intent.getStringExtra("interestRate"));
-        params.put("monthTerm", intent.getStringExtra("monthTerm"));
+        Loan loan = Loan.builder()
+                .amount(new BigDecimal(intent.getStringExtra("loanAmount")))
+                .rate(new BigDecimal(intent.getStringExtra("interestRate")))
+                .term(Integer.parseInt(intent.getStringExtra("monthTerm")))
+                .build();
 
-        // TODO
-        String uri = GET_LOAN_AMROTIZATION_URL + "?loanAmount=" + params.get("loanAmount") + "&interestRate=" +params.get("interestRate") + "&monthTerm=" + params.get("monthTerm");
+        LoanAmortizationRq loanAmortizationRq = new LoanAmortizationRq(loan);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        JSONObject requestParams = new JSONObject(objectMapper.writeValueAsString(loanAmortizationRq));
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, uri, null, new Response.Listener<JSONObject>() {
+                (Request.Method.POST, GET_LOAN_AMROTIZATION_URL, requestParams, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         getAmortizationDataCallback(response);
@@ -167,6 +184,7 @@ public class ResultActivity extends AppCompatActivity {
         int textColor = getResources().getColor(R.color.coolDarkColor);
         Typeface typeface = getTypeface();
         Drawable cellBackground = getResources().getDrawable(R.drawable.amortization_cell_background);
+        Drawable cellBackgroundWithoutStroke = getResources().getDrawable(R.drawable.amortization_cell_background_without_stroke);
 
         for(MonthlyPayment payment : amortization.getMonthlyPayments()) {
             TableRow row = new TableRow(ResultActivity.this);
@@ -208,19 +226,39 @@ public class ResultActivity extends AppCompatActivity {
             principalAmount.setPadding(10, 10 ,10 ,10);
             principalAmount.setMinHeight(minHeight);
 
+            TableLayout innerTable = new TableLayout(this);
+//            innerTable.setPadding(10, 10, 20, 10);
+            innerTable.setBackground(cellBackground);
+
+            TableRow innerRowForAmount = new TableRow(this);
+            innerTable.addView(innerRowForAmount);
+
             TextView paymentAmount = new TextView(ResultActivity.this);
             paymentAmount.setText(DECIMAL_FORMAT.format(payment.getPaymentAmount()));
             paymentAmount.setTypeface(typeface);
             paymentAmount.setTextColor(textColor);
             paymentAmount.setBackground(cellBackground);
-            paymentAmount.setPadding(10, 10, 20, 10);
-            paymentAmount.setMinHeight(minHeight);
+            paymentAmount.setMinHeight(minHeight / 2);
+            innerRowForAmount.addView(paymentAmount);
+
+            TextView earlyPayment = new TextView(this);
+            earlyPayment.setText("+ досрочно");
+            earlyPayment.setTypeface(typeface);
+            earlyPayment.setTextColor(textColor);
+            earlyPayment.setBackground(cellBackground);
+            earlyPayment.setMinHeight((minHeight / 2) - 2);
+            earlyPayment.setTextSize(11);
+
+            TableRow innerRowForEarlyPayment = new TableRow(this);
+            innerRowForEarlyPayment.addView(earlyPayment);
+
+            innerTable.addView(innerRowForEarlyPayment);
 
             row.addView(currentPaymentNumber);
             row.addView(loanAmount);
             row.addView(interestAmount);
             row.addView(principalAmount);
-            row.addView(paymentAmount);
+            row.addView(innerTable);
 
             tl.addView(row);
         }

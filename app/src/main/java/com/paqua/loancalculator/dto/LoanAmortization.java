@@ -1,14 +1,14 @@
-package com.paqua.loancalculator.domain;
-
-//import java.beans.ConstructorProperties;
+package com.paqua.loancalculator.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
- * Represents calculation result
+ * Represents loan amortization calculation result
+ *
  * @author Artyom Panfutov
  */
 public final class LoanAmortization implements Serializable {
@@ -29,27 +29,56 @@ public final class LoanAmortization implements Serializable {
      */
     private final List<MonthlyPayment> monthlyPayments;
 
-    //@ConstructorProperties({"montlyPaymentAmount", "overPaymentAmount", "monthlyPayments"})
-    public LoanAmortization(BigDecimal monthlyPaymentAmount, BigDecimal overPaymentAmount, List<MonthlyPayment> monthlyPayments) {
+    /**
+     * Early payments
+     *
+     * Key: number of payment in payment schedule
+     * Value: early payment data(amount, strategy)
+     *
+     * @return Early payments
+     */
+    private final Map<Integer, EarlyPayment> earlyPayments;
+
+    public LoanAmortization(BigDecimal monthlyPaymentAmount, BigDecimal overPaymentAmount, List<MonthlyPayment> monthlyPayments, Map<Integer, EarlyPayment> earlyPayments) {
         this.monthlyPaymentAmount = monthlyPaymentAmount;
         this.overPaymentAmount = overPaymentAmount;
         this.monthlyPayments = monthlyPayments;
+        this.earlyPayments = earlyPayments;
     }
 
     public static long getSerialVersionUID() {
         return serialVersionUID;
     }
 
+    /**
+     * @return Monthly payment amount
+     */
     public BigDecimal getMonthlyPaymentAmount() {
         return monthlyPaymentAmount;
     }
 
+    /**
+     * @return Total overpayment (interests)
+     */
     public BigDecimal getOverPaymentAmount() {
         return overPaymentAmount;
     }
 
+    /**
+     * @return Payments schedule
+     */
     public List<MonthlyPayment> getMonthlyPayments() {
         return monthlyPayments;
+    }
+
+    /**
+     * Key: number of payment in payment schedule
+     * Value: early payment data(amount, strategy)
+     *
+     * @return Early payments (additional payments to monthly payments)
+     */
+    public Map<Integer, EarlyPayment> getEarlyPayments() {
+        return earlyPayments;
     }
 
     public static LoanAmortizationBuilder builder() {
@@ -63,14 +92,16 @@ public final class LoanAmortization implements Serializable {
         private BigDecimal monthlyPaymentAmount;
         private BigDecimal overPaymentAmount;
         private List<MonthlyPayment> monthlyPayments;
+        private Map<Integer, EarlyPayment> earlyPayments;
 
         public LoanAmortizationBuilder() {
         }
 
-        public LoanAmortizationBuilder(BigDecimal monthlyPaymentAmount, BigDecimal overPaymentAmount, List<MonthlyPayment> monthlyPayments) {
+        public LoanAmortizationBuilder(BigDecimal monthlyPaymentAmount, BigDecimal overPaymentAmount, List<MonthlyPayment> monthlyPayments, Map<Integer, EarlyPayment> earlyPayments) {
             this.monthlyPaymentAmount = monthlyPaymentAmount;
             this.overPaymentAmount = overPaymentAmount;
             this.monthlyPayments = monthlyPayments;
+            this.earlyPayments = earlyPayments;
         }
 
         public LoanAmortizationBuilder monthlyPaymentAmount(BigDecimal monthlyPaymentAmount) {
@@ -88,8 +119,13 @@ public final class LoanAmortization implements Serializable {
             return this;
         }
 
+        public LoanAmortizationBuilder earlyPayments(Map<Integer, EarlyPayment> earlyPayments) {
+            this.earlyPayments = earlyPayments;
+            return this;
+        }
+
         public LoanAmortization build() {
-            return new LoanAmortization(monthlyPaymentAmount, overPaymentAmount, monthlyPayments);
+            return new LoanAmortization(monthlyPaymentAmount, overPaymentAmount, monthlyPayments, earlyPayments);
         }
 
         @Override
@@ -98,6 +134,7 @@ public final class LoanAmortization implements Serializable {
                     "monthlyPaymentAmount=" + monthlyPaymentAmount +
                     ", overPaymentAmount=" + overPaymentAmount +
                     ", monthlyPayments=" + monthlyPayments +
+                    ", earlyPayments=" + earlyPayments +
                     '}';
         }
     }
@@ -106,21 +143,25 @@ public final class LoanAmortization implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         LoanAmortization that = (LoanAmortization) o;
-
-        if (monthlyPaymentAmount != null ? !monthlyPaymentAmount.equals(that.monthlyPaymentAmount) : that.monthlyPaymentAmount != null)
-            return false;
-        if (overPaymentAmount != null ? !overPaymentAmount.equals(that.overPaymentAmount) : that.overPaymentAmount != null)
-            return false;
-        return monthlyPayments != null ? monthlyPayments.equals(that.monthlyPayments) : that.monthlyPayments == null;
+        return Objects.equals(monthlyPaymentAmount, that.monthlyPaymentAmount) &&
+                Objects.equals(overPaymentAmount, that.overPaymentAmount) &&
+                Objects.equals(monthlyPayments, that.monthlyPayments) &&
+                Objects.equals(earlyPayments, that.earlyPayments);
     }
 
     @Override
     public int hashCode() {
-        int result = monthlyPaymentAmount != null ? monthlyPaymentAmount.hashCode() : 0;
-        result = 31 * result + (overPaymentAmount != null ? overPaymentAmount.hashCode() : 0);
-        result = 31 * result + (monthlyPayments != null ? monthlyPayments.hashCode() : 0);
-        return result;
+        return Objects.hash(monthlyPaymentAmount, overPaymentAmount, monthlyPayments, earlyPayments);
+    }
+
+    @Override
+    public String toString() {
+        return "LoanAmortization{" +
+                "monthlyPaymentAmount=" + monthlyPaymentAmount +
+                ", overPaymentAmount=" + overPaymentAmount +
+                ", monthlyPayments=" + monthlyPayments +
+                ", earlyPayments=" + earlyPayments +
+                '}';
     }
 }

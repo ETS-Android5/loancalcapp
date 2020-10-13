@@ -1,6 +1,5 @@
-package com.paqua.loancalculator.domain;
+package com.paqua.loancalculator.dto;
 
-//import java.beans.ConstructorProperties;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -17,12 +16,12 @@ public final class MonthlyPayment implements Serializable {
     private final Integer monthNumber;
 
     /**
-     * Amount of remaining debt (Balance)
+     * Amount of remaining debt (balance)
      */
     private final BigDecimal loanBalanceAmount;
 
     /**
-     * Amount of debt in payment (Principal)
+     * Amount of debt in payment (principal)
      */
     private final BigDecimal debtPaymentAmount;
 
@@ -36,13 +35,18 @@ public final class MonthlyPayment implements Serializable {
      */
     private final BigDecimal paymentAmount;
 
-   // @ConstructorProperties({"monthNumber", "loanBalanceAmount", "debtPaymentAmount", "interestPaymentAmount", "paymentAmount"})
-    public MonthlyPayment(Integer monthNumber, BigDecimal loanBalanceAmount, BigDecimal debtPaymentAmount, BigDecimal interestPaymentAmount, BigDecimal paymentAmount) {
+    /**
+     * Additional payment
+     */
+    private final BigDecimal additionalPaymentAmount;
+
+    public MonthlyPayment(Integer monthNumber, BigDecimal loanBalanceAmount, BigDecimal debtPaymentAmount, BigDecimal interestPaymentAmount, BigDecimal paymentAmount, BigDecimal additionalPaymentAmount) {
         this.monthNumber = monthNumber;
         this.loanBalanceAmount = loanBalanceAmount;
         this.debtPaymentAmount = debtPaymentAmount;
         this.interestPaymentAmount = interestPaymentAmount;
         this.paymentAmount = paymentAmount;
+        this.additionalPaymentAmount = additionalPaymentAmount;
     }
 
     /**
@@ -53,14 +57,14 @@ public final class MonthlyPayment implements Serializable {
     }
 
     /**
-     * @return Amount of remaining debt (Balance)
+     * @return Amount of remaining debt (loan balance)
      */
     public BigDecimal getLoanBalanceAmount() {
         return loanBalanceAmount;
     }
 
     /**
-     * @return Amount of debt in payment (Principal)
+     * @return Amount of debt in payment (principal debt amount)
      */
     public BigDecimal getDebtPaymentAmount() {
         return debtPaymentAmount;
@@ -80,6 +84,13 @@ public final class MonthlyPayment implements Serializable {
         return paymentAmount;
     }
 
+    /**
+     * @return Additional payment amount
+     */
+    public BigDecimal getAdditionalPaymentAmount() {
+        return additionalPaymentAmount;
+    }
+
     public static MonthlyPaymentBuilder builder() {
         return new MonthlyPaymentBuilder();
     }
@@ -92,16 +103,18 @@ public final class MonthlyPayment implements Serializable {
         private BigDecimal debtPaymentAmount;
         private BigDecimal interestPaymentAmount;
         private BigDecimal paymentAmount;
+        private BigDecimal additionalPaymentAmount;
 
         public MonthlyPaymentBuilder() {
         }
 
-        public MonthlyPaymentBuilder(Integer monthNumber, BigDecimal loanBalanceAmount, BigDecimal debtPaymentAmount, BigDecimal interestPaymentAmount, BigDecimal paymentAmount) {
+        public MonthlyPaymentBuilder(Integer monthNumber, BigDecimal loanBalanceAmount, BigDecimal debtPaymentAmount, BigDecimal interestPaymentAmount, BigDecimal paymentAmount, BigDecimal additionalPaymentAmount) {
             this.monthNumber = monthNumber;
             this.loanBalanceAmount = loanBalanceAmount;
             this.debtPaymentAmount = debtPaymentAmount;
             this.interestPaymentAmount = interestPaymentAmount;
             this.paymentAmount = paymentAmount;
+            this.additionalPaymentAmount = additionalPaymentAmount;
         }
 
         public MonthlyPaymentBuilder monthNumber(Integer monthNumber) {
@@ -124,9 +137,13 @@ public final class MonthlyPayment implements Serializable {
             this.paymentAmount = paymentAmount;
             return this;
         }
+        public MonthlyPaymentBuilder additionalPaymentAmount(BigDecimal additionalPaymentAmount) {
+            this.additionalPaymentAmount = additionalPaymentAmount;
+            return this;
+        }
 
         public MonthlyPayment build() {
-            return new MonthlyPayment(monthNumber, loanBalanceAmount, debtPaymentAmount, interestPaymentAmount, paymentAmount);
+            return new MonthlyPayment(monthNumber, loanBalanceAmount, debtPaymentAmount, interestPaymentAmount, paymentAmount, additionalPaymentAmount);
         }
     }
 
@@ -145,7 +162,9 @@ public final class MonthlyPayment implements Serializable {
             return false;
         if (interestPaymentAmount != null ? !interestPaymentAmount.equals(that.interestPaymentAmount) : that.interestPaymentAmount != null)
             return false;
-        return paymentAmount != null ? paymentAmount.equals(that.paymentAmount) : that.paymentAmount == null;
+        if (paymentAmount != null ? !paymentAmount.equals(that.paymentAmount) : that.paymentAmount != null)
+            return false;
+        return additionalPaymentAmount != null ? additionalPaymentAmount.equals(that.additionalPaymentAmount) : that.additionalPaymentAmount == null;
     }
 
     @Override
@@ -155,6 +174,19 @@ public final class MonthlyPayment implements Serializable {
         result = 31 * result + (debtPaymentAmount != null ? debtPaymentAmount.hashCode() : 0);
         result = 31 * result + (interestPaymentAmount != null ? interestPaymentAmount.hashCode() : 0);
         result = 31 * result + (paymentAmount != null ? paymentAmount.hashCode() : 0);
+        result = 31 * result + (additionalPaymentAmount != null ? additionalPaymentAmount.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "MonthlyPayment{" +
+                "monthNumber=" + monthNumber +
+                ", loanBalanceAmount=" + loanBalanceAmount +
+                ", debtPaymentAmount=" + debtPaymentAmount +
+                ", interestPaymentAmount=" + interestPaymentAmount +
+                ", paymentAmount=" + paymentAmount +
+                ", additionalPaymentAmount=" + additionalPaymentAmount +
+                '}';
     }
 }

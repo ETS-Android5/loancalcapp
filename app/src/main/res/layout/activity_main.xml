@@ -112,10 +112,11 @@
             android:id="@+id/monthTermType"
             android:layout_width="120dp"
             android:layout_height="match_parent"
+            android:buttonTint="@color/coolDarkColor"
+            android:checked="true"
             android:fontFamily="sans-serif-condensed"
             android:text="в месяцах"
             android:textColor="#333333"
-            android:buttonTint="@color/coolDarkColor"
             android:textCursorDrawable="@drawable/calc_button" />
 
         <RadioButton
