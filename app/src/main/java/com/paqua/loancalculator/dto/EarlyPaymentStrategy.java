@@ -20,4 +20,16 @@ public enum EarlyPaymentStrategy {
     @JsonProperty("decrease_monthly_payment")
     DECREASE_MONTHLY_PAYMENT;
 
+    // TODO its for serialization - refactor
+    @Override
+    public String toString() {
+        String retVal = "";
+        switch (ordinal()) {
+            case 0:
+                return "decrease_term";
+            case 1:
+                return "decrease_monthly_payment";
+        }
+        throw new IllegalArgumentException("Unknown strategy");
+    }
 }

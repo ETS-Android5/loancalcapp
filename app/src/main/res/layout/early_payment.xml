@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/earlyPaymentHeader"
+        android:layout_width="336dp"
+        android:layout_height="51dp"
+        android:layout_weight="1"
+        android:fontFamily="@font/bold_font"
+        android:text="Досрочное погашение"
+        android:textColor="#333333"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/chooseEarlyPaymentStrategy"
+        android:layout_width="240dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="12dp"
+        android:layout_weight="1"
+        android:fontFamily="@font/base_font"
+        android:text="Выберите тип досрочного погашения:"
+        android:textColor="#333333"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.146"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/earlyPaymentAmount"
+        app:layout_constraintVertical_bias="0.001" />
+
+    <EditText
+        android:id="@+id/earlyPaymentAmount"
+        android:layout_width="332dp"
+        android:layout_height="42dp"
+        android:ems="10"
+        android:fontFamily="@font/base_font"
+        android:hint="Сумма досрочного погашения"
+        android:inputType="numberDecimal"
+        android:textColor="#333333"
+        android:textColorHighlight="#333333"
+        android:textColorLink="#333333"
+        android:textCursorDrawable="@drawable/edit_text_design"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/earlyPaymentHeader"
+        app:layout_constraintVertical_bias="0.02" />
+
+    <RadioGroup
+        android:id="@+id/earlyPaymentStrategyGroup"
+        android:layout_width="298dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.444"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chooseEarlyPaymentStrategy"
+        app:layout_constraintVertical_bias="0.0">
+
+        <RadioButton
+            android:id="@+id/termDecrease"
+            style="@style/Widget.AppCompat.CompoundButton.RadioButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/coolDarkColor"
+            android:checked="true"
+            android:text="В срок уменьшения срока кредита"
+            android:textColor="#333333"
+            android:textColorHighlight="#333333"
+            android:textColorHint="#333333"
+            android:textColorLink="#333333"
+            android:textCursorDrawable="@drawable/edit_text_design" />
+
+        <RadioButton
+            android:id="@+id/paymentDecrease"
+            style="@style/Widget.AppCompat.CompoundButton.RadioButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/coolDarkColor"
+            android:text="В счет уменьшения ежемесячного платежа"
+            android:textColor="#333333"
+            android:textColorHighlight="#333333"
+            android:textColorHint="#333333"
+            android:textColorLink="#333333"
+            android:textCursorDrawable="@drawable/edit_text_design" />
+
+    </RadioGroup>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

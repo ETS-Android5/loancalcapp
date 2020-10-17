@@ -25,4 +25,19 @@ public enum EarlyPaymentRepeatingStrategy {
     @JsonProperty("from_date_to_date")
     FROM_DATE_TO_DATE;
 
+    // TODO Its for serialization - refactor
+    @Override
+    public String toString() {
+        String retVal = "";
+        switch (ordinal()) {
+            case 0:
+                return "single";
+            case 1:
+                return "to_end";
+            case 2:
+                return "from_date_to_date";
+        }
+        throw new IllegalArgumentException("Unknown strategy");
+    }
+
 }
