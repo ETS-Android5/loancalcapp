@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Layout;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -104,8 +105,7 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     /**
-     * Makes REST API request and builds amortization table
-     * @param loan Loan
+     * Makes REST API request and builds the amortization table
      * @throws JSONException
      * @throws IOException
      */
@@ -377,7 +377,16 @@ public class ResultActivity extends AppCompatActivity {
         });
         LayoutInflater inflater = this.getLayoutInflater();
 
-        builder.setView(inflater.inflate(R.layout.early_payment, null));
+        View layout = inflater.inflate(R.layout.early_payment, null);
+        builder.setView(layout);
+
+        if (paymentNumber != null && paymentNumber >= 0 && loan.getEarlyPayments() != null) {
+            EditText earlyPaymentAmountView = (EditText) layout.findViewById(R.id.earlyPaymentAmount);
+
+            if (loan.getEarlyPayments().get(paymentNumber) != null) {
+                earlyPaymentAmountView.setText(loan.getEarlyPayments().get(paymentNumber).getAmount().toString());
+            }
+        }
 
         final AlertDialog dialog = builder.create();
         dialog.show();
