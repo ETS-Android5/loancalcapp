@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TableLayout;
@@ -52,10 +53,11 @@ import java.util.Map;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
+import static com.paqua.loancalculator.util.Constant.GET_LOAN_AMROTIZATION_URL;
+import static com.paqua.loancalculator.util.ValidationUtils.hasEmptyText;
+import static com.paqua.loancalculator.util.ValidationUtils.setupRestoringBackgroundOnKey;
 
 public class ResultActivity extends AppCompatActivity {
-    private static final String GET_LOAN_AMROTIZATION_URL ="https://loan-amortization-server.herokuapp.com/loanAmortization";
-
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.00");
     private static final DecimalFormatSymbols SYMBOLS = DECIMAL_FORMAT.getDecimalFormatSymbols();
     static {
@@ -65,8 +67,9 @@ public class ResultActivity extends AppCompatActivity {
         DECIMAL_FORMAT.setGroupingSize(3);
     }
 
-    private Loan loan = null;
+    private Loan loan;
     private LoanAmortization amortization;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,12 +77,26 @@ public class ResultActivity extends AppCompatActivity {
 
         setVisibilityForAll(INVISIBLE);
 
+        initLoanFromMainActivity();
+
+        tryCalculateLoanAmortization();
+
+    }
+
+    /**
+     * Initializes loan from previous screen
+     */
+    private void initLoanFromMainActivity() {
+        Intent intent = getIntent();
+        loan = (Loan) intent.getExtras().get(Constant.LOAN_OBJECT);
+    }
+
+    /**
+     * Wrapper for {@link this#calculateLoanAmortization()}
+     */
+    private void tryCalculateLoanAmortization() {
         try {
-            Intent intent = getIntent();
-            loan = (Loan) intent.getExtras().get(Constant.LOAN_OBJECT);
-
             calculateLoanAmortization();
-
         } catch (Exception e) {
             showSomethingWentWrongDialog();
             e.printStackTrace(); // TODO
@@ -143,7 +160,7 @@ public class ResultActivity extends AppCompatActivity {
                 .setMessage("Please, try again later")
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        // TODO
+                        // TODO audit or something
                     }
                 })
                 .create();
@@ -350,7 +367,7 @@ public class ResultActivity extends AppCompatActivity {
 
         builder.setPositiveButton("Добавить", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                earlyPaymentAddOnOKCallback((AlertDialog) dialog, paymentNumber);
+                earlyPaymentAddOnOKCallback((AlertDialog) dialog, paymentNumber); // TODO Probably don't need this - it will be overridden anyway
             }
         });
         builder.setNegativeButton("Отказаться", new DialogInterface.OnClickListener() {
@@ -362,8 +379,17 @@ public class ResultActivity extends AppCompatActivity {
 
         builder.setView(inflater.inflate(R.layout.early_payment, null));
 
-        AlertDialog dialog = builder.create();
+        final AlertDialog dialog = builder.create();
         dialog.show();
+
+        // Override on click listener to make possible validation input fields
+        Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        positiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                earlyPaymentAddOnOKCallback(dialog, paymentNumber);
+            }
+        });
     }
 
     /**
@@ -373,26 +399,31 @@ public class ResultActivity extends AppCompatActivity {
      * @param paymentNumber Number of the payment in the schedule
      */
     private void earlyPaymentAddOnOKCallback(AlertDialog dialog, Integer paymentNumber) {
-        BigDecimal amount = new BigDecimal(((EditText) dialog.findViewById(R.id.earlyPaymentAmount)).getText().toString());
-        EarlyPaymentRepeatingStrategy repeatingStrategy = EarlyPaymentRepeatingStrategy.SINGLE;// TODO
-        EarlyPaymentStrategy earlyPaymentStrategy = ((RadioButton) dialog.findViewById(R.id.termDecrease)).isChecked() ? EarlyPaymentStrategy.DECREASE_TERM : EarlyPaymentStrategy.DECREASE_MONTHLY_PAYMENT;
+        EditText earlyPaymentAmountView = (EditText) dialog.findViewById(R.id.earlyPaymentAmount);
 
-        Map<Integer, EarlyPayment> earlyPayments = loan.getEarlyPayments() != null ? loan.getEarlyPayments() : new HashMap<Integer, EarlyPayment>();
-        earlyPayments.put(paymentNumber, new EarlyPayment(amount, earlyPaymentStrategy, repeatingStrategy));
+        setupRestoringBackgroundOnKey(earlyPaymentAmountView);
+        boolean isValid = hasEmptyText(earlyPaymentAmountView, getResources().getColor(R.color.coolRed));
 
-        // Construct new loan because it is immutable TODO
-        loan = Loan.builder()
-                .amount(loan.getAmount())
-                .rate(loan.getRate())
-                .term(loan.getTerm())
-                .earlyPayments(earlyPayments)
-                .build();
+        if (isValid) {
+            BigDecimal amount = new BigDecimal(earlyPaymentAmountView.getText().toString());
 
-        try {
-            calculateLoanAmortization();
-        } catch (Exception e) {
-            showSomethingWentWrongDialog();
-            System.out.println(e.toString());
+            EarlyPaymentRepeatingStrategy repeatingStrategy = EarlyPaymentRepeatingStrategy.SINGLE;// TODO Add radio button
+            EarlyPaymentStrategy earlyPaymentStrategy = ((RadioButton) dialog.findViewById(R.id.termDecrease)).isChecked() ? EarlyPaymentStrategy.DECREASE_TERM : EarlyPaymentStrategy.DECREASE_MONTHLY_PAYMENT;
+
+            Map<Integer, EarlyPayment> earlyPayments = loan.getEarlyPayments() != null ? loan.getEarlyPayments() : new HashMap<Integer, EarlyPayment>();
+            earlyPayments.put(paymentNumber, new EarlyPayment(amount, earlyPaymentStrategy, repeatingStrategy));
+
+            // Construct new loan because it is immutable TODO
+            loan = Loan.builder()
+                    .amount(loan.getAmount())
+                    .rate(loan.getRate())
+                    .term(loan.getTerm())
+                    .earlyPayments(earlyPayments)
+                    .build();
+
+            tryCalculateLoanAmortization();
+
+            dialog.dismiss();
         }
     }
 
@@ -490,7 +521,7 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     /**
-     * Sets visibilty for all child for base layout
+     * Sets visibility for all child for base layout
      * @param value
      */
     private void setVisibilityForAll(int value) {

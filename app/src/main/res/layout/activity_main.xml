@@ -58,6 +58,7 @@
         android:fontFamily="sans-serif-condensed"
         android:text="Рассчитать"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:errorTextAppearance="@style/error_appearance"
         android:textColor="#333333"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
