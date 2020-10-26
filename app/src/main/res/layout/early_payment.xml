@@ -12,29 +12,48 @@
         android:layout_height="51dp"
         android:layout_weight="1"
         android:fontFamily="@font/bold_font"
+        android:paddingLeft="5dp"
         android:text="Досрочное погашение"
         android:textColor="#333333"
         android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.786"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.023" />
+
+    <TextView
+        android:id="@+id/forEarlyPaymentNumber"
+        android:layout_width="175dp"
+        android:layout_height="24dp"
+        android:fontFamily="@font/bold_font"
+        android:paddingLeft="5dp"
+        android:text="Для платежа "
+        android:textColor="#333333"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/earlyPaymentHeader"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/earlyPaymentHeader"
+        app:layout_constraintTop_toBottomOf="@+id/earlyPaymentHeader"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/chooseEarlyPaymentStrategy"
         android:layout_width="240dp"
         android:layout_height="25dp"
-        android:layout_marginTop="12dp"
         android:layout_weight="1"
         android:fontFamily="@font/base_font"
-        android:text="Выберите тип досрочного погашения:"
+        android:text="Выберите тип:"
         android:textColor="#333333"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.146"
+        app:layout_constraintHorizontal_bias="0.163"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/earlyPaymentAmount"
-        app:layout_constraintVertical_bias="0.001" />
+        app:layout_constraintVertical_bias="0.03" />
 
     <EditText
         android:id="@+id/earlyPaymentAmount"
@@ -50,9 +69,10 @@
         android:textCursorDrawable="@drawable/edit_text_design"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.797"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/earlyPaymentHeader"
-        app:layout_constraintVertical_bias="0.02" />
+        app:layout_constraintTop_toBottomOf="@+id/forEarlyPaymentNumber"
+        app:layout_constraintVertical_bias="0.044" />
 
     <RadioGroup
         android:id="@+id/earlyPaymentStrategyGroup"
@@ -94,5 +114,6 @@
             android:textCursorDrawable="@drawable/edit_text_design" />
 
     </RadioGroup>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

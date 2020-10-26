@@ -6,7 +6,6 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.Layout;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,6 +48,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,7 +56,7 @@ import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static com.paqua.loancalculator.util.Constant.GET_LOAN_AMROTIZATION_URL;
 import static com.paqua.loancalculator.util.ValidationUtils.hasEmptyText;
-import static com.paqua.loancalculator.util.ValidationUtils.setupRestoringBackgroundOnKey;
+import static com.paqua.loancalculator.util.ValidationUtils.setupRestoringBackgroundOnTextChange;
 
 public class ResultActivity extends AppCompatActivity {
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.00");
@@ -70,6 +70,7 @@ public class ResultActivity extends AppCompatActivity {
 
     private Loan loan;
     private LoanAmortization amortization;
+    private BigDecimal overPayment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +83,22 @@ public class ResultActivity extends AppCompatActivity {
 
         tryCalculateLoanAmortization();
 
+        initResetAllEarlyPaymentsView();
+    }
+
+    /**
+     * Initializes paint flags and on-click callback for the reset view
+     */
+    private void initResetAllEarlyPaymentsView() {
+        TextView resetEarlyPayments = (TextView) findViewById(R.id.resetAllEarlyPayments);
+        resetEarlyPayments.setPaintFlags(resetEarlyPayments.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        resetEarlyPayments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetAllEarlyPayments();
+                setOverpaymentAmountVisibility();
+            }
+        });
     }
 
     /**
@@ -190,8 +207,17 @@ public class ResultActivity extends AppCompatActivity {
      */
     private void setOverpaymentAmountVisibility() {
         TextView overPaymentAmountWithEarly = (TextView) findViewById(R.id.overPaymentWithEarly);
+        TextView reset = (TextView) findViewById(R.id.resetAllEarlyPayments);
+        TextView hintText = (TextView) findViewById(R.id.hintToEarlyPayment);
+
         if (overPaymentAmountWithEarly.getText() == null || overPaymentAmountWithEarly.getText().length() == 0) {
             overPaymentAmountWithEarly.setVisibility(INVISIBLE);
+            reset.setVisibility(INVISIBLE);
+            hintText.setVisibility(VISIBLE);
+        } else {
+            overPaymentAmountWithEarly.setVisibility(VISIBLE);
+            reset.setVisibility(VISIBLE);
+            hintText.setVisibility(INVISIBLE);
         }
     }
 
@@ -208,34 +234,43 @@ public class ResultActivity extends AppCompatActivity {
                             .setScale(2, RoundingMode.HALF_UP))
         );
 
-
         TextView overPaymentAmount = (TextView) findViewById(R.id.overPaymentAmount);
+        if (amortization.getEarlyPayments() != null && amortization.getEarlyPayments().entrySet().size() > 0) {
+            TextView overPaymentAmountWithEarly = (TextView) findViewById(R.id.overPaymentWithEarly);
+            overPaymentAmountWithEarly.setText(DECIMAL_FORMAT.format(amortization.getOverPaymentAmount()));
 
-        overPaymentAmount.setText(
-                DECIMAL_FORMAT.format(amortization
-                        .getOverPaymentAmount()
-                        .setScale(2, RoundingMode.HALF_UP))
-        );
+            findViewById(R.id.hintToEarlyPayment).setVisibility(INVISIBLE);
+        }
+
+        // Save the overpayment amount calculated in the first request - will use it to overpayment header that does not include early payments
+        if (overPayment == null) {
+            overPayment = amortization.getOverPaymentAmount();
+            setOverpaymentAmountVisibility();
+        }
+
+        if (overPayment != null) {
+            overPaymentAmount.setText(DECIMAL_FORMAT.format(overPayment));
+        }
     }
 
     /**
      * Builds amortization table content
      */
     private void rebuildAmortizationTable() {
-        TableLayout tl = (TableLayout)findViewById(R.id.amortizationTable);
-        tl.removeAllViews();
+        TableLayout tableLayout = (TableLayout)findViewById(R.id.amortizationTable);
+        tableLayout.removeAllViews();
 
-        buildAmortizationTableHeader(tl);
+        buildAmortizationTableHeader(tableLayout);
 
-        buildAmortizationTableContent(tl);
+        buildAmortizationTableContent(tableLayout);
     }
 
     /**
      * Builds table content
-     * @param tl
+     * @param tableLayout
      */
     // TODO Too complex method - refactor
-    private void buildAmortizationTableContent(TableLayout tl) {
+    private void buildAmortizationTableContent(TableLayout tableLayout) {
         Integer paymentNumber = 0;
 
         int textColor = getResources().getColor(R.color.coolDarkColor);
@@ -334,8 +369,9 @@ public class ResultActivity extends AppCompatActivity {
             row.addView(principalAmount);
             row.addView(innerTable);
 
-            tl.addView(row);
+            tableLayout.addView(row);
         }
+
     }
 
     /**
@@ -375,18 +411,31 @@ public class ResultActivity extends AppCompatActivity {
                 // TODO
             }
         });
+        builder.setNeutralButton("Сбросить", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                resetEarlyPayment(paymentNumber);
+            }
+        });
         LayoutInflater inflater = this.getLayoutInflater();
-
         View layout = inflater.inflate(R.layout.early_payment, null);
+
         builder.setView(layout);
 
-        if (paymentNumber != null && paymentNumber >= 0 && loan.getEarlyPayments() != null) {
+        if (paymentNumber != null) {
+            TextView forEarlyPaymentNumber = (TextView) layout.findViewById(R.id.forEarlyPaymentNumber);
+
+            forEarlyPaymentNumber.setText(String.format("Для платежа №%s", paymentNumber + 1));
+        }
+
+        if (paymentNumber != null && loan.getEarlyPayments() != null) {
             EditText earlyPaymentAmountView = (EditText) layout.findViewById(R.id.earlyPaymentAmount);
 
             if (loan.getEarlyPayments().get(paymentNumber) != null) {
                 earlyPaymentAmountView.setText(loan.getEarlyPayments().get(paymentNumber).getAmount().toString());
             }
         }
+
 
         final AlertDialog dialog = builder.create();
         dialog.show();
@@ -402,6 +451,48 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     /**
+     * Deletes one early payment
+     * @param paymentNumber
+     */
+    private void resetEarlyPayment(Integer paymentNumber) {
+        Map<Integer, EarlyPayment> earlyPayment = loan.getEarlyPayments();
+        earlyPayment.remove(paymentNumber);
+
+        if (earlyPayment.isEmpty()) {
+            resetAllEarlyPayments();
+        } else {
+            loan = Loan.builder()
+                    .amount(loan.getAmount())
+                    .term(loan.getTerm())
+                    .rate(loan.getRate())
+                    .earlyPayments(earlyPayment)
+                    .build();
+
+            tryCalculateLoanAmortization();
+        }
+    }
+
+    /**
+     * Resets all early payments and calculates amortization
+     */
+    private void resetAllEarlyPayments() {
+        loan = Loan.builder()
+                .amount(loan.getAmount())
+                .term(loan.getTerm())
+                .rate(loan.getRate())
+                .earlyPayments(new HashMap<Integer, EarlyPayment>())
+                .build();
+
+        amortization = null;
+        overPayment = null;
+
+        TextView overPayment = findViewById(R.id.overPaymentWithEarly);
+        overPayment.setText("");
+
+        tryCalculateLoanAmortization();
+    }
+
+    /**
      * Handler on early payment add confirm
      * Makes an API call and rebuilds the result table
      *
@@ -410,7 +501,7 @@ public class ResultActivity extends AppCompatActivity {
     private void earlyPaymentAddOnOKCallback(AlertDialog dialog, Integer paymentNumber) {
         EditText earlyPaymentAmountView = (EditText) dialog.findViewById(R.id.earlyPaymentAmount);
 
-        setupRestoringBackgroundOnKey(earlyPaymentAmountView);
+        setupRestoringBackgroundOnTextChange(earlyPaymentAmountView);
         boolean isValid = hasEmptyText(earlyPaymentAmountView, getResources().getColor(R.color.coolRed));
 
         if (isValid) {

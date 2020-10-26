@@ -1,8 +1,8 @@
 package com.paqua.loancalculator.util;
 
 import android.graphics.drawable.Drawable;
-import android.view.KeyEvent;
-import android.view.View;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.EditText;
 
 /**
@@ -29,20 +29,30 @@ public class ValidationUtils {
     }
 
     /**
-     * Sets listener on key for restoring original background
+     * Sets listener on text change for restoring original background
      * @param view edit text
      */
-    public static void setupRestoringBackgroundOnKey(View view) {
+    public static void setupRestoringBackgroundOnTextChange(final EditText view) {
         final Drawable originBackground = view.getBackground();
-        view.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (v.getBackground() != originBackground) {
-                    v.setBackground(originBackground);
+            view.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
                 }
-                return false;
-            }
-        });
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    if (!view.getBackground().equals(originBackground)) {
+                        view.setBackground(originBackground);
+                    }
+
+                }
+            });
     }
 
 }

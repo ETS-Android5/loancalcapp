@@ -32,9 +32,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        setupRestoringBackgroundOnKey(findViewById(R.id.loanAmount));
-        setupRestoringBackgroundOnKey(findViewById(R.id.interestRate));
-        setupRestoringBackgroundOnKey(findViewById(R.id.term));
+        setupRestoringBackgroundOnTextChange((EditText)findViewById(R.id.loanAmount));
+        setupRestoringBackgroundOnTextChange((EditText) findViewById(R.id.interestRate));
+        setupRestoringBackgroundOnTextChange((EditText) findViewById(R.id.term));
     }
 
     /**
