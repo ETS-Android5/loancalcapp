@@ -47,9 +47,9 @@ public class MainActivity extends AppCompatActivity {
         EditText interestRate = ((EditText) findViewById(R.id.interestRate));
         EditText loanTerm = ((EditText) findViewById(R.id.term));
 
-        isValidInput = hasEmptyText(loanAmount, getResources().getColor(R.color.coolRed));
-        isValidInput = hasEmptyText(interestRate, getResources().getColor(R.color.coolRed));
-        isValidInput = hasEmptyText(loanTerm, getResources().getColor(R.color.coolRed));
+        if (isValidInput) isValidInput = hasEmptyText(loanAmount, getResources().getColor(R.color.coolRed));
+        if (isValidInput) isValidInput = hasEmptyText(interestRate, getResources().getColor(R.color.coolRed));
+        if (isValidInput) isValidInput = hasEmptyText(loanTerm, getResources().getColor(R.color.coolRed));
 
         if (isValidInput) {
             BigDecimal amount = new BigDecimal(loanAmount.getText().toString());
