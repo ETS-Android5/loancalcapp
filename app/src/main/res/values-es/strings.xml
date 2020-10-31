@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Calculadora de préstamo</string>
+    <string name="loan_calculator_header_text">Calculadora de préstamo</string>
+    <string name="with_extra_payments_text">con pagos extra</string>
+    <string name="loan_amount_field_hint">Monto del préstamo</string>
+    <string name="interest_rate_field_hint">Tasa de interés, %</string>
+    <string name="term_field_hint">Término</string>
+    <string name="in_months_radio_button_text">meses</string>
+    <string name="years_radio_button_text">años</string>
+    <string name="calculate_button_text">Calcular</string>
+    <string name="monthly_payment_header_text">Mensualidad:</string>
+    <string name="overpayment_header_text">Pago en exceso total (intereses)</string>
+    <string name="if_extra_payments_header_text">Con pagos extra</string>
+    <string name="hint_add_extra_payment_text">Agregue pagos adicionales en el programa de amortización</string>
+    <string name="reset_all_extra_payments_text">Restablecer todos los pagos adicionales</string>
+    <string name="extra_payment_header_text">Pago extra</string>
+    <string name="for_payment_header_text">Para pago</string>
+    <string name="extra_payment_amount_hint">Monto de pago adicional</string>
+    <string name="choose_extra_payment_type_header_text">Elija una estrategia de tipo de pago adicional</string>
+    <string name="decrease_term_type_text">Disminuir el plazo del préstamo</string>
+    <string name="decrease_payment_amount_type_text">Disminuir el monto del pago mensual</string>
+    <string name="add_extra_payment_text">pago extra</string>
+    <string name="add_extra_payment_button_text">Añadir</string>
+    <string name="cancel_extra_payment_button_text">Cancelar</string>
+    <string name="reset_extra_payment_button_text">Reiniciar</string>
+    <string name="for_payment_number_text">Para pago №</string>
+    <string name="balance_table_column_text">Balance de prestamo</string>
+    <string name="interest_table_column_text">Interesar</string>
+    <string name="principal_table_column_text">Principal</string>
+    <string name="payment_amount_table_column_text">Pago</string>
+</resources>

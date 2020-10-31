@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Lohnrechner</string>
+    <string name="loan_calculator_header_text">Lohnrechner</string>
+    <string name="with_extra_payments_text">mit zusätzlichen Zahlungen</string>
+    <string name="loan_amount_field_hint">Darlehensbetrag</string>
+    <string name="interest_rate_field_hint">Zinssatz, %</string>
+    <string name="term_field_hint">Begriff</string>
+    <string name="in_months_radio_button_text">monat</string>
+    <string name="years_radio_button_text">jahr</string>
+    <string name="calculate_button_text">Berechnung</string>
+    <string name="monthly_payment_header_text">Monatliche Bezahlung:</string>
+    <string name="overpayment_header_text">Gesamtüberzahlung (Zinsen)</string>
+    <string name="if_extra_payments_header_text">Mit zusätzlichen Zahlungen</string>
+    <string name="hint_add_extra_payment_text">Fügen Sie dem Tilgungsplan zusätzliche Zahlungen hinzu</string>
+    <string name="reset_all_extra_payments_text">Setzen Sie alle zusätzlichen Zahlungen zurück</string>
+    <string name="extra_payment_header_text">Zusätzliche Bezahlun</string>
+    <string name="for_payment_header_text">Zur Zahlung</string>
+    <string name="extra_payment_amount_hint">Zusätzlicher Zahlungsbetrag</string>
+    <string name="decrease_term_type_text">Kreditlaufzeit verkürzen</string>
+    <string name="decrease_payment_amount_type_text">Verringern Sie den monatlichen Zahlungsbetrag</string>
+    <string name="choose_extra_payment_type_header_text">Wählen Sie eine zusätzliche Zahlungsartstrategie</string>
+    <string name="add_extra_payment_text">zusätzliche Bezahlung</string>
+    <string name="add_extra_payment_button_text">Hinzufügen</string>
+    <string name="cancel_extra_payment_button_text">Stornieren</string>
+    <string name="reset_extra_payment_button_text">Zurücksetzen</string>
+    <string name="for_payment_number_text">Zur Zahlung №</string>
+    <string name="balance_table_column_text">Kreditsaldo</string>
+    <string name="interest_table_column_text">Interesse</string>
+    <string name="principal_table_column_text">Nennbetrag</string>
+    <string name="payment_amount_table_column_text">Zahlung</string>
+</resources>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Calculateur de prêt</string>
+    <string name="loan_calculator_header_text">Calculateur de prêt</string>
+    <string name="with_extra_payments_text">avec des paiements supplémentaires</string>
+    <string name="loan_amount_field_hint">Montant du prêt</string>
+    <string name="interest_rate_field_hint">Taux d\'intérêt, %</string>
+    <string name="term_field_hint">Terme</string>
+    <string name="in_months_radio_button_text">mois</string>
+    <string name="years_radio_button_text">ans</string>
+    <string name="calculate_button_text">Calculer</string>
+    <string name="monthly_payment_header_text">Paiement mensuel:</string>
+    <string name="overpayment_header_text">Trop-payé total (intérêts)</string>
+    <string name="if_extra_payments_header_text">Avec des paiements supplémentaires</string>
+    <string name="reset_all_extra_payments_text">Réinitialiser tous les paiements supplémentaires</string>
+    <string name="extra_payment_header_text">Paiement supplémentaire</string>
+    <string name="hint_add_extra_payment_text">Ajouter des paiements supplémentaires</string>
+    <string name="for_payment_header_text">Pour le paiemen</string>
+    <string name="extra_payment_amount_hint">Montant du paiement supplémentaire</string>
+    <string name="choose_extra_payment_type_header_text">Choisissez une stratégie de type de paiement supplémentaire</string>
+    <string name="decrease_term_type_text">Diminuer la durée du prêt</string>
+    <string name="decrease_payment_amount_type_text">Diminuer le montant du paiement mensuel</string>
+    <string name="add_extra_payment_text">paiement supplémentaire</string>
+    <string name="cancel_extra_payment_button_text">Annuler</string>
+    <string name="reset_extra_payment_button_text">Réinitialiser</string>
+    <string name="add_extra_payment_button_text">Ajouter</string>
+    <string name="for_payment_number_text">Pour le paiement №</string>
+    <string name="balance_table_column_text">Solde du prêt</string>
+    <string name="interest_table_column_text">L\'intérêt</string>
+    <string name="principal_table_column_text">Principal</string>
+    <string name="payment_amount_table_column_text">Paiement</string>
+</resources>

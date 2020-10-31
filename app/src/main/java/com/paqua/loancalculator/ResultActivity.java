@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -48,7 +49,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -385,8 +385,9 @@ public class ResultActivity extends AppCompatActivity {
         if (payment.getAdditionalPaymentAmount() != null && payment.getAdditionalPaymentAmount().compareTo(BigDecimal.ZERO) > 0) {
             earlyPaymentValue = "+ " + DECIMAL_FORMAT.format(payment.getAdditionalPaymentAmount());
         } else {
-            earlyPaymentValue = "+ досрочно";
+            earlyPaymentValue = "+ " + getResources().getString(R.string.add_extra_payment_text);
         }
+
         return earlyPaymentValue;
     }
 
@@ -401,17 +402,17 @@ public class ResultActivity extends AppCompatActivity {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setPositiveButton("Добавить", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getResources().getString(R.string.add_extra_payment_button_text), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 earlyPaymentAddOnOKCallback((AlertDialog) dialog, paymentNumber); // TODO Probably don't need this - it will be overridden anyway
             }
         });
-        builder.setNegativeButton("Отказаться", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getResources().getString(R.string.cancel_extra_payment_button_text), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // TODO
             }
         });
-        builder.setNeutralButton("Сбросить", new DialogInterface.OnClickListener() {
+        builder.setNeutralButton(getResources().getString(R.string.reset_extra_payment_button_text), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 resetEarlyPayment(paymentNumber);
@@ -425,7 +426,7 @@ public class ResultActivity extends AppCompatActivity {
         if (paymentNumber != null) {
             TextView forEarlyPaymentNumber = (TextView) layout.findViewById(R.id.forEarlyPaymentNumber);
 
-            forEarlyPaymentNumber.setText(String.format("Для платежа №%s", paymentNumber + 1));
+            forEarlyPaymentNumber.setText(String.format(getResources().getString(R.string.for_payment_number_text) + "%s", paymentNumber + 1));
         }
 
         if (paymentNumber != null && loan.getEarlyPayments() != null) {
@@ -552,7 +553,7 @@ public class ResultActivity extends AppCompatActivity {
         paymentNumberColumn.setPadding(30, 0, 0 , 0);
 
         TextView loanBalanceAmountColumn = new TextView(ResultActivity.this);
-        loanBalanceAmountColumn.setText("Остаток основного долга");
+        loanBalanceAmountColumn.setText(getResources().getString(R.string.balance_table_column_text));
         loanBalanceAmountColumn.setTextSize(headerFontSize);
         loanBalanceAmountColumn.setTextColor(textColor);
         loanBalanceAmountColumn.setSingleLine(false);
@@ -560,7 +561,7 @@ public class ResultActivity extends AppCompatActivity {
         loanBalanceAmountColumn.setPadding(20, 0 , 0, 0);
 
         TextView interestAmountColumn = new TextView(ResultActivity.this);
-        interestAmountColumn.setText("Проценты банку");
+        interestAmountColumn.setText(getResources().getString(R.string.interest_table_column_text));
         interestAmountColumn.setTextSize(headerFontSize);
         interestAmountColumn.setTextColor(textColor);
         interestAmountColumn.setTypeface(standardTypeface);
@@ -568,7 +569,7 @@ public class ResultActivity extends AppCompatActivity {
         interestAmountColumn.setPadding(20, 0 ,0 ,0);
 
         TextView principalAmountColumn = new TextView(ResultActivity.this);
-        principalAmountColumn.setText("Основной долг");
+        principalAmountColumn.setText(getResources().getString(R.string.principal_table_column_text));
         principalAmountColumn.setTextSize(headerFontSize);
         principalAmountColumn.setTextColor(textColor);
         principalAmountColumn.setTypeface(standardTypeface);
@@ -576,7 +577,7 @@ public class ResultActivity extends AppCompatActivity {
         principalAmountColumn.setPadding(20, 0,0,0);
 
         TextView paymentAmountColumn = new TextView(ResultActivity.this);
-        paymentAmountColumn.setText("Платеж");
+        paymentAmountColumn.setText(getResources().getString(R.string.payment_amount_table_column_text));
         paymentAmountColumn.setTextSize(headerFontSize);
         paymentAmountColumn.setTextColor(textColor);
         paymentAmountColumn.setTypeface(standardTypeface);

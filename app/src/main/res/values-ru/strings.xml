@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Кредитный калькулятор</string>
+    <string name="loan_calculator_header_text">Кредитный калькулятор</string>
+    <string name="with_extra_payments_text">с досрочным погашением</string>
+    <string name="loan_amount_field_hint">Сумма кредита</string>
+    <string name="interest_rate_field_hint">Процентная ставка, %</string>
+    <string name="term_field_hint">Срок</string>
+    <string name="in_months_radio_button_text">в месяцах</string>
+    <string name="years_radio_button_text">в годах</string>
+    <string name="calculate_button_text">Рассчитать</string>
+    <string name="monthly_payment_header_text">Ежемесячный платеж:</string>
+    <string name="overpayment_header_text">Переплата (процентов в банку)</string>
+    <string name="if_extra_payments_header_text">Если досрочно гасить</string>
+    <string name="hint_add_extra_payment_text">Укажите в \"Графике платежей\" досрочные погашения</string>
+    <string name="reset_all_extra_payments_text">Сбросить все досрочные погашения</string>
+    <string name="extra_payment_header_text">Досрочное погашение</string>
+    <string name="for_payment_header_text">Для платежа</string>
+    <string name="extra_payment_amount_hint">Сумма досрочного погашения</string>
+    <string name="choose_extra_payment_type_header_text">Выберите тип досрочного погашения</string>
+    <string name="decrease_term_type_text">В счет уменьшения срока кредита</string>
+    <string name="decrease_payment_amount_type_text">В счет уменьшения ежемесячного платежа</string>
+    <string name="add_extra_payment_text">досрочно</string>
+    <string name="add_extra_payment_button_text">Добавить</string>
+    <string name="cancel_extra_payment_button_text">Отказаться</string>
+    <string name="reset_extra_payment_button_text">Сбросить</string>
+    <string name="for_payment_number_text">Для платежа №</string>
+    <string name="balance_table_column_text">Остаток основного долга</string>
+    <string name="interest_table_column_text">Проценты</string>
+    <string name="principal_table_column_text">Основной долг</string>
+    <string name="payment_amount_table_column_text">Платеж</string>
+</resources>
