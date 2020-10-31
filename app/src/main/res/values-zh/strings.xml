@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">贷款计算器</string>
+    <string name="loan_calculator_header_text">贷款计算器</string>
+    <string name="with_extra_payments_text">额外付款</string>
+    <string name="loan_amount_field_hint">贷款额度</string>
+    <string name="interest_rate_field_hint">利率， ％</string>
+    <string name="term_field_hint">术语</string>
+    <string name="in_months_radio_button_text">月</string>
+    <string name="years_radio_button_text">年份</string>
+    <string name="calculate_button_text">计算</string>
+    <string name="monthly_payment_header_text">每月支付：</string>
+    <string name="overpayment_header_text">多付总额（利息）</string>
+    <string name="hint_add_extra_payment_text">在摊销时间表中添加额外的付款</string>
+    <string name="if_extra_payments_header_text">额外付款</string>
+    <string name="reset_all_extra_payments_text">重设所有额外付款</string>
+    <string name="extra_payment_header_text">额外付款</string>
+    <string name="for_payment_header_text">付款</string>
+    <string name="extra_payment_amount_hint">额外付款金额</string>
+    <string name="choose_extra_payment_type_header_text">选择额外的付款方式策略</string>
+    <string name="decrease_term_type_text">减少贷款期限</string>
+    <string name="decrease_payment_amount_type_text">减少每月付款金额</string>
+    <string name="add_extra_payment_text">额外付款</string>
+    <string name="add_extra_payment_button_text">加</string>
+    <string name="cancel_extra_payment_button_text">取消</string>
+    <string name="for_payment_number_text">付款№</string>
+    <string name="reset_extra_payment_button_text">重启</string>
+    <string name="balance_table_column_text">贷款余额</string>
+    <string name="interest_table_column_text">利益</string>
+    <string name="principal_table_column_text">本金</string>
+    <string name="payment_amount_table_column_text">付款</string>
+</resources>

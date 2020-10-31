@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ローン計算機</string>
+    <string name="loan_calculator_header_text">ローン計算機</string>
+    <string name="with_extra_payments_text">追加の支払いで</string>
+    <string name="loan_amount_field_hint">融資額</string>
+    <string name="interest_rate_field_hint">金利、 ％</string>
+    <string name="term_field_hint">期間</string>
+    <string name="in_months_radio_button_text">月</string>
+    <string name="years_radio_button_text">年</string>
+    <string name="calculate_button_text">計算する</string>
+    <string name="monthly_payment_header_text">毎月の支払額：</string>
+    <string name="overpayment_header_text">総過払い（利息）</string>
+    <string name="if_extra_payments_header_text">追加の支払いで</string>
+    <string name="hint_add_extra_payment_text">償却スケジュールに追加の支払いを追加します</string>
+    <string name="reset_all_extra_payments_text">余分な支払いをすべてリセットする</string>
+    <string name="extra_payment_header_text">追加支払い</string>
+    <string name="for_payment_header_text">お支払いについて</string>
+    <string name="extra_payment_amount_hint">追加支払い額</string>
+    <string name="choose_extra_payment_type_header_text">追加の支払いタイプ戦略を選択する</string>
+    <string name="decrease_term_type_text">ローン期間を短縮する</string>
+    <string name="decrease_payment_amount_type_text">毎月の支払い額を減らす</string>
+    <string name="add_extra_payment_text">追加支払い</string>
+    <string name="add_extra_payment_button_text">追加</string>
+    <string name="cancel_extra_payment_button_text">キャンセル</string>
+    <string name="reset_extra_payment_button_text">リセット</string>
+    <string name="for_payment_number_text">お支払いの場合№</string>
+    <string name="balance_table_column_text">ローン残高</string>
+    <string name="interest_table_column_text">興味</string>
+    <string name="principal_table_column_text">主要な</string>
+    <string name="payment_amount_table_column_text">支払い</string>
+</resources>
