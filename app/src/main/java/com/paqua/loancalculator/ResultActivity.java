@@ -9,10 +9,10 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.Switch;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -59,7 +59,7 @@ import static com.paqua.loancalculator.util.ValidationUtils.hasEmptyText;
 import static com.paqua.loancalculator.util.ValidationUtils.setupRestoringBackgroundOnTextChange;
 
 public class ResultActivity extends AppCompatActivity {
-    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.00");
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.00");
     private static final DecimalFormatSymbols SYMBOLS = DECIMAL_FORMAT.getDecimalFormatSymbols();
     static {
         SYMBOLS.setGroupingSeparator(' ');
@@ -409,7 +409,6 @@ public class ResultActivity extends AppCompatActivity {
         });
         builder.setNegativeButton(getResources().getString(R.string.cancel_extra_payment_button_text), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                // TODO
             }
         });
         builder.setNeutralButton(getResources().getString(R.string.reset_extra_payment_button_text), new DialogInterface.OnClickListener() {
@@ -419,9 +418,23 @@ public class ResultActivity extends AppCompatActivity {
             }
         });
         LayoutInflater inflater = this.getLayoutInflater();
-        View layout = inflater.inflate(R.layout.early_payment, null);
+        final View layout = inflater.inflate(R.layout.early_payment, null);
 
         builder.setView(layout);
+
+        setVisibilityForRepeatingStrategy(layout, INVISIBLE);
+        layout.findViewById(R.id.repeatInNextMonthSwitch).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Switch repeatingSwitch = (Switch) v;
+
+                if (repeatingSwitch.isChecked()) {
+                    setVisibilityForRepeatingStrategy(layout, VISIBLE);
+                } else {
+                    setVisibilityForRepeatingStrategy(layout, INVISIBLE);
+                }
+            }
+        });
 
         if (paymentNumber != null) {
             TextView forEarlyPaymentNumber = (TextView) layout.findViewById(R.id.forEarlyPaymentNumber);
@@ -452,24 +465,36 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     /**
+     * Sets visibility for a repeating strategy view group
+     * @param visibility
+     */
+    private void setVisibilityForRepeatingStrategy(View layout, int visibility) {
+        View repeatingStrategy = layout.findViewById(R.id.repeatingStrategyRadioGroup);
+
+        repeatingStrategy.setVisibility(visibility);
+    }
+
+    /**
      * Deletes one early payment
      * @param paymentNumber
      */
     private void resetEarlyPayment(Integer paymentNumber) {
         Map<Integer, EarlyPayment> earlyPayment = loan.getEarlyPayments();
-        earlyPayment.remove(paymentNumber);
+        if (earlyPayment != null) {
+            earlyPayment.remove(paymentNumber);
 
-        if (earlyPayment.isEmpty()) {
-            resetAllEarlyPayments();
-        } else {
-            loan = Loan.builder()
-                    .amount(loan.getAmount())
-                    .term(loan.getTerm())
-                    .rate(loan.getRate())
-                    .earlyPayments(earlyPayment)
-                    .build();
+            if (earlyPayment.isEmpty()) {
+                resetAllEarlyPayments();
+            } else {
+                loan = Loan.builder()
+                        .amount(loan.getAmount())
+                        .term(loan.getTerm())
+                        .rate(loan.getRate())
+                        .earlyPayments(earlyPayment)
+                        .build();
 
-            tryCalculateLoanAmortization();
+                tryCalculateLoanAmortization();
+            }
         }
     }
 

@@ -8,8 +8,10 @@
 
     <TextView
         android:id="@+id/earlyPaymentHeader"
-        android:layout_width="336dp"
+        android:layout_width="300dp"
         android:layout_height="51dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_weight="1"
         android:fontFamily="@font/bold_font"
         android:paddingLeft="5dp"
@@ -18,7 +20,7 @@
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.786"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.023" />
@@ -41,24 +43,27 @@
 
     <TextView
         android:id="@+id/chooseEarlyPaymentStrategy"
-        android:layout_width="240dp"
-        android:layout_height="25dp"
+        android:layout_width="325dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
         android:layout_weight="1"
         android:fontFamily="@font/base_font"
         android:text="@string/choose_extra_payment_type_header_text"
         android:textColor="#333333"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.163"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/earlyPaymentAmount"
-        app:layout_constraintVertical_bias="0.03" />
+        app:layout_constraintTop_toBottomOf="@+id/earlyPaymentAmount" />
 
     <EditText
         android:id="@+id/earlyPaymentAmount"
         android:layout_width="332dp"
         android:layout_height="42dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         android:ems="10"
         android:fontFamily="@font/base_font"
         android:hint="@string/extra_payment_amount_hint"
@@ -69,22 +74,18 @@
         android:textCursorDrawable="@drawable/edit_text_design"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.797"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/forEarlyPaymentNumber"
-        app:layout_constraintVertical_bias="0.044" />
+        app:layout_constraintVertical_bias="0.021" />
 
     <RadioGroup
         android:id="@+id/earlyPaymentStrategyGroup"
-        android:layout_width="298dp"
-        android:layout_height="70dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="305dp"
+        android:layout_height="63dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.444"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chooseEarlyPaymentStrategy"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toBottomOf="@+id/chooseEarlyPaymentStrategy">
 
         <RadioButton
             android:id="@+id/termDecrease"
@@ -93,6 +94,7 @@
             android:layout_height="wrap_content"
             android:buttonTint="@color/coolDarkColor"
             android:checked="true"
+            android:fontFamily="@font/base_font"
             android:text="@string/decrease_term_type_text"
             android:textColor="#333333"
             android:textColorHighlight="#333333"
@@ -106,6 +108,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:buttonTint="@color/coolDarkColor"
+            android:fontFamily="@font/base_font"
             android:text="@string/decrease_payment_amount_type_text"
             android:textColor="#333333"
             android:textColorHighlight="#333333"
@@ -114,6 +117,48 @@
             android:textCursorDrawable="@drawable/edit_text_design" />
 
     </RadioGroup>
+
+    <RadioGroup
+        android:id="@+id/repeatingStrategyRadioGroup"
+        android:layout_width="304dp"
+        android:layout_height="68dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.485"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/repeatInNextMonthSwitch">
+
+        <RadioButton
+            android:id="@+id/untilEndTermRadioButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:fontFamily="@font/base_font"
+            android:text="@string/until_the_end_of_the_term_radio_text"
+            android:textColor="#333333" />
+
+        <RadioButton
+            android:id="@+id/untilSpecificMonthRadioButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/base_font"
+            android:text="@string/until_specific_month_radio_text"
+            android:textColor="#333333" />
+    </RadioGroup>
+
+    <Switch
+        android:id="@+id/repeatInNextMonthSwitch"
+        android:layout_width="301dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:fontFamily="@font/base_font"
+        android:text="@string/repeat_in_next_months_text"
+        android:textColor="#333333"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/earlyPaymentStrategyGroup" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

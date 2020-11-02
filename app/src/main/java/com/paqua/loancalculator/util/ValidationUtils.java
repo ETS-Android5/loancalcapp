@@ -1,9 +1,12 @@
 package com.paqua.loancalculator.util;
 
+import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
+
+import com.paqua.loancalculator.R;
 
 /**
  * Utility class for user-input validation
@@ -11,6 +14,7 @@ import android.widget.EditText;
  * @author Artyom Panfutov
  */
 public class ValidationUtils {
+    private static final int MAX_VALID_TERM_MONTHS = 600;
     /**
      * Checks edit text for empty content
      *
@@ -27,6 +31,36 @@ public class ValidationUtils {
         }
         return true;
     }
+
+    /**
+     * Validates loan term
+     *
+     * @return validation result
+     */
+    public static boolean hasValidTerm(Activity activity, EditText termView, boolean inMonths, int color) {
+        int term = Integer.parseInt(termView.getText().toString());
+        boolean isValid;
+
+        if (inMonths) {
+            isValid = term <= MAX_VALID_TERM_MONTHS;
+
+            if (!isValid) {
+                termView.setError(activity.getResources().getString(R.string.max_term_in_months_message) + " " + MAX_VALID_TERM_MONTHS);
+                termView.setBackgroundColor(color);
+                termView.requestFocus();
+            }
+        } else {
+            isValid = (term * 12) <= MAX_VALID_TERM_MONTHS;
+            if (!isValid) {
+                termView.setError(activity.getResources().getString(R.string.max_term_in_months_message) + " " + MAX_VALID_TERM_MONTHS / 12);
+                termView.setBackgroundColor(color);
+                termView.requestFocus();
+            }
+        }
+
+        return isValid;
+    }
+
 
     /**
      * Sets listener on text change for restoring original background

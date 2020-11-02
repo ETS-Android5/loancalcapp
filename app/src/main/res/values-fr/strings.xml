@@ -29,4 +29,8 @@
     <string name="interest_table_column_text">L\'intérêt</string>
     <string name="principal_table_column_text">Principal</string>
     <string name="payment_amount_table_column_text">Paiement</string>
+    <string name="repeat_in_next_months_text">Répéter le mois prochain</string>
+    <string name="until_the_end_of_the_term_radio_text">Jusqu\'à la fin du trimestre</string>
+    <string name="until_specific_month_radio_text">Jusqu\'à un mois précis</string>
+    <string name="max_term_in_months_message">Le terme maximum possible est</string>
 </resources>

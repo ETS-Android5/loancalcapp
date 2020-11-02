@@ -4,10 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import com.paqua.loancalculator.dto.Loan;
 import com.paqua.loancalculator.util.Constant;
@@ -32,9 +35,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        setupRestoringBackgroundOnTextChange((EditText)findViewById(R.id.loanAmount));
+        setupRestoringBackgroundOnTextChange((EditText) findViewById(R.id.loanAmount));
         setupRestoringBackgroundOnTextChange((EditText) findViewById(R.id.interestRate));
         setupRestoringBackgroundOnTextChange((EditText) findViewById(R.id.term));
+
+        setMonthTermTypeOnChangeListener();
     }
 
     /**
@@ -46,10 +51,12 @@ public class MainActivity extends AppCompatActivity {
         EditText loanAmount = (EditText) findViewById(R.id.loanAmount);
         EditText interestRate = ((EditText) findViewById(R.id.interestRate));
         EditText loanTerm = ((EditText) findViewById(R.id.term));
+        RadioButton monthTermType = (RadioButton) findViewById(R.id.monthTermType);
 
         if (isValidInput) isValidInput = hasEmptyText(loanAmount, getResources().getColor(R.color.coolRed));
         if (isValidInput) isValidInput = hasEmptyText(interestRate, getResources().getColor(R.color.coolRed));
         if (isValidInput) isValidInput = hasEmptyText(loanTerm, getResources().getColor(R.color.coolRed));
+        if (isValidInput) isValidInput = hasValidTerm(this, loanTerm, monthTermType.isChecked(), getResources().getColor(R.color.coolRed));
 
         if (isValidInput) {
             BigDecimal amount = new BigDecimal(loanAmount.getText().toString());
@@ -72,6 +79,27 @@ public class MainActivity extends AppCompatActivity {
 
             startActivity(intent);
         }
+    }
+
+    /**
+     * Sets max length for term on term type change
+     */
+    private void setMonthTermTypeOnChangeListener() {
+        final RadioButton months = (RadioButton) findViewById(R.id.monthTermType);
+        final EditText term = (EditText) findViewById(R.id.term);
+
+        months.setOnCheckedChangeListener(new RadioButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                int maxLength;
+                if (isChecked) {
+                    maxLength = 3;
+                } else {
+                    maxLength = 2;
+                }
+                term.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
+            }
+        });
     }
 
 }

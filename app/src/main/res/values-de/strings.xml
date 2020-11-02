@@ -29,4 +29,8 @@
     <string name="interest_table_column_text">Interesse</string>
     <string name="principal_table_column_text">Nennbetrag</string>
     <string name="payment_amount_table_column_text">Zahlung</string>
+    <string name="repeat_in_next_months_text">Wiederholen Sie im nächsten Monat</string>
+    <string name="until_the_end_of_the_term_radio_text">Bis zum Ende der Laufzeit</string>
+    <string name="until_specific_month_radio_text">Bis zu einem bestimmten Monat</string>
+    <string name="max_term_in_months_message">Die maximal mögliche Laufzeit ist</string>
 </resources>
