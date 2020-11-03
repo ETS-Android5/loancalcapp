@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import com.paqua.loancalculator.R;
 
@@ -61,6 +64,21 @@ public class ValidationUtils {
         return isValid;
     }
 
+    /**
+     * Validates spinner
+     *
+     * @param spinner
+     * @param color
+     * @return validation result
+     */
+    public static boolean hasValidSpinnerItem(Spinner spinner, int color) {
+        if (spinner.getSelectedItemId() == AdapterView.INVALID_ROW_ID || spinner.getSelectedItemId() == 0) {
+            spinner.setBackgroundColor(color);
+            spinner.requestFocus();
+            return false;
+        }
+        return true;
+    }
 
     /**
      * Sets listener on text change for restoring original background
@@ -87,6 +105,28 @@ public class ValidationUtils {
 
                 }
             });
+    }
+    /**
+     * Sets listener on item click for restoring original background
+     * @param spinner spinner
+     */
+    public static void setupRestoringBackgroundOnTextChange(final Spinner spinner) {
+        final Drawable originBackground = spinner.getBackground();
+        spinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (!spinner.getBackground().equals(originBackground)) {
+                    spinner.setBackground(originBackground);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                if (!spinner.getBackground().equals(originBackground)) {
+                    spinner.setBackground(originBackground);
+                }
+            }
+        });
     }
 
 }

@@ -2,6 +2,7 @@ package com.paqua.loancalculator.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Map;
 
 /**
  * Represents early pay off of the loan
@@ -24,10 +25,16 @@ public class EarlyPayment implements Serializable {
      */
     private final EarlyPaymentRepeatingStrategy repeatingStrategy;
 
-    public EarlyPayment(BigDecimal amount, EarlyPaymentStrategy type, EarlyPaymentRepeatingStrategy repeatingStrategy) {
+    /**
+     * Additional parameters
+     */
+    private final Map<EarlyPaymentAdditionalParameters, String> additionalParameters;
+
+    public EarlyPayment(BigDecimal amount, EarlyPaymentStrategy type, EarlyPaymentRepeatingStrategy repeatingStrategy, Map<EarlyPaymentAdditionalParameters, String> additionalParameters) {
         this.amount = amount;
         this.strategy = type;
         this.repeatingStrategy = repeatingStrategy;
+        this.additionalParameters = additionalParameters;
     }
 
     /**
@@ -51,6 +58,13 @@ public class EarlyPayment implements Serializable {
         return repeatingStrategy;
     }
 
+    /**
+     * @return Additional parameters
+     */
+    public Map<EarlyPaymentAdditionalParameters, String> getAdditionalParameters() {
+        return additionalParameters;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -60,7 +74,8 @@ public class EarlyPayment implements Serializable {
 
         if (amount != null ? !amount.equals(that.amount) : that.amount != null) return false;
         if (strategy != that.strategy) return false;
-        return repeatingStrategy == that.repeatingStrategy;
+        if (repeatingStrategy != that.repeatingStrategy) return false;
+        return additionalParameters != null ? additionalParameters.equals(that.additionalParameters) : that.additionalParameters == null;
     }
 
     @Override
@@ -68,6 +83,7 @@ public class EarlyPayment implements Serializable {
         int result = amount != null ? amount.hashCode() : 0;
         result = 31 * result + (strategy != null ? strategy.hashCode() : 0);
         result = 31 * result + (repeatingStrategy != null ? repeatingStrategy.hashCode() : 0);
+        result = 31 * result + (additionalParameters != null ? additionalParameters.hashCode() : 0);
         return result;
     }
 
@@ -77,6 +93,7 @@ public class EarlyPayment implements Serializable {
                 "amount=" + amount +
                 ", strategy=" + strategy +
                 ", repeatingStrategy=" + repeatingStrategy +
+                ", additionalParameters=" + additionalParameters +
                 '}';
     }
 }

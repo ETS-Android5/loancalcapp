@@ -9,9 +9,11 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -32,7 +34,9 @@ import com.android.volley.toolbox.Volley;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.paqua.loancalculator.dto.EarlyPayment;
+import com.paqua.loancalculator.dto.EarlyPaymentAdditionalParameters;
 import com.paqua.loancalculator.dto.EarlyPaymentRepeatingStrategy;
 import com.paqua.loancalculator.dto.EarlyPaymentStrategy;
 import com.paqua.loancalculator.dto.Loan;
@@ -49,25 +53,28 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static com.paqua.loancalculator.util.Constant.GET_LOAN_AMROTIZATION_URL;
 import static com.paqua.loancalculator.util.ValidationUtils.hasEmptyText;
+import static com.paqua.loancalculator.util.ValidationUtils.hasValidSpinnerItem;
 import static com.paqua.loancalculator.util.ValidationUtils.setupRestoringBackgroundOnTextChange;
 
 public class ResultActivity extends AppCompatActivity {
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.00");
     private static final DecimalFormatSymbols SYMBOLS = DECIMAL_FORMAT.getDecimalFormatSymbols();
+
     static {
         SYMBOLS.setGroupingSeparator(' ');
         DECIMAL_FORMAT.setDecimalFormatSymbols(SYMBOLS);
         DECIMAL_FORMAT.setGroupingUsed(true);
         DECIMAL_FORMAT.setGroupingSize(3);
     }
-
     private Loan loan;
     private LoanAmortization amortization;
     private BigDecimal overPayment;
@@ -126,15 +133,15 @@ public class ResultActivity extends AppCompatActivity {
      * @throws JSONException
      * @throws IOException
      */
-    private void calculateLoanAmortization() throws JSONException, IOException {
+    private void calculateLoanAmortization() throws JSONException {
         RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
 
         LoanAmortizationRq lastLoanRequestParam = new LoanAmortizationRq(loan);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING);
-
-        JSONObject requestParams = new JSONObject(objectMapper.writeValueAsString(lastLoanRequestParam));
+        JSONObject requestParams = new JSONObject(
+                new GsonBuilder().enableComplexMapKeySerialization()
+                        .create()
+                        .toJson(lastLoanRequestParam));
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.POST, GET_LOAN_AMROTIZATION_URL, requestParams, new Response.Listener<JSONObject>() {
@@ -375,10 +382,10 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     /**
-     * Determines values for early payment cell
+     * Determines values for an early payment cell
      *
      * @param payment
-     * @return Value for early payment cell
+     * @return Value for an early payment cell
      */
     private String getEarlyPaymentValue(MonthlyPayment payment) {
         String earlyPaymentValue;
@@ -423,6 +430,20 @@ public class ResultActivity extends AppCompatActivity {
         builder.setView(layout);
 
         setVisibilityForRepeatingStrategy(layout, INVISIBLE);
+        layout.findViewById(R.id.toCertainMonthSpinner).setVisibility(INVISIBLE);
+
+        layout.findViewById(R.id.untilSpecificMonthRadioButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                untilSpecificMonthRadioButtonOnClickCallback(v, layout, paymentNumber);
+            }
+        });
+        layout.findViewById(R.id.untilEndTermRadioButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                layout.findViewById(R.id.toCertainMonthSpinner).setVisibility(INVISIBLE);
+            }
+        });
         layout.findViewById(R.id.repeatInNextMonthSwitch).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -432,6 +453,7 @@ public class ResultActivity extends AppCompatActivity {
                     setVisibilityForRepeatingStrategy(layout, VISIBLE);
                 } else {
                     setVisibilityForRepeatingStrategy(layout, INVISIBLE);
+                    layout.findViewById(R.id.toCertainMonthSpinner).setVisibility(INVISIBLE);
                 }
             }
         });
@@ -450,11 +472,10 @@ public class ResultActivity extends AppCompatActivity {
             }
         }
 
-
         final AlertDialog dialog = builder.create();
         dialog.show();
 
-        // Override on click listener to make possible validation input fields
+        // Override on click listener to make possible validation of input fields
         Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
         positiveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -465,12 +486,35 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     /**
+     * Implements callback for radio button {untilSpecificMonthRadioButton}
+     *
+     * Sets visibility for spinner and fills it content
+     *
+     * @param v
+     * @param layout
+     * @param paymentNumber
+     */
+    private void untilSpecificMonthRadioButtonOnClickCallback(View v, View layout, Integer paymentNumber) {
+        Spinner toCertainMonth = (Spinner)layout.findViewById(R.id.toCertainMonthSpinner);
+        toCertainMonth.setVisibility(VISIBLE);
+
+        List<String> items = new ArrayList<>();
+        items.add(getResources().getString(R.string.choose_month));
+
+        for (int i = paymentNumber + 1; i < loan.getTerm(); i++) {
+            items.add(String.valueOf(i + 1));
+        }
+
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(v.getContext(), android.R.layout.simple_spinner_dropdown_item, items);
+        toCertainMonth.setAdapter(spinnerArrayAdapter);
+    }
+
+    /**
      * Sets visibility for a repeating strategy view group
      * @param visibility
      */
     private void setVisibilityForRepeatingStrategy(View layout, int visibility) {
         View repeatingStrategy = layout.findViewById(R.id.repeatingStrategyRadioGroup);
-
         repeatingStrategy.setVisibility(visibility);
     }
 
@@ -479,22 +523,20 @@ public class ResultActivity extends AppCompatActivity {
      * @param paymentNumber
      */
     private void resetEarlyPayment(Integer paymentNumber) {
-        Map<Integer, EarlyPayment> earlyPayment = loan.getEarlyPayments();
-        if (earlyPayment != null) {
-            earlyPayment.remove(paymentNumber);
+        Map<Integer, EarlyPayment> earlyPayment = new HashMap<>(amortization.getEarlyPayments());
+        earlyPayment.remove(paymentNumber);
 
-            if (earlyPayment.isEmpty()) {
-                resetAllEarlyPayments();
-            } else {
-                loan = Loan.builder()
-                        .amount(loan.getAmount())
-                        .term(loan.getTerm())
-                        .rate(loan.getRate())
-                        .earlyPayments(earlyPayment)
-                        .build();
+        if (earlyPayment.isEmpty()) {
+            resetAllEarlyPayments();
+        } else {
+            loan = Loan.builder()
+                    .amount(loan.getAmount())
+                    .term(loan.getTerm())
+                    .rate(loan.getRate())
+                    .earlyPayments(earlyPayment)
+                    .build();
 
-                tryCalculateLoanAmortization();
-            }
+            tryCalculateLoanAmortization();
         }
     }
 
@@ -526,20 +568,47 @@ public class ResultActivity extends AppCompatActivity {
      */
     private void earlyPaymentAddOnOKCallback(AlertDialog dialog, Integer paymentNumber) {
         EditText earlyPaymentAmountView = (EditText) dialog.findViewById(R.id.earlyPaymentAmount);
+        Spinner monthSpinner = (Spinner) dialog.findViewById(R.id.toCertainMonthSpinner);
 
         setupRestoringBackgroundOnTextChange(earlyPaymentAmountView);
+        setupRestoringBackgroundOnTextChange(monthSpinner);
         boolean isValid = hasEmptyText(earlyPaymentAmountView, getResources().getColor(R.color.coolRed));
+
+        RadioButton untilCertainMonth = (RadioButton) dialog.findViewById(R.id.untilSpecificMonthRadioButton);
+        if (untilCertainMonth.isChecked()) {
+            if (isValid) isValid = hasValidSpinnerItem(monthSpinner, getResources().getColor(R.color.coolRed));
+        }
 
         if (isValid) {
             BigDecimal amount = new BigDecimal(earlyPaymentAmountView.getText().toString());
 
-            EarlyPaymentRepeatingStrategy repeatingStrategy = EarlyPaymentRepeatingStrategy.SINGLE;// TODO Add radio button
+            Switch repeatingSwitch = (Switch) dialog.findViewById(R.id.repeatInNextMonthSwitch);
+
+            EarlyPaymentRepeatingStrategy repeatingStrategy = EarlyPaymentRepeatingStrategy.SINGLE;
+            if (repeatingSwitch.isChecked()) {
+                repeatingStrategy = ((RadioButton) dialog.findViewById(R.id.untilSpecificMonthRadioButton)).isChecked() ? EarlyPaymentRepeatingStrategy.TO_CERTAIN_MONTH : EarlyPaymentRepeatingStrategy.TO_END;
+            }
+
             EarlyPaymentStrategy earlyPaymentStrategy = ((RadioButton) dialog.findViewById(R.id.termDecrease)).isChecked() ? EarlyPaymentStrategy.DECREASE_TERM : EarlyPaymentStrategy.DECREASE_MONTHLY_PAYMENT;
 
             Map<Integer, EarlyPayment> earlyPayments = loan.getEarlyPayments() != null ? loan.getEarlyPayments() : new HashMap<Integer, EarlyPayment>();
-            earlyPayments.put(paymentNumber, new EarlyPayment(amount, earlyPaymentStrategy, repeatingStrategy));
 
-            // Construct new loan because it is immutable TODO
+            Map<EarlyPaymentAdditionalParameters, String> parameters = new HashMap<>();
+            if (repeatingStrategy == EarlyPaymentRepeatingStrategy.TO_CERTAIN_MONTH) {
+                Spinner monthNumber = (Spinner) dialog.findViewById(R.id.toCertainMonthSpinner);
+                int month = Integer.parseInt(monthNumber.getSelectedItem().toString());
+
+                parameters.put(EarlyPaymentAdditionalParameters.REPEAT_TO_MONTH_NUMBER, String.valueOf(month));
+            }
+
+            earlyPayments.put(paymentNumber, new EarlyPayment(
+                    amount,
+                    earlyPaymentStrategy,
+                    repeatingStrategy,
+                    parameters
+            ));
+
+            // Construct new loan because it is immutable
             loan = Loan.builder()
                     .amount(loan.getAmount())
                     .rate(loan.getRate())

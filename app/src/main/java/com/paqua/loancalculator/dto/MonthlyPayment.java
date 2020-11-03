@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 
 /**
  * Represents detailed information about monthly payment
+ *
  * @author Artyom Panfutov
  */
 public final class MonthlyPayment implements Serializable {

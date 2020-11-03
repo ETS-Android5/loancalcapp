@@ -32,4 +32,5 @@
     <string name="until_the_end_of_the_term_radio_text">Until the end of the term</string>
     <string name="until_specific_month_radio_text">Until a specific month</string>
     <string name="max_term_in_months_message">The max possible term is</string>
+    <string name="choose_month">Choose month</string>
 </resources>
