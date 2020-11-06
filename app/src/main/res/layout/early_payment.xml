@@ -64,6 +64,7 @@
         android:layout_height="42dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
+        android:background="@drawable/rounded"
         android:ems="10"
         android:fontFamily="@font/base_font"
         android:hint="@string/extra_payment_amount_hint"
@@ -72,12 +73,13 @@
         android:textColorHighlight="#333333"
         android:textColorLink="#333333"
         android:textCursorDrawable="@drawable/edit_text_design"
+        android:paddingLeft="3dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/forEarlyPaymentNumber"
-        app:layout_constraintVertical_bias="0.021" />
+        app:layout_constraintVertical_bias="0.019" />
 
     <RadioGroup
         android:id="@+id/earlyPaymentStrategyGroup"
