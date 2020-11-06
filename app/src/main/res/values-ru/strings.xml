@@ -10,7 +10,7 @@
     <string name="years_radio_button_text">в годах</string>
     <string name="calculate_button_text">Рассчитать</string>
     <string name="monthly_payment_header_text">Ежемесячный платеж:</string>
-    <string name="overpayment_header_text">Переплата (процентов в банку)</string>
+    <string name="overpayment_header_text">Переплата (процентов банку)</string>
     <string name="if_extra_payments_header_text">Если досрочно гасить</string>
     <string name="hint_add_extra_payment_text">Укажите в \"Графике платежей\" досрочные погашения</string>
     <string name="reset_all_extra_payments_text">Сбросить все досрочные погашения</string>
