@@ -10,8 +10,13 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.paqua.loancalculator.dto.Loan;
 import com.paqua.loancalculator.util.Constant;
 
@@ -21,11 +26,13 @@ import static com.paqua.loancalculator.util.ValidationUtils.*;
 
 public class MainActivity extends AppCompatActivity {
     private Button calculateButton;
+    private InterstitialAd interstitialAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initMobileAds();
 
         calculateButton = (Button) findViewById(R.id.calc);
         calculateButton.setOnClickListener(new View.OnClickListener() {
@@ -33,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 calculateButtonOnClickCallback();
             }
+
         });
 
         setupRestoringBackgroundOnTextChange((EditText) findViewById(R.id.loanAmount));
@@ -43,9 +51,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Starts result activity
+     * Shows ads and calculates results
      */
     private void calculateButtonOnClickCallback() {
+        interstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+                interstitialAd.loadAd(new AdRequest.Builder().build());
+                calculateAndShow();
+            }
+        });
+
+        if (interstitialAd.isLoaded()) {
+            interstitialAd.show();
+        }
+    }
+
+    /**
+     * Starts result activity
+     */
+    private void calculateAndShow() {
         boolean isValidInput = true;
 
         EditText loanAmount = (EditText) findViewById(R.id.loanAmount);
@@ -102,4 +128,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+    private void initMobileAds() {
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+
+        interstitialAd = new InterstitialAd(this);
+        interstitialAd.setAdUnitId("ca-app-pub-3031881558720361/4919481152");
+        interstitialAd.loadAd(new AdRequest.Builder().build());
+    }
 }
