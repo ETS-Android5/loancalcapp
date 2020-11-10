@@ -31,8 +31,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.paqua.loancalculator.dto.EarlyPayment;
@@ -91,6 +89,15 @@ public class ResultActivity extends AppCompatActivity {
         tryCalculateLoanAmortization();
 
         initResetAllEarlyPaymentsView();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (loan != null && amortization != null) {
+            rebuildAmortizationTable();
+        }
     }
 
     /**
@@ -200,6 +207,13 @@ public class ResultActivity extends AppCompatActivity {
         Gson gson = new Gson();
         amortization = gson.fromJson(response.toString(), LoanAmortization.class);
         System.out.println(amortization);
+
+        loan = Loan.builder()
+                .amount(loan.getAmount())
+                .term(loan.getTerm())
+                .rate(loan.getRate())
+                .earlyPayments(amortization.getEarlyPayments())
+                .build();
 
         fillHeaderValues();
 
