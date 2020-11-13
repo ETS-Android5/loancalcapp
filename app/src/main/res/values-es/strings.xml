@@ -34,4 +34,5 @@
     <string name="until_specific_month_radio_text">Hasta un mes específico</string>
     <string name="max_term_in_months_message">El término máximo posible es</string>
     <string name="choose_month">Elige el mes</string>
+    <string name="reduce_term_description">УП - Уменьшение суммы еж. платежа</string>
 </resources>

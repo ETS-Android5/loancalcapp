@@ -36,6 +36,6 @@
     <string name="choose_month">Выберите месяц</string>
     <string name="reduce_term_brief">УС</string>
     <string name="reduce_payment_amount_brief">УП</string>
-    <string name="reduce_term_description">УП - Уменьшение суммы еж. платежа</string>
-    <string name="decrease_amount_of_payment_description">УС - Уменьшение срока</string>
+    <string name="reduce_term_description">УС - Уменьшение срока</string>
+    <string name="decrease_amount_of_payment_description">УП - Уменьшение суммы еж. платежа</string>
 </resources>
