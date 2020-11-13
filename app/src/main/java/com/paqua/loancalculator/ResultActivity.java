@@ -404,7 +404,9 @@ public class ResultActivity extends AppCompatActivity {
     private String getEarlyPaymentValue(MonthlyPayment payment) {
         String earlyPaymentValue;
         if (payment.getAdditionalPaymentAmount() != null && payment.getAdditionalPaymentAmount().compareTo(BigDecimal.ZERO) > 0) {
-            earlyPaymentValue = "+ " + DECIMAL_FORMAT.format(payment.getAdditionalPaymentAmount());
+            EarlyPayment earlyPayment = amortization.getEarlyPayments().get(payment.getMonthNumber());
+            String earlyPaymentBrief = earlyPayment.getStrategy() == EarlyPaymentStrategy.DECREASE_TERM ? getResources().getString(R.string.reduce_term_brief) : getResources().getString(R.string.reduce_payment_amount_brief);
+            earlyPaymentValue = "+ " + DECIMAL_FORMAT.format(payment.getAdditionalPaymentAmount()) + " (" + earlyPaymentBrief + ")";
         } else {
             earlyPaymentValue = "+ " + getResources().getString(R.string.add_extra_payment_text);
         }

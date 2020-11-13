@@ -170,4 +170,46 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/overPaymentWithEarlyHeader"
         app:layout_constraintVertical_bias="0.001" />
+
+    <TextView
+        android:id="@+id/paymentDecreaseBrief"
+        android:layout_width="180dp"
+        android:layout_height="26dp"
+        android:fontFamily="@font/base_font"
+        android:text="@string/decrease_amount_of_payment_description"
+        android:textColor="@color/coolDarkColor"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintStart_toStartOf="@+id/descriotionRounded"
+        app:layout_constraintTop_toTopOf="@+id/descriotionRounded"
+        app:layout_constraintVertical_bias="0.008" />
+
+    <TextView
+        android:id="@+id/decreaseTermDescription"
+        android:layout_width="186dp"
+        android:layout_height="21dp"
+        android:fontFamily="@font/base_font"
+        android:text="@string/reduce_term_description"
+        android:textColor="@color/coolDarkColor"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.25"
+        app:layout_constraintStart_toStartOf="@+id/descriotionRounded"
+        app:layout_constraintTop_toBottomOf="@+id/paymentDecreaseBrief"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+        android:id="@+id/descriotionRounded"
+        android:layout_width="175dp"
+        android:layout_height="51dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/overPaymentAmount"
+        app:layout_constraintTop_toBottomOf="@+id/overPaymentAmount"
+        app:layout_constraintVertical_bias="0.014"
+        app:srcCompat="@drawable/rounded" />
 </androidx.constraintlayout.widget.ConstraintLayout>

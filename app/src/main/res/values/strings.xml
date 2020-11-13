@@ -33,4 +33,8 @@
     <string name="until_specific_month_radio_text">Until a specific month</string>
     <string name="max_term_in_months_message">The max possible term is</string>
     <string name="choose_month">Choose month</string>
+    <string name="reduce_payment_amount_brief">DP</string>
+    <string name="reduce_term_brief">RT</string>
+    <string name="reduce_term_description">RT - Reduction of term</string>
+    <string name="decrease_amount_of_payment_description">DP - Decrease in the amount of payment</string>
 </resources>
