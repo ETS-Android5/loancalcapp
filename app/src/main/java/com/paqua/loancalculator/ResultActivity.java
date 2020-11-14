@@ -41,6 +41,7 @@ import com.paqua.loancalculator.dto.Loan;
 import com.paqua.loancalculator.dto.LoanAmortization;
 import com.paqua.loancalculator.dto.LoanAmortizationRq;
 import com.paqua.loancalculator.dto.MonthlyPayment;
+import com.paqua.loancalculator.storage.LoanStorage;
 import com.paqua.loancalculator.util.Constant;
 
 import org.json.JSONException;
@@ -89,8 +90,27 @@ public class ResultActivity extends AppCompatActivity {
         tryCalculateLoanAmortization();
 
         initResetAllEarlyPaymentsView();
+
+        initSaveLoanButtonOnClick();
     }
 
+    /**
+     * Saves the loan to the shared preferences
+     */
+    private void initSaveLoanButtonOnClick() {
+        findViewById(R.id.saveLoanButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LoanStorage.clearAll(getApplicationContext());
+                LoanStorage.put(getApplicationContext(), loan, amortization);
+                LoanStorage.getAll(getApplicationContext());
+            }
+        });
+    }
+
+    /**
+     * Rebuilds table layout on resume unless it will be collapsed :(
+     */
     @Override
     protected void onResume() {
         super.onResume();

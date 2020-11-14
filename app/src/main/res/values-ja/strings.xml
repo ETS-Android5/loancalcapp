@@ -35,7 +35,5 @@
     <string name="max_term_in_months_message">可能な最大項は</string>
     <string name="choose_month">月を選択</string>
     <string name="decrease_amount_of_payment_description">УП - Уменьшение суммы еж. платежа</string>
-    <string name="decrease_amount_of_payment_description">УП - Уменьшение суммы еж. платежа</string>
-    <string name="reduce_term_description">УП - Уменьшение суммы еж. платежа</string>
     <string name="reduce_term_description">УП - Уменьшение суммы еж. платежа</string>
 </resources>
