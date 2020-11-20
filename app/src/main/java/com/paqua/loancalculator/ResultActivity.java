@@ -126,22 +126,7 @@ public class ResultActivity extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int arg1) {
-                        AlertDialog dialog = (AlertDialog) dialogInterface;
-
-                        EditText loanName = (EditText) dialog.findViewById(R.id.loanNameEditText);
-
-                        if (validateForEmptyText(loanName, dialog.getContext().getResources().getColor(R.color.coolRed))) {
-                            loan = Loan.builder()
-                                    .name(loanName.getText().toString())
-                                    .earlyPayments(loan.getEarlyPayments())
-                                    .rate(loan.getRate())
-                                    .amount(loan.getAmount())
-                                    .term(loan.getTerm())
-                                    .build();
-
-                            LoanStorage.put(getApplicationContext(), loan, amortization);
-                            Toast.makeText(getApplicationContext(), "Saved!", Toast.LENGTH_LONG).show(); // TODO TEXT
-                        }
+                        // TODO will be overridden later to make possible validation
                     }
                 });
 
@@ -163,8 +148,33 @@ public class ResultActivity extends AppCompatActivity {
 
         alertDialogBuilder.setView(layout);
 
-        AlertDialog alertDialog = alertDialogBuilder.create();
+        final AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+
+        // Override on click listener to make possible validation of input fields
+        Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        positiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText loanName = (EditText) alertDialog.findViewById(R.id.loanNameEditText);
+
+                if (validateForEmptyText(loanName, alertDialog.getContext().getResources().getColor(R.color.coolRed))) {
+                    loan = Loan.builder()
+                            .name(loanName.getText().toString())
+                            .earlyPayments(loan.getEarlyPayments())
+                            .rate(loan.getRate())
+                            .amount(loan.getAmount())
+                            .term(loan.getTerm())
+                            .build();
+
+                    LoanStorage.put(getApplicationContext(), loan, amortization);
+                    Toast.makeText(getApplicationContext(), "Saved!", Toast.LENGTH_LONG).show(); // TODO TEXT
+
+                    alertDialog.dismiss();
+                }
+            }
+        });
+
     }
 
 
