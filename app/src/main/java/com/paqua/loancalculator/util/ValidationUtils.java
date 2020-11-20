@@ -22,11 +22,12 @@ public class ValidationUtils {
      * Checks edit text for empty content
      *
      * If it is empty - sets background color
-     * @param view
-     * @param color
-     * @return validation result
+     * @param view view
+     * @param color color for background if something wrong
+     *
+     * @return true if validation is succeed
      */
-    public static boolean hasEmptyText(EditText view, int color) {
+    public static boolean validateForEmptyText(EditText view, int color) {
         if (view.getText().toString().length() == 0) {
             view.setBackgroundColor(color);
             view.requestFocus();

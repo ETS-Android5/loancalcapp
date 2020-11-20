@@ -18,6 +18,11 @@ public final class Loan implements Serializable {
     private final BigDecimal amount;
 
     /**
+     * Name
+     */
+    private final String name;
+
+    /**
      * Interest rate
      */
     private final BigDecimal rate;
@@ -35,11 +40,19 @@ public final class Loan implements Serializable {
      */
     private final Map<Integer, EarlyPayment> earlyPayments;
 
-    public Loan(BigDecimal amount, BigDecimal rate, Integer term, Map<Integer,EarlyPayment> earlyPayments) {
+    public Loan(String name, BigDecimal amount, BigDecimal rate, Integer term, Map<Integer,EarlyPayment> earlyPayments) {
+        this.name = name;
         this.amount = amount;
         this.rate = rate;
         this.term = term;
         this.earlyPayments = earlyPayments;
+    }
+
+    /**
+     * @return name
+     */
+    public String getName() {
+        return name;
     }
 
     /**
@@ -88,17 +101,23 @@ public final class Loan implements Serializable {
         private BigDecimal rate;
         private Integer term;
         private Map<Integer, EarlyPayment> earlyPayments;
+        private String name;
 
         public LoanBuilder() {
         }
 
-        public LoanBuilder(BigDecimal amount, BigDecimal rate, Integer term, Map<Integer, EarlyPayment> earlyPayments) {
+        public LoanBuilder(String name, BigDecimal amount, BigDecimal rate, Integer term, Map<Integer, EarlyPayment> earlyPayments) {
+            this.name = name;
             this.amount = amount;
             this.rate = rate;
             this.term = term;
             this.earlyPayments = earlyPayments;
         }
 
+        public LoanBuilder name(String name) {
+            this.name = name;
+            return this;
+        }
         public LoanBuilder amount(BigDecimal amount) {
             this.amount = amount;
             return this;
@@ -120,7 +139,7 @@ public final class Loan implements Serializable {
         }
 
         public Loan build() {
-            return new Loan(amount, rate, term, earlyPayments);
+            return new Loan(name, amount, rate, term, earlyPayments);
         }
     }
 
@@ -132,6 +151,7 @@ public final class Loan implements Serializable {
         Loan loan = (Loan) o;
 
         if (amount != null ? !amount.equals(loan.amount) : loan.amount != null) return false;
+        if (name != null ? !name.equals(loan.name) : loan.name != null) return false;
         if (rate != null ? !rate.equals(loan.rate) : loan.rate != null) return false;
         if (term != null ? !term.equals(loan.term) : loan.term != null) return false;
         return earlyPayments != null ? earlyPayments.equals(loan.earlyPayments) : loan.earlyPayments == null;
@@ -140,6 +160,7 @@ public final class Loan implements Serializable {
     @Override
     public int hashCode() {
         int result = amount != null ? amount.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (rate != null ? rate.hashCode() : 0);
         result = 31 * result + (term != null ? term.hashCode() : 0);
         result = 31 * result + (earlyPayments != null ? earlyPayments.hashCode() : 0);
@@ -150,6 +171,7 @@ public final class Loan implements Serializable {
     public String toString() {
         return "Loan{" +
                 "amount=" + amount +
+                ", name='" + name + '\'' +
                 ", rate=" + rate +
                 ", term=" + term +
                 ", earlyPayments=" + earlyPayments +

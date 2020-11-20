@@ -34,6 +34,6 @@
     <string name="until_specific_month_radio_text">特定の月まで</string>
     <string name="max_term_in_months_message">可能な最大項は</string>
     <string name="choose_month">月を選択</string>
-    <string name="decrease_amount_of_payment_description">УП - Уменьшение суммы еж. платежа</string>
-    <string name="reduce_term_description">УП - Уменьшение суммы еж. платежа</string>
+    <string name="save_loan_button_text">セーブ</string>
+    <string name="enter_loan_name_text">ローンの名前を入力してください</string>
 </resources>

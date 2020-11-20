@@ -1,15 +1,18 @@
 package com.paqua.loancalculator;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.Spinner;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -18,15 +21,25 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.paqua.loancalculator.dto.Loan;
+import com.paqua.loancalculator.dto.LoanAmortization;
+import com.paqua.loancalculator.storage.LoanStorage;
 import com.paqua.loancalculator.util.Constant;
+import com.paqua.loancalculator.util.LoanCommon;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import static com.paqua.loancalculator.util.ValidationUtils.*;
+import static com.paqua.loancalculator.util.ValidationUtils.validateForEmptyText;
+import static com.paqua.loancalculator.util.ValidationUtils.hasValidTerm;
+import static com.paqua.loancalculator.util.ValidationUtils.setupRestoringBackgroundOnTextChange;
 
 public class MainActivity extends AppCompatActivity {
     private Button calculateButton;
     private InterstitialAd interstitialAd;
+    private Map<Integer, Map.Entry<Loan, LoanAmortization>> loanBySavedIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +61,94 @@ public class MainActivity extends AppCompatActivity {
         setupRestoringBackgroundOnTextChange((EditText) findViewById(R.id.term));
 
         setMonthTermTypeOnChangeListener();
+
+        initSavedLoansView();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        initSavedLoansView();
+    }
+
+    /**
+     * Fills spinner with saved loans and sets its callbacks
+     */
+    private void initSavedLoansView() {
+        Spinner savedLoans = (Spinner)findViewById(R.id.savedLoans);
+
+        loanBySavedIndex = new HashMap<>(); // Always new
+
+        List<String> items = new ArrayList<>();
+        items.add("Saved loans"); // TODO lang
+
+        Map<Loan, LoanAmortization> saved = LoanStorage.getAll(this);
+
+        if (saved != null && !saved.isEmpty()) {
+           int i = 1;
+           for (Map.Entry<Loan, LoanAmortization> item : saved.entrySet()) {
+               Loan loan = item.getKey();
+               items.add(loan.getName() != null && !loan.getName().isEmpty()
+                       ? loan.getName()
+                       : LoanCommon.getDefaultLoanName(loan)
+               );
+
+               loanBySavedIndex.put(i, item);
+
+               i++;
+           }
+        } else {
+            savedLoans.setVisibility(View.INVISIBLE);
+        }
+
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
+        savedLoans.setAdapter(spinnerArrayAdapter);
+
+        savedLoans.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
+                if (position > 0 && loanBySavedIndex.containsKey(position)) {
+                    interstitialAd.setAdListener(new AdListener() {
+                        @Override
+                        public void onAdClosed() {
+                            super.onAdClosed();
+                            interstitialAd.loadAd(new AdRequest.Builder().build());
+                            showLoadedLoanAmortization(position);
+                        }
+                    });
+
+                    if (interstitialAd.isLoaded()) {
+                        interstitialAd.show();
+                    } else {
+                        // If ads did not load show amortization anyway
+                        showLoadedLoanAmortization(position);
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    /**
+     * Shows loaded amortization from preferences
+     * @param position position from spinner
+     */
+    private void showLoadedLoanAmortization(int position) {
+        Intent intent = new Intent(MainActivity.this, ResultActivity.class);
+
+        Loan loan = loanBySavedIndex.get(position).getKey();
+        LoanAmortization amortization = loanBySavedIndex.get(position).getValue();
+
+        intent.putExtra(Constant.LOAN_OBJECT, loan);
+        intent.putExtra(Constant.LOAN_AMORTIZATION_OBJECT, amortization);
+        intent.putExtra(Constant.USE_SAVED_DATA, Boolean.TRUE);
+
+        startActivity(intent);
     }
 
     /**
@@ -65,6 +166,9 @@ public class MainActivity extends AppCompatActivity {
 
         if (interstitialAd.isLoaded()) {
             interstitialAd.show();
+        } else {
+            // If ads did not load show amortization anyway
+            calculateAndShow();
         }
     }
 
@@ -79,9 +183,9 @@ public class MainActivity extends AppCompatActivity {
         EditText loanTerm = ((EditText) findViewById(R.id.term));
         RadioButton monthTermType = (RadioButton) findViewById(R.id.monthTermType);
 
-        if (isValidInput) isValidInput = hasEmptyText(loanAmount, getResources().getColor(R.color.coolRed));
-        if (isValidInput) isValidInput = hasEmptyText(interestRate, getResources().getColor(R.color.coolRed));
-        if (isValidInput) isValidInput = hasEmptyText(loanTerm, getResources().getColor(R.color.coolRed));
+        if (isValidInput) isValidInput = validateForEmptyText(loanAmount, getResources().getColor(R.color.coolRed));
+        if (isValidInput) isValidInput = validateForEmptyText(interestRate, getResources().getColor(R.color.coolRed));
+        if (isValidInput) isValidInput = validateForEmptyText(loanTerm, getResources().getColor(R.color.coolRed));
         if (isValidInput) isValidInput = hasValidTerm(this, loanTerm, monthTermType.isChecked(), getResources().getColor(R.color.coolRed));
 
         if (isValidInput) {
@@ -102,6 +206,7 @@ public class MainActivity extends AppCompatActivity {
                     .build();
 
             intent.putExtra(Constant.LOAN_OBJECT, loan);
+            intent.putExtra(Constant.USE_SAVED_DATA, Boolean.FALSE);
 
             startActivity(intent);
         }

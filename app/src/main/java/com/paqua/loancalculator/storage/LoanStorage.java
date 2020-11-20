@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Manages storage of loans
+ * Manages storage for loans
  */
 public class LoanStorage {
     private static final String LOAN_STORAGE_KEY = "LOAN_STORAGE_KEY";
@@ -23,7 +23,7 @@ public class LoanStorage {
     private static final Gson GSON = new GsonBuilder()
             .enableComplexMapKeySerialization()
             .setPrettyPrinting()
-            .create();;
+            .create();
 
     public static final Type LOAN_HASH_MAP_TYPE = new TypeToken<HashMap<Loan, LoanAmortization>>() {}.getType();
 
@@ -43,6 +43,7 @@ public class LoanStorage {
      * Saves a loan to the shared preferences
      *
      * @param context application context
+     * @param name name
      * @param loan loan object
      * @param loanAmortization amortization object
      */

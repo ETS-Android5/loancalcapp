@@ -34,4 +34,6 @@
     <string name="until_specific_month_radio_text">Jusqu\'à un mois précis</string>
     <string name="max_term_in_months_message">Le terme maximum possible est</string>
     <string name="choose_month">Choisissez le mois</string>
+    <string name="enter_loan_name_text">Entrez le nom du prêt</string>
+    <string name="save_loan_button_text">Enregistrer</string>
 </resources>

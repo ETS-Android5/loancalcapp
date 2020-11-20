@@ -18,6 +18,7 @@ import android.widget.Switch;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,6 +44,7 @@ import com.paqua.loancalculator.dto.LoanAmortizationRq;
 import com.paqua.loancalculator.dto.MonthlyPayment;
 import com.paqua.loancalculator.storage.LoanStorage;
 import com.paqua.loancalculator.util.Constant;
+import com.paqua.loancalculator.util.LoanCommon;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -60,7 +62,7 @@ import java.util.Map;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static com.paqua.loancalculator.util.Constant.GET_LOAN_AMROTIZATION_URL;
-import static com.paqua.loancalculator.util.ValidationUtils.hasEmptyText;
+import static com.paqua.loancalculator.util.ValidationUtils.validateForEmptyText;
 import static com.paqua.loancalculator.util.ValidationUtils.hasValidSpinnerItem;
 import static com.paqua.loancalculator.util.ValidationUtils.setupRestoringBackgroundOnTextChange;
 
@@ -77,6 +79,7 @@ public class ResultActivity extends AppCompatActivity {
     private Loan loan;
     private LoanAmortization amortization;
     private BigDecimal overPayment;
+    private Boolean useSavedAmortization = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,9 +88,13 @@ public class ResultActivity extends AppCompatActivity {
 
         setVisibilityForAll(INVISIBLE);
 
-        initLoanFromMainActivity();
+        initFromMainActivity();
 
-        tryCalculateLoanAmortization();
+        if (!useSavedAmortization || amortization == null) {
+            tryCalculateLoanAmortization();
+        } else {
+            initAmortizationTableContent();
+        }
 
         initResetAllEarlyPaymentsView();
 
@@ -101,12 +108,65 @@ public class ResultActivity extends AppCompatActivity {
         findViewById(R.id.saveLoanButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LoanStorage.clearAll(getApplicationContext());
-                LoanStorage.put(getApplicationContext(), loan, amortization);
-                LoanStorage.getAll(getApplicationContext());
+                saveButtonOnClickCallback(v);
             }
         });
     }
+
+    /**
+     * Callback on save button click
+     *
+     * Shows confirmation dialog and saves the loan
+     *
+     * @param view view
+     */
+    private void saveButtonOnClickCallback(View view) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(view.getContext());
+        alertDialogBuilder.setPositiveButton(getResources().getString(R.string.save_loan_button_text),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int arg1) {
+                        AlertDialog dialog = (AlertDialog) dialogInterface;
+
+                        EditText loanName = (EditText) dialog.findViewById(R.id.loanNameEditText);
+
+                        if (validateForEmptyText(loanName, dialog.getContext().getResources().getColor(R.color.coolRed))) {
+                            loan = Loan.builder()
+                                    .name(loanName.getText().toString())
+                                    .earlyPayments(loan.getEarlyPayments())
+                                    .rate(loan.getRate())
+                                    .amount(loan.getAmount())
+                                    .term(loan.getTerm())
+                                    .build();
+
+                            LoanStorage.put(getApplicationContext(), loan, amortization);
+                            Toast.makeText(getApplicationContext(), "Saved!", Toast.LENGTH_LONG).show(); // TODO TEXT
+                        }
+                    }
+                });
+
+        alertDialogBuilder.setNegativeButton(getResources().getString(R.string.calculate_button_text), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        final View layout = inflater.inflate(R.layout.save_loan_dialog, null);
+
+        EditText loanName = layout.findViewById(R.id.loanNameEditText);
+        if (loan.getName() == null || loan.getName().isEmpty()) {
+            loanName.setText(LoanCommon.getDefaultLoanName(loan));
+        } else {
+            loanName.setText(loan.getName());
+        }
+
+        alertDialogBuilder.setView(layout);
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
 
     /**
      * Rebuilds table layout on resume unless it will be collapsed :(
@@ -138,9 +198,15 @@ public class ResultActivity extends AppCompatActivity {
     /**
      * Initializes loan from previous screen
      */
-    private void initLoanFromMainActivity() {
+    private void initFromMainActivity() {
         Intent intent = getIntent();
         loan = (Loan) intent.getExtras().get(Constant.LOAN_OBJECT);
+
+        useSavedAmortization = intent.getExtras().getBoolean(Constant.USE_SAVED_DATA);
+
+        if (useSavedAmortization) {
+            amortization = (LoanAmortization) intent.getExtras().get(Constant.LOAN_AMORTIZATION_OBJECT);
+        }
     }
 
     /**
@@ -229,12 +295,20 @@ public class ResultActivity extends AppCompatActivity {
         System.out.println(amortization);
 
         loan = Loan.builder()
+                .name(loan.getName())
                 .amount(loan.getAmount())
                 .term(loan.getTerm())
                 .rate(loan.getRate())
                 .earlyPayments(amortization.getEarlyPayments())
                 .build();
 
+        initAmortizationTableContent();
+    }
+
+    /**
+     * Initializes and fills amortization content on layout
+     */
+    private void initAmortizationTableContent() {
         fillHeaderValues();
 
         rebuildAmortizationTable();
@@ -566,6 +640,7 @@ public class ResultActivity extends AppCompatActivity {
             resetAllEarlyPayments();
         } else {
             loan = Loan.builder()
+                    .name(loan.getName())
                     .amount(loan.getAmount())
                     .term(loan.getTerm())
                     .rate(loan.getRate())
@@ -581,6 +656,7 @@ public class ResultActivity extends AppCompatActivity {
      */
     private void resetAllEarlyPayments() {
         loan = Loan.builder()
+                .name(loan.getName())
                 .amount(loan.getAmount())
                 .term(loan.getTerm())
                 .rate(loan.getRate())
@@ -608,7 +684,7 @@ public class ResultActivity extends AppCompatActivity {
 
         setupRestoringBackgroundOnTextChange(earlyPaymentAmountView);
         setupRestoringBackgroundOnTextChange(monthSpinner);
-        boolean isValid = hasEmptyText(earlyPaymentAmountView, getResources().getColor(R.color.coolRed));
+        boolean isValid = validateForEmptyText(earlyPaymentAmountView, getResources().getColor(R.color.coolRed));
 
         RadioButton untilCertainMonth = (RadioButton) dialog.findViewById(R.id.untilSpecificMonthRadioButton);
         if (untilCertainMonth.isChecked()) {
@@ -646,6 +722,7 @@ public class ResultActivity extends AppCompatActivity {
 
             // Construct new loan because it is immutable
             loan = Loan.builder()
+                    .name(loan.getName())
                     .amount(loan.getAmount())
                     .rate(loan.getRate())
                     .term(loan.getTerm())
