@@ -36,4 +36,7 @@
     <string name="choose_month">月を選択</string>
     <string name="save_loan_button_text">セーブ</string>
     <string name="enter_loan_name_text">ローンの名前を入力してください</string>
+    <string name="yes_text">はい</string>
+    <string name="no_text">番号</string>
+    <string name="delete_loan_dialog_text">ローンを削除してもよろしいですか？</string>
 </resources>

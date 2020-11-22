@@ -36,4 +36,7 @@
     <string name="choose_month">Choisissez le mois</string>
     <string name="enter_loan_name_text">Entrez le nom du prêt</string>
     <string name="save_loan_button_text">Enregistrer</string>
+    <string name="yes_text">Oui</string>
+    <string name="no_text">Non</string>
+    <string name="delete_loan_dialog_text">Voulez-vous vraiment supprimer le prêt?</string>
 </resources>

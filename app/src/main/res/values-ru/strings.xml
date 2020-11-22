@@ -40,4 +40,7 @@
     <string name="decrease_amount_of_payment_description">УП - Уменьшение суммы еж. платежа</string>
     <string name="enter_loan_name_text">Введите название кредита</string>
     <string name="save_loan_button_text">Сохранить</string>
+    <string name="yes_text">Да</string>
+    <string name="no_text">Нет</string>
+    <string name="delete_loan_dialog_text">Вы уверены что хотите удалить кредит?</string>
 </resources>

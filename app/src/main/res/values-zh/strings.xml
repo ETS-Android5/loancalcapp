@@ -36,4 +36,7 @@
     <string name="choose_month">选择月份</string>
     <string name="enter_loan_name_text">输入贷款名称</string>
     <string name="save_loan_button_text">救</string>
+    <string name="yes_text">是</string>
+    <string name="no_text">没有</string>
+    <string name="delete_loan_dialog_text">您确定要删除贷款吗？</string>
 </resources>

@@ -43,7 +43,6 @@ public class LoanStorage {
      * Saves a loan to the shared preferences
      *
      * @param context application context
-     * @param name name
      * @param loan loan object
      * @param loanAmortization amortization object
      */
@@ -59,6 +58,26 @@ public class LoanStorage {
         SharedPreferences.Editor editor = preferences.edit();
 
         String json = GSON.toJson(map, LOAN_HASH_MAP_TYPE);
+        editor.putString(LOAN_HASH_MAP, json);
+
+        editor.apply();
+    }
+
+    /**
+     * Removes loan from shared preferences
+     *
+     * @param context application context
+     * @param loan loan object
+     */
+    public static void remove(Context context, Loan loan) {
+        Map<Loan, LoanAmortization> all = getAll(context);
+
+        all.remove(loan);
+
+        SharedPreferences preferences = getSharedPreferences(context);
+        SharedPreferences.Editor editor = preferences.edit();
+
+        String json = GSON.toJson(all, LOAN_HASH_MAP_TYPE);
         editor.putString(LOAN_HASH_MAP, json);
 
         editor.apply();

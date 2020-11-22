@@ -40,4 +40,7 @@
     <string name="reduce_term_description">RT - Reduction of term</string>
     <string name="enter_loan_name_text">Enter the name of the loan</string>
     <string name="save_loan_button_text">Save</string>
+    <string name="yes_text">Yes</string>
+    <string name="no_text">No</string>
+    <string name="delete_loan_dialog_text">Are you sure you want to delete the loan?</string>
 </resources>

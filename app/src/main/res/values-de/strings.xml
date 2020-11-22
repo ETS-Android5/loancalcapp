@@ -35,5 +35,8 @@
     <string name="max_term_in_months_message">Die maximal mögliche Laufzeit ist</string>
     <string name="choose_month">Wähle den Monat</string>
     <string name="enter_loan_name_text">Geben Sie den Namen des Darlehens ein</string>
-    <string name="save_loan_button_text">sparen</string>
+    <string name="save_loan_button_text">Sparen</string>
+    <string name="yes_text">Ja</string>
+    <string name="no_text">Nein</string>
+    <string name="delete_loan_dialog_text">Möchten Sie das Darlehen wirklich löschen?</string>
 </resources>
