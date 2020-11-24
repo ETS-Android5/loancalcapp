@@ -101,7 +101,7 @@
         android:fontFamily="@font/base_font"
         android:hint="@string/interest_rate_field_hint"
         android:inputType="numberDecimal"
-        android:maxLength="2"
+        android:maxLength="5"
         android:paddingLeft="3dp"
         android:textColor="@color/coolDarkColor"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -149,11 +149,12 @@
         android:id="@+id/savedLoans"
         android:layout_width="411dp"
         android:layout_height="48dp"
-        android:longClickable="true"
+        android:background="@drawable/saved_loans_background"
+        android:longClickable="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.002" />
+        app:layout_constraintVertical_bias="0.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>

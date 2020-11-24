@@ -43,4 +43,6 @@
     <string name="yes_text">Yes</string>
     <string name="no_text">No</string>
     <string name="delete_loan_dialog_text">Are you sure you want to delete the loan?</string>
+    <string name="saved_loans_text">Saved loans</string>
+    <string name="my_loan_text">My loan</string>
 </resources>

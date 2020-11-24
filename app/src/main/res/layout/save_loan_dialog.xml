@@ -9,28 +9,30 @@
 
     <EditText
         android:id="@+id/loanNameEditText"
-        android:layout_width="266dp"
-        android:layout_height="38dp"
+        android:layout_width="296dp"
+        android:layout_height="37dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:background="@drawable/rounded"
         android:ems="10"
         android:fontFamily="@font/base_font"
         android:inputType="textPersonName"
+        android:paddingLeft="5dp"
         android:textColor="@color/coolDarkColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/enterLoanName"
-        app:layout_constraintVertical_bias="0.012" />
+        app:layout_constraintVertical_bias="0.021" />
 
     <TextView
         android:id="@+id/enterLoanName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="280dp"
+        android:layout_height="28dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
         android:fontFamily="@font/bold_font"
         android:text="@string/enter_loan_name_text"
         android:textColor="@color/coolDarkColor"

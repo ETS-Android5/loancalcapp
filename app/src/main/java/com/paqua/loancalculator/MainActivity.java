@@ -1,6 +1,5 @@
 package com.paqua.loancalculator;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputFilter;
@@ -13,7 +12,6 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.ads.AdListener;
@@ -34,9 +32,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.paqua.loancalculator.util.ValidationUtils.validateForEmptyText;
 import static com.paqua.loancalculator.util.ValidationUtils.hasValidTerm;
 import static com.paqua.loancalculator.util.ValidationUtils.setupRestoringBackgroundOnTextChange;
+import static com.paqua.loancalculator.util.ValidationUtils.validateForEmptyText;
+import static com.paqua.loancalculator.util.ValidationUtils.validateInterestRate;
 
 public class MainActivity extends AppCompatActivity {
     private Button calculateButton;
@@ -93,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
                Loan loan = item.getKey();
                items.add(loan.getName() != null && !loan.getName().isEmpty()
                        ? loan.getName()
-                       : LoanCommon.getDefaultLoanName(loan)
+                       : LoanCommon.getDefaultLoanName(getApplicationContext(), loan)
                );
 
                loanBySavedIndex.put(i, item);
@@ -104,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
             savedLoans.setVisibility(View.INVISIBLE);
         }
 
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, items);
         savedLoans.setAdapter(spinnerArrayAdapter);
 
         savedLoans.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -186,9 +185,9 @@ public class MainActivity extends AppCompatActivity {
         RadioButton monthTermType = (RadioButton) findViewById(R.id.monthTermType);
 
         if (isValidInput) isValidInput = validateForEmptyText(loanAmount, getResources().getColor(R.color.coolRed));
-        if (isValidInput) isValidInput = validateForEmptyText(interestRate, getResources().getColor(R.color.coolRed));
         if (isValidInput) isValidInput = validateForEmptyText(loanTerm, getResources().getColor(R.color.coolRed));
         if (isValidInput) isValidInput = hasValidTerm(this, loanTerm, monthTermType.isChecked(), getResources().getColor(R.color.coolRed));
+        if (isValidInput) isValidInput = validateInterestRate(interestRate, getResources().getColor(R.color.coolRed));
 
         if (isValidInput) {
             BigDecimal amount = new BigDecimal(loanAmount.getText().toString());

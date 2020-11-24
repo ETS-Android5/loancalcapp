@@ -130,7 +130,7 @@ public class ResultActivity extends AppCompatActivity {
                     }
                 });
 
-        alertDialogBuilder.setNegativeButton(getResources().getString(R.string.calculate_button_text), new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setNegativeButton(getResources().getString(R.string.cancel_extra_payment_button_text), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
             }
@@ -141,7 +141,7 @@ public class ResultActivity extends AppCompatActivity {
 
         EditText loanName = layout.findViewById(R.id.loanNameEditText);
         if (loan.getName() == null || loan.getName().isEmpty()) {
-            loanName.setText(LoanCommon.getDefaultLoanName(loan));
+            loanName.setText(LoanCommon.getDefaultLoanName(getApplicationContext(), loan));
         } else {
             loanName.setText(loan.getName());
         }

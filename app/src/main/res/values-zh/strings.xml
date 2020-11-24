@@ -39,4 +39,6 @@
     <string name="yes_text">是</string>
     <string name="no_text">没有</string>
     <string name="delete_loan_dialog_text">您确定要删除贷款吗？</string>
+    <string name="saved_loans_text">节省的贷款</string>
+    <string name="my_loan_text">我的贷款</string>
 </resources>

@@ -39,4 +39,6 @@
     <string name="yes_text">Ja</string>
     <string name="no_text">Nein</string>
     <string name="delete_loan_dialog_text">Möchten Sie das Darlehen wirklich löschen?</string>
+    <string name="saved_loans_text">Gespeicherte Kredite</string>
+    <string name="my_loan_text">Mein Darlehen</string>
 </resources>

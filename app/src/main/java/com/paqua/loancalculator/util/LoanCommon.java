@@ -1,5 +1,8 @@
 package com.paqua.loancalculator.util;
 
+import android.content.Context;
+
+import com.paqua.loancalculator.R;
 import com.paqua.loancalculator.dto.Loan;
 
 public class LoanCommon {
@@ -10,8 +13,8 @@ public class LoanCommon {
      *
      * @return loan name
      */
-    public static String getDefaultLoanName(Loan loan) {
-        return String.format("Amount: %s / Rate: %s / Term: %s", loan.getAmount(), loan.getRate(), loan.getTerm());
+    public static String getDefaultLoanName(Context context, Loan loan) {
+        return context.getResources().getString(R.string.my_loan_text);
     }
 
 }

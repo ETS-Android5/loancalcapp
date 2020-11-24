@@ -11,6 +11,8 @@ import android.widget.Spinner;
 
 import com.paqua.loancalculator.R;
 
+import java.math.BigDecimal;
+
 /**
  * Utility class for user-input validation
  *
@@ -29,11 +31,15 @@ public class ValidationUtils {
      */
     public static boolean validateForEmptyText(EditText view, int color) {
         if (view.getText().toString().length() == 0) {
-            view.setBackgroundColor(color);
-            view.requestFocus();
+            setColorAndFocus(view, color);
             return false;
         }
         return true;
+    }
+
+    private static void setColorAndFocus(EditText view, int color) {
+        view.setBackgroundColor(color);
+        view.requestFocus();
     }
 
     /**
@@ -50,19 +56,34 @@ public class ValidationUtils {
 
             if (!isValid) {
                 termView.setError(activity.getResources().getString(R.string.max_term_in_months_message) + " " + MAX_VALID_TERM_MONTHS);
-                termView.setBackgroundColor(color);
-                termView.requestFocus();
+                setColorAndFocus(termView, color);
             }
         } else {
             isValid = (term * 12) <= MAX_VALID_TERM_MONTHS;
             if (!isValid) {
                 termView.setError(activity.getResources().getString(R.string.max_term_in_months_message) + " " + MAX_VALID_TERM_MONTHS / 12);
-                termView.setBackgroundColor(color);
-                termView.requestFocus();
+                setColorAndFocus(termView, color);
             }
         }
 
         return isValid;
+    }
+
+    public static boolean validateInterestRate(EditText view, int color) {
+        String stringValue = view.getText().toString();
+
+        if (stringValue.length() == 0) {
+            setColorAndFocus(view, color);
+            return false;
+        }
+
+        BigDecimal bigDecimalValue = new BigDecimal(stringValue);
+        if (bigDecimalValue.compareTo(BigDecimal.valueOf(99)) > 0) {
+            setColorAndFocus(view, color);
+            return false;
+        }
+
+        return true;
     }
 
     /**

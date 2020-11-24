@@ -39,4 +39,6 @@
     <string name="yes_text">Si</string>
     <string name="no_text">No</string>
     <string name="delete_loan_dialog_text">¿Estás seguro de que deseas eliminar el préstamo?</string>
+    <string name="saved_loans_text">Préstamos guardados</string>
+    <string name="my_loan_text">Mi préstamo</string>
 </resources>
