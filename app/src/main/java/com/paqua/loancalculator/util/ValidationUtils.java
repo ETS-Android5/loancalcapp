@@ -37,6 +37,23 @@ public class ValidationUtils {
         return true;
     }
 
+    /**
+     * Validates for zero value
+     *
+     * @param view view
+     * @param color color
+     * @return validation result
+     */
+    public static boolean validateForZero(EditText view, int color) {
+        BigDecimal value = new BigDecimal(view.getText().toString());
+
+        if (value.compareTo(BigDecimal.ZERO) <= 0) {
+            setColorAndFocus(view, color);
+            return false;
+        }
+        return true;
+    }
+
     private static void setColorAndFocus(EditText view, int color) {
         view.setBackgroundColor(color);
         view.requestFocus();
@@ -69,6 +86,13 @@ public class ValidationUtils {
         return isValid;
     }
 
+    /**
+     * Validates interest rate
+     *
+     * @param view
+     * @param color
+     * @return
+     */
     public static boolean validateInterestRate(EditText view, int color) {
         String stringValue = view.getText().toString();
 

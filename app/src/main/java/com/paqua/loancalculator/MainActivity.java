@@ -35,6 +35,7 @@ import java.util.Map;
 import static com.paqua.loancalculator.util.ValidationUtils.hasValidTerm;
 import static com.paqua.loancalculator.util.ValidationUtils.setupRestoringBackgroundOnTextChange;
 import static com.paqua.loancalculator.util.ValidationUtils.validateForEmptyText;
+import static com.paqua.loancalculator.util.ValidationUtils.validateForZero;
 import static com.paqua.loancalculator.util.ValidationUtils.validateInterestRate;
 
 public class MainActivity extends AppCompatActivity {
@@ -184,10 +185,14 @@ public class MainActivity extends AppCompatActivity {
         EditText loanTerm = ((EditText) findViewById(R.id.term));
         RadioButton monthTermType = (RadioButton) findViewById(R.id.monthTermType);
 
-        if (isValidInput) isValidInput = validateForEmptyText(loanAmount, getResources().getColor(R.color.coolRed));
-        if (isValidInput) isValidInput = validateForEmptyText(loanTerm, getResources().getColor(R.color.coolRed));
-        if (isValidInput) isValidInput = hasValidTerm(this, loanTerm, monthTermType.isChecked(), getResources().getColor(R.color.coolRed));
-        if (isValidInput) isValidInput = validateInterestRate(interestRate, getResources().getColor(R.color.coolRed));
+        int errorColor = getResources().getColor(R.color.coolRed);
+        if (isValidInput) isValidInput = validateForEmptyText(loanAmount, errorColor);
+        if (isValidInput) isValidInput = validateForZero(loanAmount, errorColor);
+        if (isValidInput) isValidInput = validateForEmptyText(loanTerm, errorColor);
+        if (isValidInput) isValidInput = validateForZero(loanTerm, errorColor);
+        if (isValidInput) isValidInput = hasValidTerm(this, loanTerm, monthTermType.isChecked(), errorColor);
+        if (isValidInput) isValidInput = validateInterestRate(interestRate, errorColor);
+        if (isValidInput) isValidInput = validateForZero(interestRate, errorColor);
 
         if (isValidInput) {
             BigDecimal amount = new BigDecimal(loanAmount.getText().toString());
