@@ -58,6 +58,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -69,6 +71,7 @@ import static com.paqua.loancalculator.util.ValidationUtils.setupRestoringBackgr
 public class ResultActivity extends AppCompatActivity {
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.00");
     private static final DecimalFormatSymbols SYMBOLS = DECIMAL_FORMAT.getDecimalFormatSymbols();
+    public static final String SAVE_LOAN_NAME_FORMAT = "%s (%s)";
 
     static {
         SYMBOLS.setGroupingSeparator(' ');
@@ -90,9 +93,26 @@ public class ResultActivity extends AppCompatActivity {
 
         initFromMainActivity();
 
+        TextView loanName = (TextView)findViewById(R.id.loanName);
         if (!useSavedAmortization || amortization == null) {
             tryCalculateLoanAmortization();
+            String defaultLoanName = LoanCommon.getDefaultLoanName(getApplicationContext(), loan);
+
+            Map<Loan, LoanAmortization> loans = LoanStorage.getAll(getApplicationContext());
+            if (loans != null) {
+                int freeNameCount = findFreeNameCount(loans.keySet(), defaultLoanName);
+                if (freeNameCount > 0) {
+                    loanName.setText(String.format(SAVE_LOAN_NAME_FORMAT, defaultLoanName, freeNameCount));
+                } else {
+                    loanName.setText(defaultLoanName);
+                }
+            } else {
+                loanName.setText(defaultLoanName);
+            }
         } else {
+            if (loan != null && loan.getNameWithCount() != null && !loan.getNameWithCount().isEmpty()) {
+                loanName.setText(loan.getNameWithCount());
+            }
             initAmortizationTableContent();
         }
 
@@ -139,12 +159,21 @@ public class ResultActivity extends AppCompatActivity {
         LayoutInflater inflater = this.getLayoutInflater();
         final View layout = inflater.inflate(R.layout.save_loan_dialog, null);
 
-        EditText loanName = layout.findViewById(R.id.loanNameEditText);
+        final Map<Loan, LoanAmortization> savedLoans = LoanStorage.getAll(getApplicationContext());
+
+        final int nameCount;
+        final String displayedName;
         if (loan.getName() == null || loan.getName().isEmpty()) {
-            loanName.setText(LoanCommon.getDefaultLoanName(getApplicationContext(), loan));
+            String defaultName = LoanCommon.getDefaultLoanName(getApplicationContext(), loan);
+            nameCount = savedLoans != null ? findFreeNameCount(savedLoans.keySet(), defaultName) : 0;
+            displayedName = nameCount > 0 ? String.format(SAVE_LOAN_NAME_FORMAT, defaultName, nameCount) : defaultName;
         } else {
-            loanName.setText(loan.getName());
+            nameCount = savedLoans != null ? findFreeNameCount(savedLoans.keySet(), loan.getName()) : 0;
+            displayedName = nameCount > 0 ? String.format(SAVE_LOAN_NAME_FORMAT, loan.getName(), nameCount) : loan.getNameWithCount();
         }
+
+        EditText loanName = layout.findViewById(R.id.loanNameEditText);
+        loanName.setText(displayedName);
 
         alertDialogBuilder.setView(layout);
 
@@ -159,8 +188,19 @@ public class ResultActivity extends AppCompatActivity {
                 EditText loanName = (EditText) alertDialog.findViewById(R.id.loanNameEditText);
 
                 if (validateForEmptyText(loanName, alertDialog.getContext().getResources().getColor(R.color.coolRed))) {
+                    int newNameCount;
+                    if (loanName.getText().toString().equals(displayedName)) {
+                        newNameCount = nameCount;
+                    } else {
+                        newNameCount = savedLoans != null ? findFreeNameCount(savedLoans.keySet(), loanName.getText().toString()) : 0;
+                    }
+
+                    String name = newNameCount == 0 ? loanName.getText().toString() : loanName.getText().toString().replace(String.format("(%s)", newNameCount), "").trim();
+
                     loan = Loan.builder()
-                            .name(loanName.getText().toString())
+                            .uuid(UUID.randomUUID())
+                            .name(name)
+                            .nameCount(newNameCount)
                             .earlyPayments(loan.getEarlyPayments())
                             .rate(loan.getRate())
                             .amount(loan.getAmount())
@@ -170,11 +210,48 @@ public class ResultActivity extends AppCompatActivity {
                     LoanStorage.put(getApplicationContext(), loan, amortization);
                     Toast.makeText(getApplicationContext(), "Saved!", Toast.LENGTH_LONG).show(); // TODO TEXT
 
+                    TextView nameHeader = (TextView) findViewById(R.id.loanName);
+                    nameHeader.setText(loan.getNameWithCount());
+
                     alertDialog.dismiss();
                 }
             }
         });
 
+    }
+
+    /**
+     * Finds free loan name count
+     *
+     * @param loans loans
+     * @param defaultLoanName name for search
+     *
+     * @return free name count number
+     */
+    private int findFreeNameCount(Set<Loan> loans, String defaultLoanName) {
+        int i = 0;
+        while (existsLoanWithName(loans, defaultLoanName, i)) {
+            i++;
+        }
+
+        return i;
+    }
+
+    /**
+     * Checks name for existing on loans set
+     *
+     * @param loans
+     * @param name
+     *
+     * @return check result
+     */
+    private boolean existsLoanWithName(Set<Loan> loans, String name, Integer count) {
+        for (Loan loan : loans) {
+            if (loan.getName().equals(name) && loan.getNameCount().equals(count)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -305,7 +382,9 @@ public class ResultActivity extends AppCompatActivity {
         System.out.println(amortization);
 
         loan = Loan.builder()
+                .uuid(loan.getUuid())
                 .name(loan.getName())
+                .nameCount(loan.getNameCount())
                 .amount(loan.getAmount())
                 .term(loan.getTerm())
                 .rate(loan.getRate())
@@ -650,7 +729,9 @@ public class ResultActivity extends AppCompatActivity {
             resetAllEarlyPayments();
         } else {
             loan = Loan.builder()
+                    .uuid(loan.getUuid())
                     .name(loan.getName())
+                    .nameCount(loan.getNameCount())
                     .amount(loan.getAmount())
                     .term(loan.getTerm())
                     .rate(loan.getRate())
@@ -666,7 +747,9 @@ public class ResultActivity extends AppCompatActivity {
      */
     private void resetAllEarlyPayments() {
         loan = Loan.builder()
+                .uuid(loan.getUuid())
                 .name(loan.getName())
+                .nameCount(loan.getNameCount())
                 .amount(loan.getAmount())
                 .term(loan.getTerm())
                 .rate(loan.getRate())
@@ -732,7 +815,9 @@ public class ResultActivity extends AppCompatActivity {
 
             // Construct new loan because it is immutable
             loan = Loan.builder()
+                    .uuid(loan.getUuid())
                     .name(loan.getName())
+                    .nameCount(loan.getNameCount())
                     .amount(loan.getAmount())
                     .rate(loan.getRate())
                     .term(loan.getTerm())

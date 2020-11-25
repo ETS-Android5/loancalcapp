@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.paqua.loancalculator.util.ValidationUtils.hasValidTerm;
 import static com.paqua.loancalculator.util.ValidationUtils.setupRestoringBackgroundOnTextChange;
@@ -92,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
            for (Map.Entry<Loan, LoanAmortization> item : saved.entrySet()) {
                Loan loan = item.getKey();
                items.add(loan.getName() != null && !loan.getName().isEmpty()
-                       ? loan.getName()
+                       ? loan.getNameWithCount()
                        : LoanCommon.getDefaultLoanName(getApplicationContext(), loan)
                );
 
@@ -100,8 +101,9 @@ public class MainActivity extends AppCompatActivity {
 
                i++;
            }
+           savedLoans.setVisibility(View.VISIBLE);
         } else {
-            savedLoans.setVisibility(View.INVISIBLE);
+           savedLoans.setVisibility(View.INVISIBLE);
         }
 
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, items);
@@ -206,6 +208,8 @@ public class MainActivity extends AppCompatActivity {
 
             Intent intent = new Intent(MainActivity.this, ResultActivity.class);
             Loan loan = Loan.builder()
+                    .uuid(UUID.randomUUID())
+                    .nameCount(0)
                     .amount(amount)
                     .rate(rate)
                     .term(term)
