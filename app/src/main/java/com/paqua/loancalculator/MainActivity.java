@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -20,6 +18,7 @@ import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.paqua.loancalculator.adapter.CustomLoanAdapter;
 import com.paqua.loancalculator.dto.Loan;
 import com.paqua.loancalculator.dto.LoanAmortization;
 import com.paqua.loancalculator.storage.LoanStorage;
@@ -106,43 +105,14 @@ public class MainActivity extends AppCompatActivity {
            savedLoans.setVisibility(View.INVISIBLE);
         }
 
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, items);
-        savedLoans.setAdapter(spinnerArrayAdapter);
-
-        savedLoans.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
-                if (position > 0 && loanBySavedIndex.containsKey(position)) {
-                    interstitialAd.setAdListener(new AdListener() {
-                        @Override
-                        public void onAdClosed() {
-                            super.onAdClosed();
-                            interstitialAd.loadAd(new AdRequest.Builder().build());
-                            showLoadedLoanAmortization(position);
-                        }
-                    });
-
-                    if (interstitialAd.isLoaded()) {
-                        interstitialAd.show();
-                    } else {
-                        // If ads did not load show amortization anyway
-                        showLoadedLoanAmortization(position);
-                    }
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+        savedLoans.setAdapter(new CustomLoanAdapter(this, interstitialAd, MainActivity.this, items));
     }
 
     /**
      * Shows loaded amortization from preferences
      * @param position position from spinner
      */
-    private void showLoadedLoanAmortization(int position) {
+    public void showLoadedLoanAmortization(int position) {
         Intent intent = new Intent(MainActivity.this, ResultActivity.class);
 
         Loan loan = loanBySavedIndex.get(position).getKey();
