@@ -22,7 +22,6 @@ import com.paqua.loancalculator.customshop.CustomLoanAdapter;
 import com.paqua.loancalculator.dto.Loan;
 import com.paqua.loancalculator.dto.LoanAmortization;
 import com.paqua.loancalculator.storage.LoanStorage;
-import com.paqua.loancalculator.util.Constant;
 import com.paqua.loancalculator.util.LoanCommonUtils;
 
 import java.math.BigDecimal;
@@ -67,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
 
         setMonthTermTypeOnChangeListener();
 
-//        LoanStorage.clearAll(getApplicationContext());
         initSavedLoansView();
     }
 
@@ -84,10 +82,16 @@ public class MainActivity extends AppCompatActivity {
     private void initSavedLoansView() {
         Spinner savedLoans = (Spinner)findViewById(R.id.savedLoans);
 
+        List<String> items = refreshSavedLoans(savedLoans);
+
+        savedLoans.setAdapter(new CustomLoanAdapter(this, interstitialAd, MainActivity.this, items));
+    }
+
+    public List<String> refreshSavedLoans(Spinner savedLoans) {
         loanBySavedIndex = new HashMap<>(); // Always new
 
         List<String> items = new ArrayList<>();
-        items.add("Saved loans"); // TODO lang
+        items.add(getResources().getString(R.string.saved_loans_text));
 
         Map<Loan, LoanAmortization> saved = LoanStorage.getAll(this);
 
@@ -108,8 +112,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
            savedLoans.setVisibility(View.INVISIBLE);
         }
-
-        savedLoans.setAdapter(new CustomLoanAdapter(this, interstitialAd, MainActivity.this, items));
+        return items;
     }
 
     /**
@@ -217,7 +220,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
     private void initMobileAds() {
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
@@ -228,5 +230,9 @@ public class MainActivity extends AppCompatActivity {
         interstitialAd = new InterstitialAd(this);
         interstitialAd.setAdUnitId("ca-app-pub-3031881558720361/4919481152");
         interstitialAd.loadAd(new AdRequest.Builder().build());
+    }
+
+    public Map<Integer, Map.Entry<Loan, LoanAmortization>> getLoanBySavedIndex() {
+        return loanBySavedIndex;
     }
 }

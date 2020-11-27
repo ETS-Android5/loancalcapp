@@ -17,22 +17,15 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.paqua.loancalculator.MainActivity;
 import com.paqua.loancalculator.R;
-import com.paqua.loancalculator.dto.Loan;
-import com.paqua.loancalculator.dto.LoanAmortization;
 import com.paqua.loancalculator.storage.LoanStorage;
-import com.paqua.loancalculator.util.LoanCommonUtils;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * This class is wrong - it is coupled with activity and loans
  */
 public class CustomLoanAdapter extends ArrayAdapter<String> {
-    private Map<Integer, Map.Entry<Loan, LoanAmortization>> loanBySavedIndex;
     private InterstitialAd interstitialAd;
     private MainActivity activity;
 
@@ -41,28 +34,6 @@ public class CustomLoanAdapter extends ArrayAdapter<String> {
         this.interstitialAd = interstitialAd;
         this.activity = activity;
         refreshLoanByIndex();
-    }
-
-    private void refreshLoanByIndex() {
-        Map<Loan, LoanAmortization> saved = LoanStorage.getAll(activity);
-
-        loanBySavedIndex = new HashMap<>(); // Always new
-
-        List<String> items = new ArrayList<>();
-        items.add("Saved loans"); // TODO lang
-
-        int i = 1;
-        for (Map.Entry<Loan, LoanAmortization> item : saved.entrySet()) {
-            Loan loan = item.getKey();
-            items.add(loan.getName() != null && !loan.getName().isEmpty()
-                    ? loan.getNameWithCount()
-                    : LoanCommonUtils.getDefaultLoanName(activity)
-            );
-
-            loanBySavedIndex.put(i, item);
-
-            i++;
-        }
     }
 
     @SuppressLint({"ViewHolder", "InflateParams"})
@@ -93,6 +64,7 @@ public class CustomLoanAdapter extends ArrayAdapter<String> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.spinner_item, parent, false);
 
             TextView loanName = (TextView) convertView.findViewById(R.id.first_item);
+            loanName.setBackground(activity.getResources().getDrawable(R.drawable.saved_loans_background));
             loanName.setText(getItem(position));
         }
         return convertView;
@@ -115,12 +87,12 @@ public class CustomLoanAdapter extends ArrayAdapter<String> {
                 dialog.setPositiveButton(activity.getResources().getString(R.string.yes_text), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        LoanStorage.remove(activity, loanBySavedIndex.get(position).getKey());
+                        LoanStorage.remove(activity, activity.getLoanBySavedIndex().get(position).getKey());
                         remove(getItem(position));
                         refreshLoanByIndex();
                         notifyDataSetChanged();
 
-                        if (loanBySavedIndex.isEmpty()) {
+                        if (activity.getLoanBySavedIndex().isEmpty()) {
                             hideAndDetachSpinner();
                         }
                     }
@@ -168,7 +140,7 @@ public class CustomLoanAdapter extends ArrayAdapter<String> {
         loanName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (position > 0 && loanBySavedIndex.containsKey(position)) {
+                if (position > 0 && activity.getLoanBySavedIndex().containsKey(position)) {
                     interstitialAd.setAdListener(new AdListener() {
                         @Override
                         public void onAdClosed() {
@@ -188,5 +160,9 @@ public class CustomLoanAdapter extends ArrayAdapter<String> {
             }
         });
         return convertView;
+    }
+
+    private void refreshLoanByIndex() {
+        activity.refreshSavedLoans((Spinner) activity.findViewById(R.id.savedLoans));
     }
 }
