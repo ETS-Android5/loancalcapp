@@ -19,7 +19,7 @@ import com.paqua.loancalculator.R;
 import com.paqua.loancalculator.dto.Loan;
 import com.paqua.loancalculator.dto.LoanAmortization;
 import com.paqua.loancalculator.storage.LoanStorage;
-import com.paqua.loancalculator.util.LoanCommon;
+import com.paqua.loancalculator.util.LoanCommonUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,7 +54,7 @@ public class CustomLoanAdapter extends ArrayAdapter<String> {
             Loan loan = item.getKey();
             items.add(loan.getName() != null && !loan.getName().isEmpty()
                     ? loan.getNameWithCount()
-                    : LoanCommon.getDefaultLoanName(activity, loan)
+                    : LoanCommonUtils.getDefaultLoanName(activity)
             );
 
             loanBySavedIndex.put(i, item);

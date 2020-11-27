@@ -43,7 +43,7 @@ import com.paqua.loancalculator.dto.LoanAmortization;
 import com.paqua.loancalculator.dto.LoanAmortizationRq;
 import com.paqua.loancalculator.dto.MonthlyPayment;
 import com.paqua.loancalculator.storage.LoanStorage;
-import com.paqua.loancalculator.util.LoanCommon;
+import com.paqua.loancalculator.util.LoanCommonUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -99,7 +99,7 @@ public class ResultActivity extends AppCompatActivity {
         TextView loanName = (TextView)findViewById(R.id.loanName);
         if (!useSavedAmortization || amortization == null) {
             tryCalculateLoanAmortization();
-            String defaultLoanName = LoanCommon.getDefaultLoanName(getApplicationContext(), loan);
+            String defaultLoanName = LoanCommonUtils.getDefaultLoanName(getApplicationContext());
 
             Map<Loan, LoanAmortization> loans = LoanStorage.getAll(getApplicationContext());
             if (loans != null) {
@@ -167,7 +167,7 @@ public class ResultActivity extends AppCompatActivity {
         final int nameCount;
         final String displayedName;
         if (loan.getName() == null || loan.getName().isEmpty()) {
-            String defaultName = LoanCommon.getDefaultLoanName(getApplicationContext(), loan);
+            String defaultName = LoanCommonUtils.getDefaultLoanName(getApplicationContext());
             nameCount = findFreeNameCount(savedLoans.keySet(), defaultName);
             displayedName = nameCount > 0 ? String.format(SAVE_LOAN_NAME_FORMAT.value, defaultName, nameCount) : defaultName;
         } else {
