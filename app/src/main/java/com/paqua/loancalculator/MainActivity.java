@@ -18,7 +18,7 @@ import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
-import com.paqua.loancalculator.adapter.CustomLoanAdapter;
+import com.paqua.loancalculator.customshop.CustomLoanAdapter;
 import com.paqua.loancalculator.dto.Loan;
 import com.paqua.loancalculator.dto.LoanAmortization;
 import com.paqua.loancalculator.storage.LoanStorage;
@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
         setMonthTermTypeOnChangeListener();
 
+        LoanStorage.clearAll(getApplicationContext());
         initSavedLoansView();
     }
 

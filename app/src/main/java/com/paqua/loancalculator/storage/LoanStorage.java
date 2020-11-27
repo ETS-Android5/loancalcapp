@@ -36,7 +36,9 @@ public class LoanStorage {
     public static Map<Loan, LoanAmortization> getAll(Context context) {
         String loaded = getSharedPreferences(context).getString(LOAN_HASH_MAP, "");
 
-        return GSON.fromJson(loaded, LOAN_HASH_MAP_TYPE);
+        Map<Loan, LoanAmortization> map = GSON.fromJson(loaded, LOAN_HASH_MAP_TYPE);
+
+        return map == null ? new HashMap<Loan, LoanAmortization>() : map;
     }
 
     /**

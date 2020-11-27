@@ -1,4 +1,4 @@
-package com.paqua.loancalculator.adapter;
+package com.paqua.loancalculator.customshop;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -26,6 +26,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class is wrong - it is coupled with activity and loans
+ */
 public class CustomLoanAdapter extends ArrayAdapter<String> {
     private Map<Integer, Map.Entry<Loan, LoanAmortization>> loanBySavedIndex;
     private InterstitialAd interstitialAd;
@@ -66,11 +69,17 @@ public class CustomLoanAdapter extends ArrayAdapter<String> {
         return delegateGetView(position, parent);
     }
 
+    @SuppressLint({"ViewHolder", "InflateParams"})
+    @Override
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        return delegateGetView(position, parent);
+    }
+
     private View delegateGetView(int position, ViewGroup parent) {
         View convertView;
         if (position != 0) {
             convertView = getView(position, parent);
-            initDeleteButton(position, convertView);
+            initDeleteButtonCallback(position, convertView);
         } else {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.spinner_item, parent, false);
 
@@ -80,13 +89,7 @@ public class CustomLoanAdapter extends ArrayAdapter<String> {
         return convertView;
     }
 
-    @SuppressLint({"ViewHolder", "InflateParams"})
-    @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
-        return delegateGetView(position, parent);
-    }
-
-    private void initDeleteButton(final int position, View convertView) {
+    private void initDeleteButtonCallback(final int position, View convertView) {
         final Button deleteButton = convertView.findViewById(R.id.delete_loan_button);
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
