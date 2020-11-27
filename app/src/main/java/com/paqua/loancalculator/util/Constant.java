@@ -1,10 +1,18 @@
 package com.paqua.loancalculator.util;
 
-public class Constant {
-    public static final String LOAN_OBJECT = "LOAN_OBJECT";
-    public static final String LOAN_AMORTIZATION_OBJECT = "LOAN_AMORTIZATION_OBJECT";
-    public static final String USE_SAVED_DATA = "USE_SAVED_DATA";
-    public static final String GET_LOAN_AMROTIZATION_URL ="https://loan-amortization-server.herokuapp.com/loanAmortization";
+/**
+ * Common constants
+ */
+public enum Constant {
+    LOAN_OBJECT("LOAN_OBJECT"),
+    LOAN_AMORTIZATION_OBJECT("LOAN_AMORTIZATION_OBJECT"),
+    USE_SAVED_DATA("USE_SAVED_DATA"),
+    GET_LOAN_AMROTIZATION_URL("https://loan-amortization-server.herokuapp.com/loanAmortization"),
+    SAVE_LOAN_NAME_FORMAT( "%s (%s)");
 
+    public final String value;
 
+    Constant(String value) {
+        this.value = value;
+    }
 }

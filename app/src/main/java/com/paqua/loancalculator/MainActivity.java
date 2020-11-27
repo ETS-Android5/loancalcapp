@@ -18,12 +18,11 @@ import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
-import com.paqua.loancalculator.adapter.CustomLoanAdapter;
+import com.paqua.loancalculator.customshop.CustomLoanAdapter;
 import com.paqua.loancalculator.dto.Loan;
 import com.paqua.loancalculator.dto.LoanAmortization;
 import com.paqua.loancalculator.storage.LoanStorage;
-import com.paqua.loancalculator.util.Constant;
-import com.paqua.loancalculator.util.LoanCommon;
+import com.paqua.loancalculator.util.LoanCommonUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -32,6 +31,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.paqua.loancalculator.util.Constant.LOAN_AMORTIZATION_OBJECT;
+import static com.paqua.loancalculator.util.Constant.LOAN_OBJECT;
+import static com.paqua.loancalculator.util.Constant.USE_SAVED_DATA;
 import static com.paqua.loancalculator.util.ValidationUtils.hasValidTerm;
 import static com.paqua.loancalculator.util.ValidationUtils.setupRestoringBackgroundOnTextChange;
 import static com.paqua.loancalculator.util.ValidationUtils.validateForEmptyText;
@@ -80,10 +82,16 @@ public class MainActivity extends AppCompatActivity {
     private void initSavedLoansView() {
         Spinner savedLoans = (Spinner)findViewById(R.id.savedLoans);
 
+        List<String> items = refreshSavedLoans(savedLoans);
+
+        savedLoans.setAdapter(new CustomLoanAdapter(this, interstitialAd, MainActivity.this, items));
+    }
+
+    public List<String> refreshSavedLoans(Spinner savedLoans) {
         loanBySavedIndex = new HashMap<>(); // Always new
 
         List<String> items = new ArrayList<>();
-        items.add("Saved loans"); // TODO lang
+        items.add(getResources().getString(R.string.saved_loans_text));
 
         Map<Loan, LoanAmortization> saved = LoanStorage.getAll(this);
 
@@ -93,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                Loan loan = item.getKey();
                items.add(loan.getName() != null && !loan.getName().isEmpty()
                        ? loan.getNameWithCount()
-                       : LoanCommon.getDefaultLoanName(getApplicationContext(), loan)
+                       : LoanCommonUtils.getDefaultLoanName(getApplicationContext())
                );
 
                loanBySavedIndex.put(i, item);
@@ -104,8 +112,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
            savedLoans.setVisibility(View.INVISIBLE);
         }
-
-        savedLoans.setAdapter(new CustomLoanAdapter(this, interstitialAd, MainActivity.this, items));
+        return items;
     }
 
     /**
@@ -118,9 +125,9 @@ public class MainActivity extends AppCompatActivity {
         Loan loan = loanBySavedIndex.get(position).getKey();
         LoanAmortization amortization = loanBySavedIndex.get(position).getValue();
 
-        intent.putExtra(Constant.LOAN_OBJECT, loan);
-        intent.putExtra(Constant.LOAN_AMORTIZATION_OBJECT, amortization);
-        intent.putExtra(Constant.USE_SAVED_DATA, Boolean.TRUE);
+        intent.putExtra(LOAN_OBJECT.value, loan);
+        intent.putExtra(LOAN_AMORTIZATION_OBJECT.value, amortization);
+        intent.putExtra(USE_SAVED_DATA.value, Boolean.TRUE);
 
         startActivity(intent);
     }
@@ -185,8 +192,8 @@ public class MainActivity extends AppCompatActivity {
                     .term(term)
                     .build();
 
-            intent.putExtra(Constant.LOAN_OBJECT, loan);
-            intent.putExtra(Constant.USE_SAVED_DATA, Boolean.FALSE);
+            intent.putExtra(LOAN_OBJECT.value, loan);
+            intent.putExtra(USE_SAVED_DATA.value, Boolean.FALSE);
 
             startActivity(intent);
         }
@@ -213,7 +220,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
     private void initMobileAds() {
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
@@ -224,5 +230,9 @@ public class MainActivity extends AppCompatActivity {
         interstitialAd = new InterstitialAd(this);
         interstitialAd.setAdUnitId("ca-app-pub-3031881558720361/4919481152");
         interstitialAd.loadAd(new AdRequest.Builder().build());
+    }
+
+    public Map<Integer, Map.Entry<Loan, LoanAmortization>> getLoanBySavedIndex() {
+        return loanBySavedIndex;
     }
 }

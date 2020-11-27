@@ -3,17 +3,14 @@ package com.paqua.loancalculator.util;
 import android.content.Context;
 
 import com.paqua.loancalculator.R;
-import com.paqua.loancalculator.dto.Loan;
 
-public class LoanCommon {
+public class LoanCommonUtils {
     /**
-     * Default loan name
-     *
-     * Consists of amount, rate and term
+     * Default loan name for saving into local storage
      *
      * @return loan name
      */
-    public static String getDefaultLoanName(Context context, Loan loan) {
+    public static String getDefaultLoanName(Context context) {
         return context.getResources().getString(R.string.my_loan_text);
     }
 

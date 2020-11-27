@@ -1,4 +1,4 @@
-package com.paqua.loancalculator.adapter;
+package com.paqua.loancalculator.customshop;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.gms.ads.AdListener;
@@ -16,18 +17,15 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.paqua.loancalculator.MainActivity;
 import com.paqua.loancalculator.R;
-import com.paqua.loancalculator.dto.Loan;
-import com.paqua.loancalculator.dto.LoanAmortization;
 import com.paqua.loancalculator.storage.LoanStorage;
-import com.paqua.loancalculator.util.LoanCommon;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Map;
 
+/**
+ * This class is wrong - it is coupled with activity and loans
+ */
 public class CustomLoanAdapter extends ArrayAdapter<String> {
-    private Map<Integer, Map.Entry<Loan, LoanAmortization>> loanBySavedIndex;
     private InterstitialAd interstitialAd;
     private MainActivity activity;
 
@@ -38,46 +36,10 @@ public class CustomLoanAdapter extends ArrayAdapter<String> {
         refreshLoanByIndex();
     }
 
-    private void refreshLoanByIndex() {
-        Map<Loan, LoanAmortization> saved = LoanStorage.getAll(activity);
-
-        loanBySavedIndex = new HashMap<>(); // Always new
-
-        List<String> items = new ArrayList<>();
-        items.add("Saved loans"); // TODO lang
-
-        int i = 1;
-        for (Map.Entry<Loan, LoanAmortization> item : saved.entrySet()) {
-            Loan loan = item.getKey();
-            items.add(loan.getName() != null && !loan.getName().isEmpty()
-                    ? loan.getNameWithCount()
-                    : LoanCommon.getDefaultLoanName(activity, loan)
-            );
-
-            loanBySavedIndex.put(i, item);
-
-            i++;
-        }
-    }
-
     @SuppressLint({"ViewHolder", "InflateParams"})
     @Override
     public View getDropDownView(final int position, View convertView, ViewGroup parent) {
         return delegateGetView(position, parent);
-    }
-
-    private View delegateGetView(int position, ViewGroup parent) {
-        View convertView;
-        if (position != 0) {
-            convertView = getView(position, parent);
-            initDeleteButton(position, convertView);
-        } else {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.spinner_item, parent, false);
-
-            TextView loanName = (TextView) convertView.findViewById(R.id.first_item);
-            loanName.setText(getItem(position));
-        }
-        return convertView;
     }
 
     @SuppressLint({"ViewHolder", "InflateParams"})
@@ -86,7 +48,35 @@ public class CustomLoanAdapter extends ArrayAdapter<String> {
         return delegateGetView(position, parent);
     }
 
-    private void initDeleteButton(final int position, View convertView) {
+    /**
+     * Sets up view for loan
+     * @param position position
+     * @param parent parent
+     *
+     * @return view
+     */
+    private View delegateGetView(int position, ViewGroup parent) {
+        View convertView;
+        if (position != 0) {
+            convertView = getSavedLoanItemView(position, parent);
+            initDeleteButtonCallback(position, convertView);
+        } else {
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.spinner_item, parent, false);
+
+            TextView loanName = (TextView) convertView.findViewById(R.id.first_item);
+            loanName.setBackground(activity.getResources().getDrawable(R.drawable.saved_loans_background));
+            loanName.setText(getItem(position));
+        }
+        return convertView;
+    }
+
+    /**
+     * Initialize delete button for a view
+     *
+     * @param position position
+     * @param convertView view
+     */
+    private void initDeleteButtonCallback(final int position, View convertView) {
         final Button deleteButton = convertView.findViewById(R.id.delete_loan_button);
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,14 +87,14 @@ public class CustomLoanAdapter extends ArrayAdapter<String> {
                 dialog.setPositiveButton(activity.getResources().getString(R.string.yes_text), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        LoanStorage.remove(activity, loanBySavedIndex.get(position).getKey());
+                        LoanStorage.remove(activity, activity.getLoanBySavedIndex().get(position).getKey());
                         remove(getItem(position));
                         refreshLoanByIndex();
-                        if (loanBySavedIndex.isEmpty()) {
-                            // TODO hide
-                        }
-
                         notifyDataSetChanged();
+
+                        if (activity.getLoanBySavedIndex().isEmpty()) {
+                            hideAndDetachSpinner();
+                        }
                     }
                 });
 
@@ -119,9 +109,29 @@ public class CustomLoanAdapter extends ArrayAdapter<String> {
         });
     }
 
-    private View getView(final int position, ViewGroup parent) {
+    private void hideAndDetachSpinner() {
+        Spinner savedLoansSpinner = (Spinner) activity.findViewById(R.id.savedLoans);
+        savedLoansSpinner.setVisibility(View.INVISIBLE);
+        try {
+            Method method = Spinner.class.getDeclaredMethod("onDetachedFromWindow");
+            method.setAccessible(true);
+            method.invoke(savedLoansSpinner);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Initializes view for spinner item
+     *
+     * @param position position
+     * @param parent parent
+     *
+     * @return view
+     */
+    private View getSavedLoanItemView(final int position, ViewGroup parent) {
         View convertView;
-        convertView = LayoutInflater.from(getContext()).inflate(R.layout.saved_loans_spinner_adapter, parent, false);
+        convertView = LayoutInflater.from(getContext()).inflate(R.layout.saved_loans_spinner_item, parent, false);
         TextView loanName = (TextView) convertView.findViewById(R.id.loanNameSpinnerText);
 
         loanName.setText(getItem(position));
@@ -130,7 +140,7 @@ public class CustomLoanAdapter extends ArrayAdapter<String> {
         loanName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (position > 0 && loanBySavedIndex.containsKey(position)) {
+                if (position > 0 && activity.getLoanBySavedIndex().containsKey(position)) {
                     interstitialAd.setAdListener(new AdListener() {
                         @Override
                         public void onAdClosed() {
@@ -150,5 +160,9 @@ public class CustomLoanAdapter extends ArrayAdapter<String> {
             }
         });
         return convertView;
+    }
+
+    private void refreshLoanByIndex() {
+        activity.refreshSavedLoans((Spinner) activity.findViewById(R.id.savedLoans));
     }
 }
