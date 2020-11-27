@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.gms.ads.AdListener;
@@ -21,6 +22,7 @@ import com.paqua.loancalculator.dto.LoanAmortization;
 import com.paqua.loancalculator.storage.LoanStorage;
 import com.paqua.loancalculator.util.LoanCommonUtils;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -116,11 +118,11 @@ public class CustomLoanAdapter extends ArrayAdapter<String> {
                         LoanStorage.remove(activity, loanBySavedIndex.get(position).getKey());
                         remove(getItem(position));
                         refreshLoanByIndex();
-                        if (loanBySavedIndex.isEmpty()) {
-                            // TODO hide
-                        }
-
                         notifyDataSetChanged();
+
+                        if (loanBySavedIndex.isEmpty()) {
+                            hideAndDetachSpinner();
+                        }
                     }
                 });
 
@@ -133,6 +135,18 @@ public class CustomLoanAdapter extends ArrayAdapter<String> {
                 dialog.create().show();
             }
         });
+    }
+
+    private void hideAndDetachSpinner() {
+        Spinner savedLoansSpinner = (Spinner) activity.findViewById(R.id.savedLoans);
+        savedLoansSpinner.setVisibility(View.INVISIBLE);
+        try {
+            Method method = Spinner.class.getDeclaredMethod("onDetachedFromWindow");
+            method.setAccessible(true);
+            method.invoke(savedLoansSpinner);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**

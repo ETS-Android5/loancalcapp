@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
         setMonthTermTypeOnChangeListener();
 
-        LoanStorage.clearAll(getApplicationContext());
+//        LoanStorage.clearAll(getApplicationContext());
         initSavedLoansView();
     }
 
