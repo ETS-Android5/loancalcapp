@@ -228,14 +228,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/overPaymentAmount"
-        app:layout_constraintTop_toBottomOf="@+id/overPaymentAmount"
-        app:layout_constraintVertical_bias="0.014"
+        app:layout_constraintTop_toBottomOf="@+id/loanName"
+        app:layout_constraintVertical_bias="0.009"
         app:srcCompat="@drawable/rounded" />
 
     <TextView
         android:id="@+id/loanName"
         android:layout_width="191dp"
-        android:layout_height="18dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:background="@drawable/amount_background"
         android:fontFamily="@font/bold_font"
         android:paddingLeft="5dp"
@@ -244,7 +245,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/descriotionRounded"
-        app:layout_constraintTop_toBottomOf="@+id/descriotionRounded"
-        app:layout_constraintVertical_bias="0.006" />
+        app:layout_constraintTop_toBottomOf="@+id/overPaymentAmount"
+        app:layout_constraintVertical_bias="0.001" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

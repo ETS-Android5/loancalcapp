@@ -11,6 +11,8 @@
         android:layout_gravity="left"
         android:layout_toLeftOf="@id/delete_loan_button"
         android:fontFamily="@font/base_font"
+        android:paddingLeft="5dp"
+        android:paddingTop="5dp"
         android:textColor="@color/coolDarkColor"
         android:textSize="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
