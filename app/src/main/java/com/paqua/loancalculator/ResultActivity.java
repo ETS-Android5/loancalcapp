@@ -43,7 +43,6 @@ import com.paqua.loancalculator.dto.LoanAmortization;
 import com.paqua.loancalculator.dto.LoanAmortizationRq;
 import com.paqua.loancalculator.dto.MonthlyPayment;
 import com.paqua.loancalculator.storage.LoanStorage;
-import com.paqua.loancalculator.util.Constant;
 import com.paqua.loancalculator.util.LoanCommon;
 
 import org.json.JSONException;
@@ -64,14 +63,17 @@ import java.util.UUID;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static com.paqua.loancalculator.util.Constant.GET_LOAN_AMROTIZATION_URL;
-import static com.paqua.loancalculator.util.ValidationUtils.validateForEmptyText;
+import static com.paqua.loancalculator.util.Constant.LOAN_AMORTIZATION_OBJECT;
+import static com.paqua.loancalculator.util.Constant.LOAN_OBJECT;
+import static com.paqua.loancalculator.util.Constant.SAVE_LOAN_NAME_FORMAT;
+import static com.paqua.loancalculator.util.Constant.USE_SAVED_DATA;
 import static com.paqua.loancalculator.util.ValidationUtils.hasValidSpinnerItem;
 import static com.paqua.loancalculator.util.ValidationUtils.setupRestoringBackgroundOnTextChange;
+import static com.paqua.loancalculator.util.ValidationUtils.validateForEmptyText;
 
 public class ResultActivity extends AppCompatActivity {
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.00");
     private static final DecimalFormatSymbols SYMBOLS = DECIMAL_FORMAT.getDecimalFormatSymbols();
-    public static final String SAVE_LOAN_NAME_FORMAT = "%s (%s)";
 
     static {
         SYMBOLS.setGroupingSeparator(' ');
@@ -79,6 +81,7 @@ public class ResultActivity extends AppCompatActivity {
         DECIMAL_FORMAT.setGroupingUsed(true);
         DECIMAL_FORMAT.setGroupingSize(3);
     }
+
     private Loan loan;
     private LoanAmortization amortization;
     private BigDecimal overPayment;
@@ -102,7 +105,7 @@ public class ResultActivity extends AppCompatActivity {
             if (loans != null) {
                 int freeNameCount = findFreeNameCount(loans.keySet(), defaultLoanName);
                 if (freeNameCount > 0) {
-                    loanName.setText(String.format(SAVE_LOAN_NAME_FORMAT, defaultLoanName, freeNameCount));
+                    loanName.setText(String.format(SAVE_LOAN_NAME_FORMAT.value, defaultLoanName, freeNameCount));
                 } else {
                     loanName.setText(defaultLoanName);
                 }
@@ -165,11 +168,11 @@ public class ResultActivity extends AppCompatActivity {
         final String displayedName;
         if (loan.getName() == null || loan.getName().isEmpty()) {
             String defaultName = LoanCommon.getDefaultLoanName(getApplicationContext(), loan);
-            nameCount = savedLoans != null ? findFreeNameCount(savedLoans.keySet(), defaultName) : 0;
-            displayedName = nameCount > 0 ? String.format(SAVE_LOAN_NAME_FORMAT, defaultName, nameCount) : defaultName;
+            nameCount = findFreeNameCount(savedLoans.keySet(), defaultName);
+            displayedName = nameCount > 0 ? String.format(SAVE_LOAN_NAME_FORMAT.value, defaultName, nameCount) : defaultName;
         } else {
-            nameCount = savedLoans != null ? findFreeNameCount(savedLoans.keySet(), loan.getName()) : 0;
-            displayedName = nameCount > 0 ? String.format(SAVE_LOAN_NAME_FORMAT, loan.getName(), nameCount) : loan.getNameWithCount();
+            nameCount = findFreeNameCount(savedLoans.keySet(), loan.getName());
+            displayedName = nameCount > 0 ? String.format(SAVE_LOAN_NAME_FORMAT.value, loan.getName(), nameCount) : loan.getNameWithCount();
         }
 
         EditText loanName = layout.findViewById(R.id.loanNameEditText);
@@ -187,6 +190,7 @@ public class ResultActivity extends AppCompatActivity {
             public void onClick(View v) {
                 EditText loanName = (EditText) alertDialog.findViewById(R.id.loanNameEditText);
 
+                assert loanName != null;
                 if (validateForEmptyText(loanName, alertDialog.getContext().getResources().getColor(R.color.coolRed))) {
                     int newNameCount;
                     if (loanName.getText().toString().equals(displayedName)) {
@@ -287,12 +291,12 @@ public class ResultActivity extends AppCompatActivity {
      */
     private void initFromMainActivity() {
         Intent intent = getIntent();
-        loan = (Loan) intent.getExtras().get(Constant.LOAN_OBJECT);
+        loan = (Loan) intent.getExtras().get(LOAN_OBJECT.value);
 
-        useSavedAmortization = intent.getExtras().getBoolean(Constant.USE_SAVED_DATA);
+        useSavedAmortization = intent.getExtras().getBoolean(USE_SAVED_DATA.value);
 
         if (useSavedAmortization) {
-            amortization = (LoanAmortization) intent.getExtras().get(Constant.LOAN_AMORTIZATION_OBJECT);
+            amortization = (LoanAmortization) intent.getExtras().get(LOAN_AMORTIZATION_OBJECT.value);
         }
     }
 
@@ -324,7 +328,7 @@ public class ResultActivity extends AppCompatActivity {
                         .toJson(lastLoanRequestParam));
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.POST, GET_LOAN_AMROTIZATION_URL, requestParams, new Response.Listener<JSONObject>() {
+                (Request.Method.POST, GET_LOAN_AMROTIZATION_URL.value, requestParams, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         calculateLoanAmortizationCallback(response);

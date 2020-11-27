@@ -51,9 +51,6 @@ public class LoanStorage {
     public static void put(Context context, Loan loan, LoanAmortization loanAmortization) {
         Map<Loan, LoanAmortization> map = getAll(context);
 
-        if (map == null) {
-            map = new HashMap<>();
-        }
         map.put(loan, loanAmortization);
 
         SharedPreferences preferences = getSharedPreferences(context);
