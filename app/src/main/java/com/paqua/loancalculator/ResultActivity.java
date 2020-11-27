@@ -96,19 +96,26 @@ public class ResultActivity extends AppCompatActivity {
 
         initFromMainActivity();
 
+        calculateAndInitAmortizationTable();
+
+        initResetAllEarlyPaymentsView();
+
+        initSaveLoanButtonOnClick();
+    }
+
+    /**
+     * Calculates if there is no saved loan and initializes amortization table content
+     */
+    private void calculateAndInitAmortizationTable() {
         TextView loanName = (TextView)findViewById(R.id.loanName);
         if (!useSavedAmortization || amortization == null) {
             tryCalculateLoanAmortization();
             String defaultLoanName = LoanCommonUtils.getDefaultLoanName(getApplicationContext());
 
             Map<Loan, LoanAmortization> loans = LoanStorage.getAll(getApplicationContext());
-            if (loans != null) {
-                int freeNameCount = findFreeNameCount(loans.keySet(), defaultLoanName);
-                if (freeNameCount > 0) {
-                    loanName.setText(String.format(SAVE_LOAN_NAME_FORMAT.value, defaultLoanName, freeNameCount));
-                } else {
-                    loanName.setText(defaultLoanName);
-                }
+            int freeNameCount = findFreeNameCount(loans.keySet(), defaultLoanName);
+            if (freeNameCount > 0) {
+                loanName.setText(String.format(SAVE_LOAN_NAME_FORMAT.value, defaultLoanName, freeNameCount));
             } else {
                 loanName.setText(defaultLoanName);
             }
@@ -118,10 +125,6 @@ public class ResultActivity extends AppCompatActivity {
             }
             initAmortizationTableContent();
         }
-
-        initResetAllEarlyPaymentsView();
-
-        initSaveLoanButtonOnClick();
     }
 
     /**
@@ -531,7 +534,6 @@ public class ResultActivity extends AppCompatActivity {
             principalAmount.setMinHeight(minHeight);
 
             TableLayout innerTable = new TableLayout(this);
-//            innerTable.setPadding(10, 10, 20, 10);
             innerTable.setBackground(cellBackground);
 
             TableRow innerRowForAmount = new TableRow(this);

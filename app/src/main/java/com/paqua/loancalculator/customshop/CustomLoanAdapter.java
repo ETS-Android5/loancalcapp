@@ -75,10 +75,17 @@ public class CustomLoanAdapter extends ArrayAdapter<String> {
         return delegateGetView(position, parent);
     }
 
+    /**
+     * Sets up view for loan
+     * @param position position
+     * @param parent parent
+     *
+     * @return view
+     */
     private View delegateGetView(int position, ViewGroup parent) {
         View convertView;
         if (position != 0) {
-            convertView = getView(position, parent);
+            convertView = getSavedLoanItemView(position, parent);
             initDeleteButtonCallback(position, convertView);
         } else {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.spinner_item, parent, false);
@@ -89,6 +96,12 @@ public class CustomLoanAdapter extends ArrayAdapter<String> {
         return convertView;
     }
 
+    /**
+     * Initialize delete button for a view
+     *
+     * @param position position
+     * @param convertView view
+     */
     private void initDeleteButtonCallback(final int position, View convertView) {
         final Button deleteButton = convertView.findViewById(R.id.delete_loan_button);
         deleteButton.setOnClickListener(new View.OnClickListener() {
@@ -122,9 +135,17 @@ public class CustomLoanAdapter extends ArrayAdapter<String> {
         });
     }
 
-    private View getView(final int position, ViewGroup parent) {
+    /**
+     * Initializes view for spinner item
+     *
+     * @param position position
+     * @param parent parent
+     *
+     * @return view
+     */
+    private View getSavedLoanItemView(final int position, ViewGroup parent) {
         View convertView;
-        convertView = LayoutInflater.from(getContext()).inflate(R.layout.saved_loans_spinner_adapter, parent, false);
+        convertView = LayoutInflater.from(getContext()).inflate(R.layout.saved_loans_spinner_item, parent, false);
         TextView loanName = (TextView) convertView.findViewById(R.id.loanNameSpinnerText);
 
         loanName.setText(getItem(position));
