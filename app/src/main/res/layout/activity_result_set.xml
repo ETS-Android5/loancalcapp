@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/base_layout"
+    android:screenOrientation="portrait"
     tools:context=".ResultActivity">
 
     <TextView
@@ -25,17 +26,17 @@
 
     <TextView
         android:id="@+id/overPaymentWithEarlyHeader"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-condensed"
         android:text="@string/overpayment_header_text"
         android:textColor="#333333"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.04"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/withEarlyPaymentHeader"
         app:layout_constraintTop_toBottomOf="@+id/withEarlyPaymentHeader"
-        app:layout_constraintVertical_bias="0.011" />
+        app:layout_constraintVertical_bias="0.008" />
 
     <TextView
         android:id="@+id/withEarlyPaymentHeader"
@@ -47,21 +48,21 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.044"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/monthlyPaymentValue"
         app:layout_constraintTop_toBottomOf="@+id/monthlyPaymentValue"
-        app:layout_constraintVertical_bias="0.012" />
+        app:layout_constraintVertical_bias="0.015" />
 
     <ScrollView
         android:id="@+id/scrollView2"
-        android:layout_width="397dp"
-        android:layout_height="546dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="1"
         android:scrollbars="none"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/overPaymentWithEarly">
+        app:layout_constraintTop_toBottomOf="@+id/resetAllEarlyPayments">
 
         <TableLayout
             android:id="@+id/amortizationTable"
@@ -120,7 +121,7 @@
         android:textColor="#333333"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.623"
+        app:layout_constraintHorizontal_bias="0.629"
         app:layout_constraintStart_toEndOf="@+id/textView2"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.022" />
@@ -136,10 +137,10 @@
         android:textSize="21sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.032"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.003"
+        app:layout_constraintStart_toStartOf="@+id/textView2"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
-        app:layout_constraintVertical_bias="0.014" />
+        app:layout_constraintVertical_bias="0.011" />
 
     <TextView
         android:id="@+id/overPaymentAmount"
@@ -168,8 +169,8 @@
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.046"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/overPaymentWithEarlyHeader"
         app:layout_constraintTop_toBottomOf="@+id/overPaymentWithEarlyHeader"
         app:layout_constraintVertical_bias="0.001" />
 
@@ -185,8 +186,8 @@
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.967"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/descriotionRounded"
         app:layout_constraintTop_toBottomOf="@+id/overPaymentWithEarlyHeader"
         app:layout_constraintVertical_bias="0.001" />
 
@@ -200,14 +201,14 @@
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.185"
-        app:layout_constraintStart_toStartOf="@+id/descriotionRounded"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/decreaseTermDescription"
         app:layout_constraintTop_toTopOf="@+id/descriotionRounded"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/decreaseTermDescription"
-        android:layout_width="179dp"
+        android:layout_width="wrap_content"
         android:layout_height="15dp"
         android:fontFamily="@font/base_font"
         android:text="@string/reduce_term_description"
@@ -215,7 +216,7 @@
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.161"
+        app:layout_constraintHorizontal_bias="0.04"
         app:layout_constraintStart_toStartOf="@+id/descriotionRounded"
         app:layout_constraintTop_toBottomOf="@+id/paymentDecreaseBrief"
         app:layout_constraintVertical_bias="0.0" />
@@ -241,6 +242,7 @@
         android:fontFamily="@font/bold_font"
         android:paddingLeft="5dp"
         android:textColor="@color/coolDarkColor"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

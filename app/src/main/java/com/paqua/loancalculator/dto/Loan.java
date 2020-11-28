@@ -191,9 +191,10 @@ public final class Loan implements Serializable {
 
         Loan loan = (Loan) o;
 
-        if (nameCount != loan.nameCount) return false;
         if (amount != null ? !amount.equals(loan.amount) : loan.amount != null) return false;
         if (name != null ? !name.equals(loan.name) : loan.name != null) return false;
+        if (nameCount != null ? !nameCount.equals(loan.nameCount) : loan.nameCount != null)
+            return false;
         if (rate != null ? !rate.equals(loan.rate) : loan.rate != null) return false;
         if (term != null ? !term.equals(loan.term) : loan.term != null) return false;
         if (uuid != null ? !uuid.equals(loan.uuid) : loan.uuid != null) return false;
@@ -204,7 +205,7 @@ public final class Loan implements Serializable {
     public int hashCode() {
         int result = amount != null ? amount.hashCode() : 0;
         result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + nameCount;
+        result = 31 * result + (nameCount != null ? nameCount.hashCode() : 0);
         result = 31 * result + (rate != null ? rate.hashCode() : 0);
         result = 31 * result + (term != null ? term.hashCode() : 0);
         result = 31 * result + (uuid != null ? uuid.hashCode() : 0);
