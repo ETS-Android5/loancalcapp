@@ -24,6 +24,7 @@ import java.util.List;
 
 /**
  * This class is wrong - it is coupled with activity and loans
+ * TODO
  */
 public class CustomLoanAdapter extends ArrayAdapter<String> {
     private InterstitialAd interstitialAd;
@@ -31,8 +32,8 @@ public class CustomLoanAdapter extends ArrayAdapter<String> {
 
     public CustomLoanAdapter(MainActivity activity, InterstitialAd interstitialAd, Context context, List<String> items) {
         super(context, R.layout.spinner_item, items);
-        this.interstitialAd = interstitialAd;
         this.activity = activity;
+        this.interstitialAd = activity.getInterstitialAd();
         refreshLoanByIndex();
     }
 

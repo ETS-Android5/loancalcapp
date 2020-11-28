@@ -1,6 +1,7 @@
 package com.paqua.loancalculator;
 
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -23,6 +25,7 @@ import com.paqua.loancalculator.dto.Loan;
 import com.paqua.loancalculator.dto.LoanAmortization;
 import com.paqua.loancalculator.storage.LoanStorage;
 import com.paqua.loancalculator.util.LoanCommonUtils;
+import com.paqua.loancalculator.util.OrientationUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -48,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        OrientationUtils.lockOrientationPortrait(this);
+
         setContentView(R.layout.activity_main);
         initMobileAds();
 
@@ -66,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
         setMonthTermTypeOnChangeListener();
 
+        initUnderlinedTextView();
         initSavedLoansView();
     }
 
@@ -74,6 +81,19 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         initSavedLoansView();
+    }
+
+    private void initUnderlinedTextView() {
+        setUnderlineTextView((TextView) findViewById(R.id.turnOffAds));
+        setUnderlineTextView((TextView) findViewById(R.id.faq));
+    }
+
+    /**
+     * Sets underline paint flag
+     * @param textView textView
+     */
+    private void setUnderlineTextView(TextView textView) {
+        textView.setPaintFlags(textView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
     }
 
     /**
@@ -234,5 +254,9 @@ public class MainActivity extends AppCompatActivity {
 
     public Map<Integer, Map.Entry<Loan, LoanAmortization>> getLoanBySavedIndex() {
         return loanBySavedIndex;
+    }
+
+    public InterstitialAd getInterstitialAd() {
+        return interstitialAd;
     }
 }

@@ -44,6 +44,7 @@ import com.paqua.loancalculator.dto.LoanAmortizationRq;
 import com.paqua.loancalculator.dto.MonthlyPayment;
 import com.paqua.loancalculator.storage.LoanStorage;
 import com.paqua.loancalculator.util.LoanCommonUtils;
+import com.paqua.loancalculator.util.OrientationUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -90,6 +91,9 @@ public class ResultActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        OrientationUtils.lockOrientationPortrait(this);
+
         setContentView(R.layout.activity_result_set);
 
         setVisibilityForAll(INVISIBLE);
