@@ -218,6 +218,7 @@ public class ResultActivity extends AppCompatActivity {
                             .term(loan.getTerm())
                             .build();
 
+                    amortization.setOverPaymentAmountWithoutEarlyPayments(overPayment);
                     LoanStorage.put(getApplicationContext(), loan, amortization);
                     Toast.makeText(getApplicationContext(), "Saved!", Toast.LENGTH_LONG).show(); // TODO TEXT
 
@@ -304,6 +305,7 @@ public class ResultActivity extends AppCompatActivity {
 
         if (useSavedAmortization) {
             amortization = (LoanAmortization) intent.getExtras().get(LOAN_AMORTIZATION_OBJECT.value);
+            overPayment = amortization.getOverPaymentAmountWithoutEarlyPayments();
         }
     }
 
