@@ -85,6 +85,8 @@ public class ResultActivity extends AppCompatActivity {
 
     private Loan loan;
     private LoanAmortization amortization;
+
+    // This field for storing original overpayment amount (without early payments)
     private BigDecimal overPayment;
     private Boolean useSavedAmortization = true;
 

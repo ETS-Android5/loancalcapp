@@ -16,12 +16,12 @@ public final class LoanAmortization implements Serializable {
     /**
      * Amount of monthly payment
      */
-    private final BigDecimal monthlyPaymentAmount;
+    private BigDecimal monthlyPaymentAmount;
 
     /**
      * Overpayment of interest
      */
-    private final BigDecimal overPaymentAmount;
+    private BigDecimal overPaymentAmount;
 
     /**
      * Overpayment without early payments
@@ -31,7 +31,7 @@ public final class LoanAmortization implements Serializable {
     /**
      * Calculated list of monthly payments
      */
-    private final List<MonthlyPayment> monthlyPayments;
+    private List<MonthlyPayment> monthlyPayments;
 
     /**
      * Early payments
@@ -53,6 +53,18 @@ public final class LoanAmortization implements Serializable {
 
     public void setOverPaymentAmountWithoutEarlyPayments(BigDecimal overPaymentAmountWithoutEarlyPayments) {
         this.overPaymentAmountWithoutEarlyPayments = overPaymentAmountWithoutEarlyPayments;
+    }
+
+    public void setMonthlyPaymentAmount(BigDecimal monthlyPaymentAmount) {
+        this.monthlyPaymentAmount = monthlyPaymentAmount;
+    }
+
+    public void setOverPaymentAmount(BigDecimal overPaymentAmount) {
+        this.overPaymentAmount = overPaymentAmount;
+    }
+
+    public void setMonthlyPayments(List<MonthlyPayment> monthlyPayments) {
+        this.monthlyPayments = monthlyPayments;
     }
 
     /**
