@@ -30,8 +30,8 @@ public class CustomLoanAdapter extends ArrayAdapter<String> {
     private InterstitialAd interstitialAd;
     private MainActivity activity;
 
-    public CustomLoanAdapter(MainActivity activity, InterstitialAd interstitialAd, Context context, List<String> items) {
-        super(context, R.layout.spinner_item, items);
+    public CustomLoanAdapter(MainActivity activity,  List<String> items) {
+        super(activity.getApplicationContext(), R.layout.spinner_item, items);
         this.activity = activity;
         this.interstitialAd = activity.getInterstitialAd();
         refreshLoanByIndex();
@@ -151,7 +151,7 @@ public class CustomLoanAdapter extends ArrayAdapter<String> {
                         }
                     });
 
-                    if (interstitialAd.isLoaded()) {
+                    if (interstitialAd.isLoaded() && !activity.isAdDisabled()) {
                         interstitialAd.show();
                     } else {
                         // If ads did not load show amortization anyway

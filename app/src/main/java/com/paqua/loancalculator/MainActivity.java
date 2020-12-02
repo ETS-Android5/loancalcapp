@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.InputFilter;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -12,8 +13,17 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.BillingClientStateListener;
+import com.android.billingclient.api.BillingFlowParams;
+import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PurchasesUpdatedListener;
+import com.android.billingclient.api.SkuDetails;
+import com.android.billingclient.api.SkuDetailsParams;
+import com.android.billingclient.api.SkuDetailsResponseListener;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
@@ -24,6 +34,7 @@ import com.paqua.loancalculator.customshop.CustomLoanAdapter;
 import com.paqua.loancalculator.dto.Loan;
 import com.paqua.loancalculator.dto.LoanAmortization;
 import com.paqua.loancalculator.storage.LoanStorage;
+import com.paqua.loancalculator.util.Constant;
 import com.paqua.loancalculator.util.LoanCommonUtils;
 import com.paqua.loancalculator.util.OrientationUtils;
 
@@ -47,6 +58,9 @@ public class MainActivity extends AppCompatActivity {
     private Button calculateButton;
     private InterstitialAd interstitialAd;
     private Map<Integer, Map.Entry<Loan, LoanAmortization>> loanBySavedIndex;
+    private boolean adIsDisabled;
+    private BillingClient mBillingClient;
+    private Map<String, SkuDetails> mSkuDetailsMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +80,16 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
+        findViewById(R.id.turnOffAds).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        SkuDetails skuDetails = mSkuDetailsMap.get(Constant.DISABLE_ADS_ID.value);
+                        if (skuDetails != null)
+                        launchBilling(skuDetails.getSku());
+                    }
+                }
+        );
         setupRestoringBackgroundOnTextChange((EditText) findViewById(R.id.loanAmount));
         setupRestoringBackgroundOnTextChange((EditText) findViewById(R.id.interestRate));
         setupRestoringBackgroundOnTextChange((EditText) findViewById(R.id.term));
@@ -74,6 +98,84 @@ public class MainActivity extends AppCompatActivity {
 
         initUnderlinedTextView();
         initSavedLoansView();
+        initBillingClient();
+    }
+
+    /**
+     * Initializes billing client
+     */
+    private void initBillingClient() {
+        mBillingClient = BillingClient.newBuilder(this).setListener(new PurchasesUpdatedListener() {
+            @Override
+            public void onPurchasesUpdated(int responseCode, @Nullable List<Purchase> purchases) {
+                if (responseCode == BillingClient.BillingResponse.OK && purchases != null) {
+                    onPayComplete();
+                }
+            }
+        }).build();
+
+        mBillingClient.startConnection(new BillingClientStateListener() {
+            @Override
+            public void onBillingSetupFinished(@BillingClient.BillingResponse int billingResponseCode) {
+                if (billingResponseCode == BillingClient.BillingResponse.OK) {
+                    requestSkuDetails();
+
+                    List<Purchase> purchasesList = requestPurchases();
+
+                    for (int i = 0; i < purchasesList.size(); i++) {
+                        String purchaseId = purchasesList.get(i).getSku();
+                        if(TextUtils.equals(Constant.DISABLE_ADS_ID.value, purchaseId)) {
+                            onPayComplete();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onBillingServiceDisconnected() {
+                System.out.println("Billing service disconnected");
+            }
+
+        });
+    }
+
+    /**
+     * Queries billing service for a sku for disabling ads
+     */
+    private void requestSkuDetails() {
+        SkuDetailsParams.Builder skuDetailsParamsBuilder = SkuDetailsParams.newBuilder();
+        List<String> skuList = new ArrayList<>();
+        skuList.add(Constant.DISABLE_ADS_ID.value);
+        skuDetailsParamsBuilder.setSkusList(skuList).setType(BillingClient.SkuType.INAPP);
+        mBillingClient.querySkuDetailsAsync(skuDetailsParamsBuilder.build(), new SkuDetailsResponseListener() {
+            @Override
+            public void onSkuDetailsResponse(int responseCode, List<SkuDetails> skuDetailsList) {
+                if (responseCode == 0) {
+                    for (SkuDetails skuDetails : skuDetailsList) {
+                        mSkuDetailsMap.put(skuDetails.getSku(), skuDetails);
+                    }
+                }
+            }
+        });
+    }
+
+
+    private void launchBilling(String skuId) {
+        BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
+                .setSkuDetails(mSkuDetailsMap.get(skuId))
+                .build();
+        mBillingClient.launchBillingFlow(this, billingFlowParams);
+    }
+
+    private void onPayComplete() {
+        System.out.println("Payment is complete");
+        adIsDisabled = true;
+        findViewById(R.id.turnOffAds).setVisibility(View.INVISIBLE);
+    }
+
+    private List<Purchase> requestPurchases() {
+        Purchase.PurchasesResult purchasesResult = mBillingClient.queryPurchases(BillingClient.SkuType.INAPP);
+        return purchasesResult.getPurchasesList();
     }
 
     @Override
@@ -104,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
 
         List<String> items = refreshSavedLoans(savedLoans);
 
-        savedLoans.setAdapter(new CustomLoanAdapter(this, interstitialAd, MainActivity.this, items));
+        savedLoans.setAdapter(new CustomLoanAdapter(this, items));
     }
 
     public List<String> refreshSavedLoans(Spinner savedLoans) {
@@ -165,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        if (interstitialAd.isLoaded()) {
+        if (interstitialAd.isLoaded() && !adIsDisabled) {
             interstitialAd.show();
         } else {
             // If ads did not load show amortization anyway
@@ -258,5 +360,9 @@ public class MainActivity extends AppCompatActivity {
 
     public InterstitialAd getInterstitialAd() {
         return interstitialAd;
+    }
+
+    public boolean isAdDisabled() {
+        return adIsDisabled;
     }
 }
