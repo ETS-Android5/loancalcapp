@@ -12,6 +12,7 @@
         android:id="@+id/overPaymentWithEarly"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
         android:background="@drawable/amount_background"
         android:fontFamily="sans-serif-condensed"
         android:textColor="#333333"
@@ -19,10 +20,10 @@
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.032"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/overPaymentWithEarlyHeader"
         app:layout_constraintTop_toBottomOf="@+id/overPaymentWithEarlyHeader"
-        app:layout_constraintVertical_bias="0.015" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/overPaymentWithEarlyHeader"
@@ -51,12 +52,13 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/monthlyPaymentValue"
         app:layout_constraintTop_toBottomOf="@+id/monthlyPaymentValue"
-        app:layout_constraintVertical_bias="0.015" />
+        app:layout_constraintVertical_bias="0.012" />
 
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="5dp"
         android:layout_weight="1"
         android:scrollbars="none"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -107,10 +109,10 @@
         android:textColor="#333333"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.039"
+        app:layout_constraintHorizontal_bias="0.041"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.022" />
+        app:layout_constraintVertical_bias="0.009" />
 
     <TextView
         android:id="@+id/overPaymentLabel"
@@ -121,10 +123,10 @@
         android:textColor="#333333"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.629"
+        app:layout_constraintHorizontal_bias="0.605"
         app:layout_constraintStart_toEndOf="@+id/textView2"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.022" />
+        app:layout_constraintVertical_bias="0.008" />
 
     <TextView
         android:id="@+id/monthlyPaymentValue"
@@ -140,13 +142,13 @@
         app:layout_constraintHorizontal_bias="0.003"
         app:layout_constraintStart_toStartOf="@+id/textView2"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
-        app:layout_constraintVertical_bias="0.011" />
+        app:layout_constraintVertical_bias="0.008" />
 
     <TextView
         android:id="@+id/overPaymentAmount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="6dp"
         android:background="@drawable/amount_background"
         android:fontFamily="sans-serif-condensed"
         android:text="0000000"
@@ -163,7 +165,6 @@
         android:id="@+id/hintToEarlyPayment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:fontFamily="sans-serif-condensed"
         android:text="@string/hint_add_extra_payment_text"
         android:textSize="12sp"
@@ -171,15 +172,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/overPaymentWithEarlyHeader"
-        app:layout_constraintTop_toBottomOf="@+id/overPaymentWithEarlyHeader"
-        app:layout_constraintVertical_bias="0.001" />
+        app:layout_constraintTop_toBottomOf="@+id/descriotionRounded"
+        app:layout_constraintVertical_bias="0.006" />
 
     <TextView
         android:id="@+id/resetAllEarlyPayments"
-        android:layout_width="197dp"
+        android:layout_width="168dp"
         android:layout_height="31dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="2dp"
         android:fontFamily="@font/bold_font"
+        android:singleLine="false"
         android:text="@string/reset_all_extra_payments_text"
         android:textAllCaps="false"
         android:textColor="#333333"
@@ -188,8 +190,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/descriotionRounded"
-        app:layout_constraintTop_toBottomOf="@+id/overPaymentWithEarlyHeader"
-        app:layout_constraintVertical_bias="0.001" />
+        app:layout_constraintTop_toBottomOf="@+id/descriotionRounded"
+        app:layout_constraintVertical_bias="0.003" />
 
     <TextView
         android:id="@+id/paymentDecreaseBrief"
@@ -249,6 +251,6 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/descriotionRounded"
         app:layout_constraintTop_toBottomOf="@+id/overPaymentAmount"
-        app:layout_constraintVertical_bias="0.001" />
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

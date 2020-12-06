@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        initBillingClient();
                         SkuDetails skuDetails = mSkuDetailsMap.get(Constant.DISABLE_ADS_ID.value);
                         if (skuDetails != null)
                         launchBilling(skuDetails.getSku());
@@ -170,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
     private void onPayComplete() {
         System.out.println("Payment is complete");
         adIsDisabled = true;
-        findViewById(R.id.turnOffAds).setVisibility(View.INVISIBLE);
+//        findViewById(R.id.turnOffAds).setVisibility(View.INVISIBLE);
     }
 
     private List<Purchase> requestPurchases() {
