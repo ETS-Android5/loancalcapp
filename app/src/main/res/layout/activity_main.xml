@@ -184,4 +184,16 @@
         app:layout_constraintTop_toBottomOf="@+id/calc"
         app:layout_constraintVertical_bias="0.91" />
 
+    <Button
+        android:id="@+id/datePickerButton"
+        android:layout_width="41dp"
+        android:layout_height="43dp"
+        android:background="@drawable/calendar_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.132"
+        app:layout_constraintStart_toEndOf="@+id/loanAmount"
+        app:layout_constraintTop_toTopOf="@+id/loanAmount"
+        app:layout_constraintVertical_bias="0.0" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -41,4 +41,5 @@
     <string name="delete_loan_dialog_text">¿Estás seguro de que deseas eliminar el préstamo?</string>
     <string name="saved_loans_text">Préstamos guardados</string>
     <string name="my_loan_text">Mi préstamo</string>
+    <string name="enter_first_payment_date">Ingrese la primera fecha de pago (opcional)</string>
 </resources>

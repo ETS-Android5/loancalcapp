@@ -41,4 +41,5 @@
     <string name="delete_loan_dialog_text">Möchten Sie das Darlehen wirklich löschen?</string>
     <string name="saved_loans_text">Gespeicherte Kredite</string>
     <string name="my_loan_text">Mein Darlehen</string>
+    <string name="enter_first_payment_date">Geben Sie das erste Zahlungsdatum ein (optional)</string>
 </resources>

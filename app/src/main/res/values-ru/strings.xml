@@ -45,4 +45,5 @@
     <string name="delete_loan_dialog_text">Вы уверены, что хотите удалить кредит?</string>
     <string name="saved_loans_text">Сохраненные кредиты</string>
     <string name="my_loan_text">Мой кредит</string>
+    <string name="enter_first_payment_date">Введите дату первого платежа (необязательно)</string>
 </resources>

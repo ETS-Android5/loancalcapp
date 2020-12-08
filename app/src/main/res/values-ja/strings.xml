@@ -41,4 +41,5 @@
     <string name="delete_loan_dialog_text">ローンを削除してもよろしいですか？</string>
     <string name="saved_loans_text">保存されたローン</string>
     <string name="my_loan_text">私のローン</string>
+    <string name="enter_first_payment_date">最初の支払い日を入力してください（オプション）</string>
 </resources>

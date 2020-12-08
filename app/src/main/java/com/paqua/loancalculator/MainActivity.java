@@ -1,19 +1,23 @@
 package com.paqua.loancalculator;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.billingclient.api.BillingClient;
@@ -39,7 +43,9 @@ import com.paqua.loancalculator.util.LoanCommonUtils;
 import com.paqua.loancalculator.util.OrientationUtils;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean adIsDisabled;
     private BillingClient mBillingClient;
     private Map<String, SkuDetails> mSkuDetailsMap = new HashMap<>();
+    private Date firstPaymentDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +98,46 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+
+        findViewById(R.id.datePickerButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(v.getContext());
+                alertDialogBuilder.setPositiveButton(getResources().getString(R.string.add_extra_payment_button_text), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        AlertDialog alertDialog = (AlertDialog) dialog;
+
+                        DatePicker datePicker = alertDialog.findViewById(R.id.datePicker);
+                        firstPaymentDate = LoanCommonUtils.getDateFromDatePicker(datePicker).getTime();
+                    }
+                });
+
+                alertDialogBuilder.setNegativeButton(getResources().getString(R.string.cancel_extra_payment_button_text), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+
+                alertDialogBuilder.setNeutralButton(getResources().getString(R.string.reset_extra_payment_button_text), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        firstPaymentDate = null;
+                    }
+                });
+
+                LayoutInflater inflater = getLayoutInflater();
+                final View layout = inflater.inflate(R.layout.first_payment_date_dialog, null);
+
+                DatePicker datePicker = (DatePicker) layout.findViewById(R.id.datePicker);
+                datePicker.setSpinnersShown(true);
+                datePicker.setCalendarViewShown(false);
+
+                alertDialogBuilder.setView(layout);
+
+                alertDialogBuilder.create().show();
+            }
+        });
         setupRestoringBackgroundOnTextChange((EditText) findViewById(R.id.loanAmount));
         setupRestoringBackgroundOnTextChange((EditText) findViewById(R.id.interestRate));
         setupRestoringBackgroundOnTextChange((EditText) findViewById(R.id.term));
