@@ -43,11 +43,14 @@ import com.paqua.loancalculator.util.LoanCommonUtils;
 import com.paqua.loancalculator.util.OrientationUtils;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -61,13 +64,14 @@ import static com.paqua.loancalculator.util.ValidationUtils.validateForZero;
 import static com.paqua.loancalculator.util.ValidationUtils.validateInterestRate;
 
 public class MainActivity extends AppCompatActivity {
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
     private Button calculateButton;
     private InterstitialAd interstitialAd;
     private Map<Integer, Map.Entry<Loan, LoanAmortization>> loanBySavedIndex;
     private boolean adIsDisabled;
     private BillingClient mBillingClient;
     private Map<String, SkuDetails> mSkuDetailsMap = new HashMap<>();
-    private Date firstPaymentDate;
+    private Calendar firstPaymentDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +113,11 @@ public class MainActivity extends AppCompatActivity {
                         AlertDialog alertDialog = (AlertDialog) dialog;
 
                         DatePicker datePicker = alertDialog.findViewById(R.id.datePicker);
-                        firstPaymentDate = LoanCommonUtils.getDateFromDatePicker(datePicker).getTime();
+                        firstPaymentDate = LoanCommonUtils.getDateFromDatePicker(datePicker);
+
+                        TextView dateTextView = findViewById(R.id.firstPaymentDateTextView);
+                        dateTextView.setVisibility(View.VISIBLE);
+                        dateTextView.setText(DATE_FORMAT.format(firstPaymentDate.getTime()));
                     }
                 });
 
@@ -123,11 +131,20 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         firstPaymentDate = null;
+
+                        TextView dateTextView = findViewById(R.id.firstPaymentDateTextView);
+                        dateTextView.setVisibility(View.INVISIBLE);
+                        dateTextView.setText("");
                     }
                 });
 
                 LayoutInflater inflater = getLayoutInflater();
                 final View layout = inflater.inflate(R.layout.first_payment_date_dialog, null);
+
+                if (firstPaymentDate != null) {
+                    DatePicker datePicker = layout.findViewById(R.id.datePicker);
+                    datePicker.updateDate(firstPaymentDate.get(Calendar.YEAR), firstPaymentDate.get(Calendar.MONTH), firstPaymentDate.get(Calendar.DAY_OF_MONTH));
+                }
 
                 DatePicker datePicker = (DatePicker) layout.findViewById(R.id.datePicker);
                 datePicker.setSpinnersShown(true);
