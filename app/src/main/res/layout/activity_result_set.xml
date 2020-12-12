@@ -200,7 +200,7 @@
         android:fontFamily="@font/base_font"
         android:text="@string/decrease_amount_of_payment_description"
         android:textColor="@color/coolDarkColor"
-        android:textSize="10sp"
+        android:textSize="8sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -215,7 +215,7 @@
         android:fontFamily="@font/base_font"
         android:text="@string/reduce_term_description"
         android:textColor="@color/coolDarkColor"
-        android:textSize="10sp"
+        android:textSize="8sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.04"
@@ -225,8 +225,8 @@
 
     <ImageView
         android:id="@+id/descriotionRounded"
-        android:layout_width="167dp"
-        android:layout_height="27dp"
+        android:layout_width="166dp"
+        android:layout_height="26dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

@@ -761,7 +761,7 @@ public class ResultActivity extends AppCompatActivity {
         // Header
         TableRow header = new TableRow(ResultActivity.this);
         Drawable background = getResources().getDrawable(R.drawable.amortization_header_background);
-        int headerFontSize = 16;
+        int headerFontSize = 15;
         int textColor = getResources().getColor(R.color.coolDarkColor);
 
         Typeface standardTypeface = getStandardTypeface();
@@ -839,6 +839,7 @@ public class ResultActivity extends AppCompatActivity {
         Integer paymentNumber = 0;
 
         int textColor = getResources().getColor(R.color.coolDarkColor);
+        int textSize = 12;
 
         Typeface standardTypeface = getStandardTypeface();
         Typeface boldTypeface = getBoldTypeface();
@@ -861,6 +862,7 @@ public class ResultActivity extends AppCompatActivity {
             currentPaymentNumber.setText(currentPaymentNumberText);
             currentPaymentNumber.setTypeface(standardTypeface);
             currentPaymentNumber.setTextColor(textColor);
+            currentPaymentNumber.setTextSize(textSize);
             currentPaymentNumber.setBackground(cellBackground);
             currentPaymentNumber.setPadding(10, 10, 0, 10);
             currentPaymentNumber.setMinHeight(minHeight);
@@ -871,6 +873,7 @@ public class ResultActivity extends AppCompatActivity {
                 paymentDate.setText(CustomDateUtils.convertToDisplayingFormat(payment.getPaymentDate()));
                 paymentDate.setTypeface(standardTypeface);
                 paymentDate.setTextColor(textColor);
+                paymentDate.setTextSize(textSize);
                 paymentDate.setBackground(cellBackground);
                 paymentDate.setPadding(10, 10, 10, 10);
                 paymentDate.setMinHeight(minHeight);
@@ -880,6 +883,7 @@ public class ResultActivity extends AppCompatActivity {
             loanAmount.setText(DECIMAL_FORMAT.format(payment.getLoanBalanceAmount()));
             loanAmount.setTypeface(standardTypeface);
             loanAmount.setTextColor(textColor);
+            loanAmount.setTextSize(textSize);
             loanAmount.setBackground(cellBackground);
             loanAmount.setPadding(10, 10 ,0 ,10);
             loanAmount.setMinHeight(minHeight);
@@ -888,6 +892,7 @@ public class ResultActivity extends AppCompatActivity {
             interestAmount.setText(DECIMAL_FORMAT.format(payment.getInterestPaymentAmount()));
             interestAmount.setTypeface(standardTypeface);
             interestAmount.setTextColor(textColor);
+            interestAmount.setTextSize(textSize);
             interestAmount.setBackground(cellBackground);
             interestAmount.setPadding(10, 10 ,0 ,10);
             interestAmount.setMinHeight(minHeight);
@@ -896,6 +901,7 @@ public class ResultActivity extends AppCompatActivity {
             principalAmount.setText(DECIMAL_FORMAT.format(payment.getDebtPaymentAmount()));
             principalAmount.setTypeface(standardTypeface);
             principalAmount.setTextColor(textColor);
+            principalAmount.setTextSize(textSize);
             principalAmount.setBackground(cellBackground);
             principalAmount.setPadding(10, 10 ,0 ,10);
             principalAmount.setMinHeight(minHeight);
@@ -910,6 +916,7 @@ public class ResultActivity extends AppCompatActivity {
             paymentAmount.setText(DECIMAL_FORMAT.format(payment.getPaymentAmount()));
             paymentAmount.setTypeface(standardTypeface);
             paymentAmount.setTextColor(textColor);
+            paymentAmount.setTextSize(textSize);
             paymentAmount.setBackground(cellBackground);
             paymentAmount.setMinHeight(minHeight / 2);
             paymentAmount.setPadding(10, 10, 0, 10);

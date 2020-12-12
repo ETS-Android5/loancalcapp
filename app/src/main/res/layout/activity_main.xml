@@ -192,22 +192,21 @@
         android:background="@drawable/calendar_icon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.134"
+        app:layout_constraintHorizontal_bias="0.03"
         app:layout_constraintStart_toEndOf="@+id/loanAmount"
         app:layout_constraintTop_toTopOf="@+id/loanAmount"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/firstPaymentDateTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
         android:fontFamily="@font/base_font"
         android:textColor="@color/coolDarkColor"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.12"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/datePickerButton"
         app:layout_constraintTop_toBottomOf="@+id/datePickerButton"
         app:layout_constraintVertical_bias="0.0" />

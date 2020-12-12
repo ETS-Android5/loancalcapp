@@ -13,7 +13,7 @@ import java.util.Locale;
  * Consists of static methods which somehow relates to dates or calendars for this particular app
  */
 public class CustomDateUtils {
-    private static final SimpleDateFormat DISPLAYING_DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+    private static final SimpleDateFormat DISPLAYING_DATE_FORMAT = new SimpleDateFormat("dd/MM/yy", Locale.getDefault());
     private static final SimpleDateFormat API_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
     /**
