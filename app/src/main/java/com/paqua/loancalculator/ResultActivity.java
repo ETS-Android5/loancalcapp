@@ -218,6 +218,7 @@ public class ResultActivity extends AppCompatActivity {
                             .rate(loan.getRate())
                             .amount(loan.getAmount())
                             .term(loan.getTerm())
+                            .firstPaymentDate(loan.getFirstPaymentDate())
                             .build();
 
                     amortization.setOverPaymentAmountWithoutEarlyPayments(overPayment);
@@ -404,6 +405,7 @@ public class ResultActivity extends AppCompatActivity {
                 .term(loan.getTerm())
                 .rate(loan.getRate())
                 .earlyPayments(amortization.getEarlyPayments())
+                .firstPaymentDate(loan.getFirstPaymentDate())
                 .build();
 
         initAmortizationTableContent();
@@ -750,6 +752,7 @@ public class ResultActivity extends AppCompatActivity {
                     .term(loan.getTerm())
                     .rate(loan.getRate())
                     .earlyPayments(earlyPayment)
+                    .firstPaymentDate(loan.getFirstPaymentDate())
                     .build();
 
             tryCalculateLoanAmortization();
@@ -768,6 +771,7 @@ public class ResultActivity extends AppCompatActivity {
                 .term(loan.getTerm())
                 .rate(loan.getRate())
                 .earlyPayments(new HashMap<Integer, EarlyPayment>())
+                .firstPaymentDate(loan.getFirstPaymentDate())
                 .build();
 
         amortization = null;
@@ -836,6 +840,7 @@ public class ResultActivity extends AppCompatActivity {
                     .rate(loan.getRate())
                     .term(loan.getTerm())
                     .earlyPayments(earlyPayments)
+                    .firstPaymentDate(loan.getFirstPaymentDate())
                     .build();
 
             tryCalculateLoanAmortization();

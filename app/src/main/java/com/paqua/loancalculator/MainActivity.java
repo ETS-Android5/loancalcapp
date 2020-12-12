@@ -62,7 +62,6 @@ import static com.paqua.loancalculator.util.ValidationUtils.validateForZero;
 import static com.paqua.loancalculator.util.ValidationUtils.validateInterestRate;
 
 public class MainActivity extends AppCompatActivity {
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
     private Button calculateButton;
     private InterstitialAd interstitialAd;
@@ -135,7 +134,9 @@ public class MainActivity extends AppCompatActivity {
 
                         TextView dateTextView = findViewById(R.id.firstPaymentDateTextView);
                         dateTextView.setVisibility(View.VISIBLE);
-                        dateTextView.setText(DATE_FORMAT.format(firstPaymentDate.getTime()));
+                        dateTextView.setText(LoanCommonUtils.getDateFormatterForDisplayingToUser()
+                                .format(firstPaymentDate.getTime())
+                        );
                     }
                 });
 
@@ -386,6 +387,8 @@ public class MainActivity extends AppCompatActivity {
                     .amount(amount)
                     .rate(rate)
                     .term(term)
+                    .firstPaymentDate(LoanCommonUtils.getDateFormatterForApi()
+                            .format(firstPaymentDate))
                     .build();
 
             intent.putExtra(LOAN_OBJECT.value, loan);

@@ -4,7 +4,6 @@ import androidx.annotation.Nullable;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Map;
 import java.util.UUID;
 
@@ -59,9 +58,9 @@ public final class Loan implements Serializable {
      * Date of first payment
      */
     @Nullable
-    private final LocalDate firstPaymentDate;
+    private final String firstPaymentDate;
 
-    public Loan(String name, Integer nameCount, BigDecimal amount, BigDecimal rate, Integer term, UUID uuid, Map<Integer, EarlyPayment> earlyPayments, @Nullable LocalDate firstPaymentDate) {
+    public Loan(String name, Integer nameCount, BigDecimal amount, BigDecimal rate, Integer term, UUID uuid, Map<Integer, EarlyPayment> earlyPayments, @Nullable String firstPaymentDate) {
         this.name = name;
         this.amount = amount;
         this.nameCount = nameCount;
@@ -132,7 +131,7 @@ public final class Loan implements Serializable {
      * @return Date of first payment
      */
     @Nullable
-    public LocalDate getFirstPaymentDate() {
+    public String getFirstPaymentDate() {
         return firstPaymentDate;
     }
 
@@ -152,12 +151,12 @@ public final class Loan implements Serializable {
         private UUID uuid;
         private String name;
         private Integer nameCount;
-        private LocalDate firstPaymentDate;
+        private String firstPaymentDate;
 
         public LoanBuilder() {
         }
 
-        public LoanBuilder(String name, Integer nameCount, BigDecimal amount, BigDecimal rate, Integer term, UUID uuid, Map<Integer, EarlyPayment> earlyPayments, LocalDate firstPaymentDate) {
+        public LoanBuilder(String name, Integer nameCount, BigDecimal amount, BigDecimal rate, Integer term, UUID uuid, Map<Integer, EarlyPayment> earlyPayments, String firstPaymentDate) {
             this.name = name;
             this.nameCount = nameCount;
             this.uuid = uuid;
@@ -200,7 +199,7 @@ public final class Loan implements Serializable {
             return this;
         }
 
-        public LoanBuilder firstPaymentDate(LocalDate firstPaymentDate) {
+        public LoanBuilder firstPaymentDate(String firstPaymentDate) {
             this.firstPaymentDate = firstPaymentDate;
             return this;
         }

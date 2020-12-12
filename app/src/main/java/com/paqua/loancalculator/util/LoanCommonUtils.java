@@ -5,9 +5,18 @@ import android.widget.DatePicker;
 
 import com.paqua.loancalculator.R;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
+/**
+ * Garbage class
+ * // TODO REFACTOR
+ */
 public class LoanCommonUtils {
+    private static final SimpleDateFormat DISPLAYING_DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+    private static final SimpleDateFormat API_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
     /**
      * Default loan name for saving into local storage
      *
@@ -30,6 +39,19 @@ public class LoanCommonUtils {
         calendar.set(year, month, day);
 
         return calendar;
+    }
+
+    /**
+     * @return formatter that can be used to display date to users
+     */
+    public static SimpleDateFormat getDateFormatterForDisplayingToUser() {
+        return DISPLAYING_DATE_FORMAT;
+    }
+    /**
+     * @return formatter that can be used in api calls
+     */
+    public static SimpleDateFormat getDateFormatterForApi() {
+        return API_DATE_FORMAT;
     }
 
 }

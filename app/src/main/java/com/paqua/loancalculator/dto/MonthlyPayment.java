@@ -4,7 +4,6 @@ import androidx.annotation.Nullable;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 /**
  * Represents detailed information about monthly payment
@@ -48,9 +47,9 @@ public final class MonthlyPayment implements Serializable {
      * Date of payment
      */
     @Nullable
-    private final LocalDate paymentDate;
+    private final String paymentDate;
 
-    public MonthlyPayment(Integer monthNumber, BigDecimal loanBalanceAmount, BigDecimal debtPaymentAmount, BigDecimal interestPaymentAmount, BigDecimal paymentAmount, BigDecimal additionalPaymentAmount, LocalDate paymentDate) {
+    public MonthlyPayment(Integer monthNumber, BigDecimal loanBalanceAmount, BigDecimal debtPaymentAmount, BigDecimal interestPaymentAmount, BigDecimal paymentAmount, BigDecimal additionalPaymentAmount, String paymentDate) {
         this.monthNumber = monthNumber;
         this.loanBalanceAmount = loanBalanceAmount;
         this.debtPaymentAmount = debtPaymentAmount;
@@ -106,7 +105,7 @@ public final class MonthlyPayment implements Serializable {
      * @return Payment date
      */
     @Nullable
-    public LocalDate getPaymentDate() {
+    public String getPaymentDate() {
         return paymentDate;
     }
 
@@ -123,12 +122,12 @@ public final class MonthlyPayment implements Serializable {
         private BigDecimal interestPaymentAmount;
         private BigDecimal paymentAmount;
         private BigDecimal additionalPaymentAmount;
-        private LocalDate paymentDate;
+        private String paymentDate;
 
         public MonthlyPaymentBuilder() {
         }
 
-        public MonthlyPaymentBuilder(Integer monthNumber, BigDecimal loanBalanceAmount, BigDecimal debtPaymentAmount, BigDecimal interestPaymentAmount, BigDecimal paymentAmount, BigDecimal additionalPaymentAmount, LocalDate paymentDate) {
+        public MonthlyPaymentBuilder(Integer monthNumber, BigDecimal loanBalanceAmount, BigDecimal debtPaymentAmount, BigDecimal interestPaymentAmount, BigDecimal paymentAmount, BigDecimal additionalPaymentAmount, String paymentDate) {
             this.monthNumber = monthNumber;
             this.loanBalanceAmount = loanBalanceAmount;
             this.debtPaymentAmount = debtPaymentAmount;
@@ -162,7 +161,7 @@ public final class MonthlyPayment implements Serializable {
             this.additionalPaymentAmount = additionalPaymentAmount;
             return this;
         }
-        public MonthlyPaymentBuilder paymentDate(LocalDate paymentDate) {
+        public MonthlyPaymentBuilder paymentDate(String paymentDate) {
             this.paymentDate = paymentDate;
             return this;
         }
