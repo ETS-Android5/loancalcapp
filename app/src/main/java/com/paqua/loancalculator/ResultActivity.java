@@ -766,16 +766,16 @@ public class ResultActivity extends AppCompatActivity {
 
         Typeface standardTypeface = getStandardTypeface();
 
-        header.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+        header.setGravity(Gravity.RIGHT | Gravity.TOP);
         header.setBackground(background);
-        header.setPadding(20, 50, 10, 50);
+        header.setPadding(0, 50, 10, 50);
 
         TextView paymentNumberColumn = new TextView(ResultActivity.this);
         paymentNumberColumn.setText("№   ");
         paymentNumberColumn.setTextSize(headerFontSize);
         paymentNumberColumn.setTextColor(textColor);
         paymentNumberColumn.setTypeface(standardTypeface);
-        paymentNumberColumn.setPadding(30, 0, 0 , 0);
+        paymentNumberColumn.setPadding(10, 0, 10 , 0);
 
         TextView dateColumn = new TextView(ResultActivity.this);
         dateColumn.setText(getResources().getString(R.string.date_table_column_text));
@@ -872,7 +872,7 @@ public class ResultActivity extends AppCompatActivity {
                 paymentDate.setTypeface(standardTypeface);
                 paymentDate.setTextColor(textColor);
                 paymentDate.setBackground(cellBackground);
-                paymentDate.setPadding(10, 10, 0, 10);
+                paymentDate.setPadding(10, 10, 10, 10);
                 paymentDate.setMinHeight(minHeight);
             }
 
