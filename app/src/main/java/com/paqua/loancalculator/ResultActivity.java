@@ -894,7 +894,7 @@ public class ResultActivity extends AppCompatActivity {
             interestAmount.setTextColor(textColor);
             interestAmount.setTextSize(textSize);
             interestAmount.setBackground(cellBackground);
-            interestAmount.setPadding(10, 10 ,0 ,10);
+            interestAmount.setPadding(10, 10 ,5 ,10);
             interestAmount.setMinHeight(minHeight);
 
             TextView principalAmount = new TextView(ResultActivity.this);
