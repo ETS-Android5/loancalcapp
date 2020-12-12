@@ -44,10 +44,8 @@ import com.paqua.loancalculator.util.OrientationUtils;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -65,6 +63,7 @@ import static com.paqua.loancalculator.util.ValidationUtils.validateInterestRate
 
 public class MainActivity extends AppCompatActivity {
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+
     private Button calculateButton;
     private InterstitialAd interstitialAd;
     private Map<Integer, Map.Entry<Loan, LoanAmortization>> loanBySavedIndex;
@@ -103,6 +102,25 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
+        initDatePickerButton();
+
+        setupRestoringBackgroundOnTextChange((EditText) findViewById(R.id.loanAmount));
+        setupRestoringBackgroundOnTextChange((EditText) findViewById(R.id.interestRate));
+        setupRestoringBackgroundOnTextChange((EditText) findViewById(R.id.term));
+
+        setMonthTermTypeOnChangeListener();
+
+        initUnderlinedTextView();
+        initSavedLoansView();
+        initBillingClient();
+    }
+
+    /**
+     * Callback for a click on date picker button on
+     *
+     * Shows dialog for choosing first payment date
+     */
+    private void initDatePickerButton() {
         findViewById(R.id.datePickerButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -155,15 +173,6 @@ public class MainActivity extends AppCompatActivity {
                 alertDialogBuilder.create().show();
             }
         });
-        setupRestoringBackgroundOnTextChange((EditText) findViewById(R.id.loanAmount));
-        setupRestoringBackgroundOnTextChange((EditText) findViewById(R.id.interestRate));
-        setupRestoringBackgroundOnTextChange((EditText) findViewById(R.id.term));
-
-        setMonthTermTypeOnChangeListener();
-
-        initUnderlinedTextView();
-        initSavedLoansView();
-        initBillingClient();
     }
 
     /**
