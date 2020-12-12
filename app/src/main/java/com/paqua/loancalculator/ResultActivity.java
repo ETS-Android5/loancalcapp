@@ -44,18 +44,22 @@ import com.paqua.loancalculator.dto.LoanAmortization;
 import com.paqua.loancalculator.dto.LoanAmortizationRq;
 import com.paqua.loancalculator.dto.MonthlyPayment;
 import com.paqua.loancalculator.storage.LoanStorage;
+import com.paqua.loancalculator.util.CustomDateUtils;
 import com.paqua.loancalculator.util.LoanCommonUtils;
 import com.paqua.loancalculator.util.OrientationUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -488,112 +492,10 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     /**
-     * Builds table content
-     * @param tableLayout
+     * Condition for showing payment date to user
      */
-    // TODO Too complex method - refactor
-    @SuppressLint("SetTextI18n")
-    private void buildAmortizationTableContent(TableLayout tableLayout) {
-        Integer paymentNumber = 0;
-
-        int textColor = getResources().getColor(R.color.coolDarkColor);
-
-        Typeface standardTypeface = getStandardTypeface();
-        Typeface boldTypeface = getBoldTypeface();
-
-        Drawable cellBackground = getResources().getDrawable(R.drawable.amortization_cell_background);
-        Drawable cellBackgroundWithoutStroke = getResources().getDrawable(R.drawable.amortization_cell_background_without_stroke);
-        Drawable earlyPaymentBackground = getResources().getDrawable(R.drawable.calc_button);
-
-        for(MonthlyPayment payment : amortization.getMonthlyPayments()) {
-            TableRow row = new TableRow(ResultActivity.this);
-
-            row.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
-            row.setMinimumHeight(57);
-
-            int minHeight = 150; // TODO temp
-            TextView currentPaymentNumber = new TextView(ResultActivity.this);
-            currentPaymentNumber.setText((++paymentNumber).toString() + ((payment.getPaymentDate() != null) ? "\n" + payment.getPaymentDate() : ""));
-            currentPaymentNumber.setTypeface(standardTypeface);
-            currentPaymentNumber.setTextColor(textColor);
-            currentPaymentNumber.setBackground(cellBackground);
-            currentPaymentNumber.setPadding(30, 10, 10, 10);
-            currentPaymentNumber.setMinHeight(minHeight);
-
-
-            TextView loanAmount = new TextView(ResultActivity.this);
-            loanAmount.setText(DECIMAL_FORMAT.format(payment.getLoanBalanceAmount()));
-            loanAmount.setTypeface(standardTypeface);
-            loanAmount.setTextColor(textColor);
-            loanAmount.setBackground(cellBackground);
-            loanAmount.setPadding(10, 10 ,10 ,10);
-            loanAmount.setMinHeight(minHeight);
-
-            TextView interestAmount = new TextView(ResultActivity.this);
-            interestAmount.setText(DECIMAL_FORMAT.format(payment.getInterestPaymentAmount()));
-            interestAmount.setTypeface(standardTypeface);
-            interestAmount.setTextColor(textColor);
-            interestAmount.setBackground(cellBackground);
-            interestAmount.setPadding(10, 10 ,10 ,10);
-            interestAmount.setMinHeight(minHeight);
-
-            TextView principalAmount = new TextView(ResultActivity.this);
-            principalAmount.setText(DECIMAL_FORMAT.format(payment.getDebtPaymentAmount()));
-            principalAmount.setTypeface(standardTypeface);
-            principalAmount.setTextColor(textColor);
-            principalAmount.setBackground(cellBackground);
-            principalAmount.setPadding(10, 10 ,10 ,10);
-            principalAmount.setMinHeight(minHeight);
-
-            TableLayout innerTable = new TableLayout(this);
-            innerTable.setBackground(cellBackground);
-
-            TableRow innerRowForAmount = new TableRow(this);
-            innerTable.addView(innerRowForAmount);
-
-            TextView paymentAmount = new TextView(ResultActivity.this);
-            paymentAmount.setText(DECIMAL_FORMAT.format(payment.getPaymentAmount()));
-            paymentAmount.setTypeface(standardTypeface);
-            paymentAmount.setTextColor(textColor);
-            paymentAmount.setBackground(cellBackground);
-            paymentAmount.setMinHeight(minHeight / 2);
-            paymentAmount.setPadding(10, 10, 30, 10);
-            innerRowForAmount.addView(paymentAmount);
-
-            String earlyPaymentValue = getEarlyPaymentValue(payment);
-
-            TextView earlyPayment = new TextView(this);
-            earlyPayment.setText(earlyPaymentValue);
-            earlyPayment.setTypeface(boldTypeface);
-            earlyPayment.setTextColor(textColor);
-            earlyPayment.setBackground(earlyPaymentBackground);
-            earlyPayment.setMinHeight((minHeight / 2) - 2); // TODO What the fuck is this thing?
-            earlyPayment.setPaintFlags(earlyPayment.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-            earlyPayment.setPadding(10, 10 ,10 ,10);
-            earlyPayment.setTextSize(11);
-
-            earlyPayment.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    earlyPaymentAddOnClickCallback(v);
-                }
-            });
-
-            TableRow innerRowForEarlyPayment = new TableRow(this);
-            innerRowForEarlyPayment.addView(earlyPayment);
-            innerRowForEarlyPayment.setTag(paymentNumber - 1);
-
-            innerTable.addView(innerRowForEarlyPayment);
-
-            row.addView(currentPaymentNumber);
-            row.addView(loanAmount);
-            row.addView(interestAmount);
-            row.addView(principalAmount);
-            row.addView(innerTable);
-
-            tableLayout.addView(row);
-        }
-
+    private boolean showPaymentDate() {
+        return loan.getFirstPaymentDate() != null && !loan.getFirstPaymentDate().isEmpty();
     }
 
     /**
@@ -875,6 +777,13 @@ public class ResultActivity extends AppCompatActivity {
         paymentNumberColumn.setTypeface(standardTypeface);
         paymentNumberColumn.setPadding(30, 0, 0 , 0);
 
+        TextView dateColumn = new TextView(ResultActivity.this);
+        dateColumn.setText(getResources().getString(R.string.date_table_column_text));
+        dateColumn.setTextSize(headerFontSize);
+        dateColumn.setTextColor(textColor);
+        dateColumn.setTypeface(standardTypeface);
+        dateColumn.setPadding(20, 0, 0 , 0);
+
         TextView loanBalanceAmountColumn = new TextView(ResultActivity.this);
         loanBalanceAmountColumn.setText(getResources().getString(R.string.balance_table_column_text));
         loanBalanceAmountColumn.setTextSize(headerFontSize);
@@ -908,12 +817,143 @@ public class ResultActivity extends AppCompatActivity {
         paymentAmountColumn.setPadding(20, 0 , 0 ,0);
 
         header.addView(paymentNumberColumn);
+
+        if (showPaymentDate()) {
+            header.addView(dateColumn);
+        }
         header.addView(loanBalanceAmountColumn);
         header.addView(interestAmountColumn);
         header.addView(principalAmountColumn);
         header.addView(paymentAmountColumn);
 
         tl.addView(header);
+    }
+
+    /**
+     * Builds table content
+     * @param tableLayout
+     */
+    // TODO Too complex method - refactor
+    @SuppressLint("SetTextI18n")
+    private void buildAmortizationTableContent(TableLayout tableLayout) {
+        Integer paymentNumber = 0;
+
+        int textColor = getResources().getColor(R.color.coolDarkColor);
+
+        Typeface standardTypeface = getStandardTypeface();
+        Typeface boldTypeface = getBoldTypeface();
+
+        Drawable cellBackground = getResources().getDrawable(R.drawable.amortization_cell_background);
+        Drawable cellBackgroundWithoutStroke = getResources().getDrawable(R.drawable.amortization_cell_background_without_stroke);
+        Drawable earlyPaymentBackground = getResources().getDrawable(R.drawable.calc_button);
+
+        for(MonthlyPayment payment : amortization.getMonthlyPayments()) {
+            TableRow row = new TableRow(ResultActivity.this);
+
+            row.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+            row.setMinimumHeight(57);
+
+            int minHeight = 150; // TODO temp
+            TextView currentPaymentNumber = new TextView(ResultActivity.this);
+
+            String currentPaymentNumberText = (++paymentNumber).toString();
+
+            currentPaymentNumber.setText(currentPaymentNumberText);
+            currentPaymentNumber.setTypeface(standardTypeface);
+            currentPaymentNumber.setTextColor(textColor);
+            currentPaymentNumber.setBackground(cellBackground);
+            currentPaymentNumber.setPadding(10, 10, 0, 10);
+            currentPaymentNumber.setMinHeight(minHeight);
+
+            TextView paymentDate = new TextView(ResultActivity.this);
+            if (showPaymentDate()) {
+                assert payment.getPaymentDate() != null;
+                paymentDate.setText(CustomDateUtils.convertToDisplayingFormat(payment.getPaymentDate()));
+                paymentDate.setTypeface(standardTypeface);
+                paymentDate.setTextColor(textColor);
+                paymentDate.setBackground(cellBackground);
+                paymentDate.setPadding(10, 10, 0, 10);
+                paymentDate.setMinHeight(minHeight);
+            }
+
+            TextView loanAmount = new TextView(ResultActivity.this);
+            loanAmount.setText(DECIMAL_FORMAT.format(payment.getLoanBalanceAmount()));
+            loanAmount.setTypeface(standardTypeface);
+            loanAmount.setTextColor(textColor);
+            loanAmount.setBackground(cellBackground);
+            loanAmount.setPadding(10, 10 ,0 ,10);
+            loanAmount.setMinHeight(minHeight);
+
+            TextView interestAmount = new TextView(ResultActivity.this);
+            interestAmount.setText(DECIMAL_FORMAT.format(payment.getInterestPaymentAmount()));
+            interestAmount.setTypeface(standardTypeface);
+            interestAmount.setTextColor(textColor);
+            interestAmount.setBackground(cellBackground);
+            interestAmount.setPadding(10, 10 ,0 ,10);
+            interestAmount.setMinHeight(minHeight);
+
+            TextView principalAmount = new TextView(ResultActivity.this);
+            principalAmount.setText(DECIMAL_FORMAT.format(payment.getDebtPaymentAmount()));
+            principalAmount.setTypeface(standardTypeface);
+            principalAmount.setTextColor(textColor);
+            principalAmount.setBackground(cellBackground);
+            principalAmount.setPadding(10, 10 ,0 ,10);
+            principalAmount.setMinHeight(minHeight);
+
+            TableLayout innerTable = new TableLayout(this);
+            innerTable.setBackground(cellBackground);
+
+            TableRow innerRowForAmount = new TableRow(this);
+            innerTable.addView(innerRowForAmount);
+
+            TextView paymentAmount = new TextView(ResultActivity.this);
+            paymentAmount.setText(DECIMAL_FORMAT.format(payment.getPaymentAmount()));
+            paymentAmount.setTypeface(standardTypeface);
+            paymentAmount.setTextColor(textColor);
+            paymentAmount.setBackground(cellBackground);
+            paymentAmount.setMinHeight(minHeight / 2);
+            paymentAmount.setPadding(10, 10, 0, 10);
+            innerRowForAmount.addView(paymentAmount);
+
+            String earlyPaymentValue = getEarlyPaymentValue(payment);
+
+            TextView earlyPayment = new TextView(this);
+            earlyPayment.setText(earlyPaymentValue);
+            earlyPayment.setTypeface(boldTypeface);
+            earlyPayment.setTextColor(textColor);
+            earlyPayment.setBackground(earlyPaymentBackground);
+            earlyPayment.setMinHeight((minHeight / 2) - 2); // TODO What the fuck is this thing?
+            earlyPayment.setPaintFlags(earlyPayment.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+            earlyPayment.setPadding(10, 10 ,0 ,10);
+            earlyPayment.setTextSize(11);
+
+            earlyPayment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    earlyPaymentAddOnClickCallback(v);
+                }
+            });
+
+            TableRow innerRowForEarlyPayment = new TableRow(this);
+            innerRowForEarlyPayment.addView(earlyPayment);
+            innerRowForEarlyPayment.setTag(paymentNumber - 1);
+
+            innerTable.addView(innerRowForEarlyPayment);
+
+            row.addView(currentPaymentNumber);
+
+            if (showPaymentDate()) {
+                row.addView(paymentDate);
+            }
+
+            row.addView(loanAmount);
+            row.addView(interestAmount);
+            row.addView(principalAmount);
+            row.addView(innerTable);
+
+            tableLayout.addView(row);
+        }
+
     }
 
     /**

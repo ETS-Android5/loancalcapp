@@ -46,4 +46,5 @@
     <string name="saved_loans_text">Сохраненные кредиты</string>
     <string name="my_loan_text">Мой кредит</string>
     <string name="enter_first_payment_date">Введите дату первого платежа (необязательно)</string>
+    <string name="date_table_column_text">Дата</string>
 </resources>

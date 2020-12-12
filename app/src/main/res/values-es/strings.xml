@@ -42,4 +42,5 @@
     <string name="saved_loans_text">Préstamos guardados</string>
     <string name="my_loan_text">Mi préstamo</string>
     <string name="enter_first_payment_date">Ingrese la primera fecha de pago (opcional)</string>
+    <string name="date_table_column_text">fecha</string>
 </resources>

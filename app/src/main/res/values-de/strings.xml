@@ -42,4 +42,5 @@
     <string name="saved_loans_text">Gespeicherte Kredite</string>
     <string name="my_loan_text">Mein Darlehen</string>
     <string name="enter_first_payment_date">Geben Sie das erste Zahlungsdatum ein (optional)</string>
+    <string name="date_table_column_text">Datum</string>
 </resources>

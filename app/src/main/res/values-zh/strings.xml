@@ -41,5 +41,6 @@
     <string name="delete_loan_dialog_text">您确定要删除贷款吗？</string>
     <string name="saved_loans_text">节省的贷款</string>
     <string name="my_loan_text">我的贷款</string>
-    <string name="enter_first_payment_date">输入首次付款日期（可选）</string>
+    <string name="enter_first_payment_date">輸入首次付款日期（可選）</string>
+    <string name="date_table_column_text">日期</string>
 </resources>

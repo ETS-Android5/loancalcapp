@@ -39,6 +39,7 @@ import com.paqua.loancalculator.dto.Loan;
 import com.paqua.loancalculator.dto.LoanAmortization;
 import com.paqua.loancalculator.storage.LoanStorage;
 import com.paqua.loancalculator.util.Constant;
+import com.paqua.loancalculator.util.CustomDateUtils;
 import com.paqua.loancalculator.util.LoanCommonUtils;
 import com.paqua.loancalculator.util.OrientationUtils;
 
@@ -130,11 +131,11 @@ public class MainActivity extends AppCompatActivity {
                         AlertDialog alertDialog = (AlertDialog) dialog;
 
                         DatePicker datePicker = alertDialog.findViewById(R.id.datePicker);
-                        firstPaymentDate = LoanCommonUtils.getDateFromDatePicker(datePicker);
+                        firstPaymentDate = CustomDateUtils.getDateFromDatePicker(datePicker);
 
                         TextView dateTextView = findViewById(R.id.firstPaymentDateTextView);
                         dateTextView.setVisibility(View.VISIBLE);
-                        dateTextView.setText(LoanCommonUtils.getDateFormatterForDisplayingToUser()
+                        dateTextView.setText(CustomDateUtils.getDateFormatterForDisplayingToUser()
                                 .format(firstPaymentDate.getTime())
                         );
                     }
@@ -388,7 +389,7 @@ public class MainActivity extends AppCompatActivity {
                     .rate(rate)
                     .term(term)
                     .firstPaymentDate(firstPaymentDate != null
-                            ? LoanCommonUtils.getDateFormatterForApi().format(firstPaymentDate.getTime())
+                            ? CustomDateUtils.getDateFormatterForApi().format(firstPaymentDate.getTime())
                             : null)
                     .build();
 

@@ -42,4 +42,5 @@
     <string name="saved_loans_text">Prêts économisés</string>
     <string name="my_loan_text">Mon prêt</string>
     <string name="enter_first_payment_date">Entrez la date du premier paiement (facultatif)</string>
+    <string name="date_table_column_text">Date</string>
 </resources>
