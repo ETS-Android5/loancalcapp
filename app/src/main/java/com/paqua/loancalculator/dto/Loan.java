@@ -1,7 +1,10 @@
 package com.paqua.loancalculator.dto;
 
+import androidx.annotation.Nullable;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Map;
 import java.util.UUID;
 
@@ -43,6 +46,7 @@ public final class Loan implements Serializable {
      */
     private final UUID uuid;
 
+
     /**
      * Early payments
      *
@@ -51,7 +55,13 @@ public final class Loan implements Serializable {
      */
     private final Map<Integer, EarlyPayment> earlyPayments;
 
-    public Loan(String name, Integer nameCount, BigDecimal amount,  BigDecimal rate, Integer term, UUID uuid, Map<Integer, EarlyPayment> earlyPayments) {
+    /**
+     * Date of first payment
+     */
+    @Nullable
+    private final LocalDate firstPaymentDate;
+
+    public Loan(String name, Integer nameCount, BigDecimal amount, BigDecimal rate, Integer term, UUID uuid, Map<Integer, EarlyPayment> earlyPayments, @Nullable LocalDate firstPaymentDate) {
         this.name = name;
         this.amount = amount;
         this.nameCount = nameCount;
@@ -59,6 +69,7 @@ public final class Loan implements Serializable {
         this.term = term;
         this.uuid = uuid;
         this.earlyPayments = earlyPayments;
+        this.firstPaymentDate = firstPaymentDate;
     }
 
     /**
@@ -117,6 +128,14 @@ public final class Loan implements Serializable {
         return earlyPayments;
     }
 
+    /**
+     * @return Date of first payment
+     */
+    @Nullable
+    public LocalDate getFirstPaymentDate() {
+        return firstPaymentDate;
+    }
+
     public static LoanBuilder builder() {
         return new LoanBuilder();
     }
@@ -133,11 +152,12 @@ public final class Loan implements Serializable {
         private UUID uuid;
         private String name;
         private Integer nameCount;
+        private LocalDate firstPaymentDate;
 
         public LoanBuilder() {
         }
 
-        public LoanBuilder(String name, Integer nameCount, BigDecimal amount, BigDecimal rate, Integer term, UUID uuid, Map<Integer, EarlyPayment> earlyPayments) {
+        public LoanBuilder(String name, Integer nameCount, BigDecimal amount, BigDecimal rate, Integer term, UUID uuid, Map<Integer, EarlyPayment> earlyPayments, LocalDate firstPaymentDate) {
             this.name = name;
             this.nameCount = nameCount;
             this.uuid = uuid;
@@ -145,6 +165,7 @@ public final class Loan implements Serializable {
             this.rate = rate;
             this.term = term;
             this.earlyPayments = earlyPayments;
+            this.firstPaymentDate = firstPaymentDate;
         }
 
         public LoanBuilder name(String name) {
@@ -179,8 +200,13 @@ public final class Loan implements Serializable {
             return this;
         }
 
+        public LoanBuilder firstPaymentDate(LocalDate firstPaymentDate) {
+            this.firstPaymentDate = firstPaymentDate;
+            return this;
+        }
+
         public Loan build() {
-            return new Loan(name, nameCount, amount, rate, term, uuid, earlyPayments);
+            return new Loan(name, nameCount, amount, rate, term, uuid, earlyPayments, firstPaymentDate);
         }
     }
 
@@ -198,7 +224,9 @@ public final class Loan implements Serializable {
         if (rate != null ? !rate.equals(loan.rate) : loan.rate != null) return false;
         if (term != null ? !term.equals(loan.term) : loan.term != null) return false;
         if (uuid != null ? !uuid.equals(loan.uuid) : loan.uuid != null) return false;
-        return earlyPayments != null ? earlyPayments.equals(loan.earlyPayments) : loan.earlyPayments == null;
+        if (earlyPayments != null ? !earlyPayments.equals(loan.earlyPayments) : loan.earlyPayments != null)
+            return false;
+        return firstPaymentDate != null ? firstPaymentDate.equals(loan.firstPaymentDate) : loan.firstPaymentDate == null;
     }
 
     @Override
@@ -210,6 +238,7 @@ public final class Loan implements Serializable {
         result = 31 * result + (term != null ? term.hashCode() : 0);
         result = 31 * result + (uuid != null ? uuid.hashCode() : 0);
         result = 31 * result + (earlyPayments != null ? earlyPayments.hashCode() : 0);
+        result = 31 * result + (firstPaymentDate != null ? firstPaymentDate.hashCode() : 0);
         return result;
     }
 
@@ -223,6 +252,7 @@ public final class Loan implements Serializable {
                 ", term=" + term +
                 ", uuid=" + uuid +
                 ", earlyPayments=" + earlyPayments +
+                ", firstPaymentDate=" + firstPaymentDate +
                 '}';
     }
 }
