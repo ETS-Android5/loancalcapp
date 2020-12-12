@@ -387,8 +387,9 @@ public class MainActivity extends AppCompatActivity {
                     .amount(amount)
                     .rate(rate)
                     .term(term)
-                    .firstPaymentDate(LoanCommonUtils.getDateFormatterForApi()
-                            .format(firstPaymentDate))
+                    .firstPaymentDate(firstPaymentDate != null
+                            ? LoanCommonUtils.getDateFormatterForApi().format(firstPaymentDate.getTime())
+                            : null)
                     .build();
 
             intent.putExtra(LOAN_OBJECT.value, loan);

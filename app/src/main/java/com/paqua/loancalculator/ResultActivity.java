@@ -1,5 +1,6 @@
 package com.paqua.loancalculator;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Paint;
@@ -491,6 +492,7 @@ public class ResultActivity extends AppCompatActivity {
      * @param tableLayout
      */
     // TODO Too complex method - refactor
+    @SuppressLint("SetTextI18n")
     private void buildAmortizationTableContent(TableLayout tableLayout) {
         Integer paymentNumber = 0;
 
@@ -511,7 +513,7 @@ public class ResultActivity extends AppCompatActivity {
 
             int minHeight = 150; // TODO temp
             TextView currentPaymentNumber = new TextView(ResultActivity.this);
-            currentPaymentNumber.setText((++paymentNumber).toString());
+            currentPaymentNumber.setText((++paymentNumber).toString() + ((payment.getPaymentDate() != null) ? "\n" + payment.getPaymentDate() : ""));
             currentPaymentNumber.setTypeface(standardTypeface);
             currentPaymentNumber.setTextColor(textColor);
             currentPaymentNumber.setBackground(cellBackground);
