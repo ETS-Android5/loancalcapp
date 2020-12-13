@@ -69,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
     private InterstitialAd interstitialAd;
     private Map<Integer, Map.Entry<Loan, LoanAmortization>> loanBySavedIndex;
     private boolean adIsDisabled = false;
-    private BillingClient billingClient;
     private Map<String, SkuDetails> skuDetailsMap = new HashMap<>();
     private Calendar firstPaymentDate;
     private PurchasesUpdatedListener purchasesUpdateListener = new PurchasesUpdatedListener() {
@@ -88,6 +87,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+    private BillingClient billingClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
         initMobileAds();
+        initBillingClient();
 
         calculateButton = (Button) findViewById(R.id.calc);
         calculateButton.setOnClickListener(new View.OnClickListener() {
@@ -118,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
 
         initUnderlinedTextView();
         initSavedLoansView();
-        initBillingClient();
     }
 
     /**
@@ -209,34 +210,38 @@ public class MainActivity extends AppCompatActivity {
      * Initializes billing client
      */
     private void initBillingClient() {
-        billingClient = BillingClient.newBuilder(this)
-                .setListener(purchasesUpdateListener)
-                .enablePendingPurchases()
-                .build();
+        if (billingClient == null) {
+            billingClient = BillingClient.newBuilder(MainActivity.this)
+                    .setListener(purchasesUpdateListener)
+                    .enablePendingPurchases()
+                    .build();
+        }
 
-        billingClient.startConnection(new BillingClientStateListener() {
-            @Override
-            public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
-                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                    requestSkuDetails();
+        if (!billingClient.isReady()) {
+            billingClient.startConnection(new BillingClientStateListener() {
+                @Override
+                public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
+                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                        requestSkuDetails();
 
-                    List<Purchase> purchases = requestPurchases();
+                        List<Purchase> purchases = requestPurchases();
 
-                    for (Purchase purchase : purchases) {
-                       if (Constant.DISABLE_ADS_ID.value.equals(purchase.getSku()))  {
-                           onPayComplete();
-                       }
+                        for (Purchase purchase : purchases) {
+                            if (Constant.DISABLE_ADS_ID.value.equals(purchase.getSku())) {
+                                onPayComplete();
+                            }
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onBillingServiceDisconnected() {
-                System.out.println("Billing service disconnected");
-                billingClient.startConnection(this);
-            }
+                @Override
+                public void onBillingServiceDisconnected() {
+                    System.out.println("Billing service disconnected");
+                    billingClient.startConnection(this);
+                }
 
-        });
+            });
+        }
     }
 
     /**
@@ -278,6 +283,10 @@ public class MainActivity extends AppCompatActivity {
                         MainActivity.this,
                         "Error while launching billing :(",
                         result.getResponseCode() + " " + result.getDebugMessage());
+            }
+
+            if (result.getResponseCode() == BillingClient.BillingResponseCode.SERVICE_DISCONNECTED) {
+                initBillingClient();
             }
         }
     }
