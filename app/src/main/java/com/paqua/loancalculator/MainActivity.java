@@ -16,6 +16,7 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingFlowParams;
+import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetails;
@@ -44,12 +46,10 @@ import com.paqua.loancalculator.util.LoanCommonUtils;
 import com.paqua.loancalculator.util.OrientationUtils;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -67,11 +67,26 @@ public class MainActivity extends AppCompatActivity {
     private Button calculateButton;
     private InterstitialAd interstitialAd;
     private Map<Integer, Map.Entry<Loan, LoanAmortization>> loanBySavedIndex;
-    private boolean adIsDisabled;
-    private BillingClient mBillingClient;
-    private Map<String, SkuDetails> mSkuDetailsMap = new HashMap<>();
+    private boolean adIsDisabled = false;
+    private BillingClient billingClient;
+    private Map<String, SkuDetails> skuDetailsMap = new HashMap<>();
     private Calendar firstPaymentDate;
-
+    private PurchasesUpdatedListener purchasesUpdateListener = new PurchasesUpdatedListener() {
+        @Override
+        public void onPurchasesUpdated(@NonNull BillingResult billingResult, @Nullable List<Purchase> list) {
+            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && list != null) {
+                for (int i = 0; i < list.size(); i++) {
+                    String purchaseId = list.get(i).getSku();
+                    if (TextUtils.equals(Constant.DISABLE_ADS_ID.value, purchaseId)) {
+                        onPayComplete();
+                    }
+                }
+            } else {
+                adIsDisabled = false;
+                findViewById(R.id.turnOffAds).setVisibility(View.VISIBLE);
+            }
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         initBillingClient();
-                        SkuDetails skuDetails = mSkuDetailsMap.get(Constant.DISABLE_ADS_ID.value);
+                        SkuDetails skuDetails = skuDetailsMap.get(Constant.DISABLE_ADS_ID.value);
                         if (skuDetails != null)
                         launchBilling(skuDetails.getSku());
                     }
@@ -181,19 +196,15 @@ public class MainActivity extends AppCompatActivity {
      * Initializes billing client
      */
     private void initBillingClient() {
-        mBillingClient = BillingClient.newBuilder(this).setListener(new PurchasesUpdatedListener() {
-            @Override
-            public void onPurchasesUpdated(int responseCode, @Nullable List<Purchase> purchases) {
-                if (responseCode == BillingClient.BillingResponse.OK && purchases != null) {
-                    onPayComplete();
-                }
-            }
-        }).build();
+        billingClient = BillingClient.newBuilder(this)
+                .setListener(purchasesUpdateListener)
+                .enablePendingPurchases()
+                .build();
 
-        mBillingClient.startConnection(new BillingClientStateListener() {
+        billingClient.startConnection(new BillingClientStateListener() {
             @Override
-            public void onBillingSetupFinished(@BillingClient.BillingResponse int billingResponseCode) {
-                if (billingResponseCode == BillingClient.BillingResponse.OK) {
+            public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
+                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                     requestSkuDetails();
 
                     List<Purchase> purchasesList = requestPurchases();
@@ -210,6 +221,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onBillingServiceDisconnected() {
                 System.out.println("Billing service disconnected");
+                billingClient.startConnection(this);
             }
 
         });
@@ -223,12 +235,12 @@ public class MainActivity extends AppCompatActivity {
         List<String> skuList = new ArrayList<>();
         skuList.add(Constant.DISABLE_ADS_ID.value);
         skuDetailsParamsBuilder.setSkusList(skuList).setType(BillingClient.SkuType.INAPP);
-        mBillingClient.querySkuDetailsAsync(skuDetailsParamsBuilder.build(), new SkuDetailsResponseListener() {
+        billingClient.querySkuDetailsAsync(skuDetailsParamsBuilder.build(), new SkuDetailsResponseListener() {
             @Override
-            public void onSkuDetailsResponse(int responseCode, List<SkuDetails> skuDetailsList) {
-                if (responseCode == 0) {
-                    for (SkuDetails skuDetails : skuDetailsList) {
-                        mSkuDetailsMap.put(skuDetails.getSku(), skuDetails);
+            public void onSkuDetailsResponse(@NonNull BillingResult billingResult, @Nullable List<SkuDetails> list) {
+                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                    for (SkuDetails skuDetails : list) {
+                        skuDetailsMap.put(skuDetails.getSku(), skuDetails);
                     }
                 }
             }
@@ -238,19 +250,19 @@ public class MainActivity extends AppCompatActivity {
 
     private void launchBilling(String skuId) {
         BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
-                .setSkuDetails(mSkuDetailsMap.get(skuId))
+                .setSkuDetails(skuDetailsMap.get(skuId))
                 .build();
-        mBillingClient.launchBillingFlow(this, billingFlowParams);
+        billingClient.launchBillingFlow(this, billingFlowParams);
     }
 
     private void onPayComplete() {
         System.out.println("Payment is complete");
         adIsDisabled = true;
-//        findViewById(R.id.turnOffAds).setVisibility(View.INVISIBLE);
+        findViewById(R.id.turnOffAds).setVisibility(View.INVISIBLE);
     }
 
     private List<Purchase> requestPurchases() {
-        Purchase.PurchasesResult purchasesResult = mBillingClient.queryPurchases(BillingClient.SkuType.INAPP);
+        Purchase.PurchasesResult purchasesResult = billingClient.queryPurchases(BillingClient.SkuType.INAPP);
         return purchasesResult.getPurchasesList();
     }
 
