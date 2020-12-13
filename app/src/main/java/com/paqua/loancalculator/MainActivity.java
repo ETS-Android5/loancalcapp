@@ -105,17 +105,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        findViewById(R.id.turnOffAds).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        initBillingClient();
-                        SkuDetails skuDetails = skuDetailsMap.get(Constant.DISABLE_ADS_ID.value);
-                        if (skuDetails != null)
-                        launchBilling(skuDetails.getSku());
-                    }
-                }
-        );
+        initDisableAdsButton();
 
         initDatePickerButton();
 
@@ -128,6 +118,28 @@ public class MainActivity extends AppCompatActivity {
         initUnderlinedTextView();
         initSavedLoansView();
         initBillingClient();
+    }
+
+    /**
+     * Callback for disable ads button
+     *
+     * Shows purchase dialog
+     */
+    private void initDisableAdsButton() {
+        findViewById(R.id.turnOffAds).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        initBillingClient();
+
+                        SkuDetails skuDetails = skuDetailsMap.get(Constant.DISABLE_ADS_ID.value);
+
+                        if (skuDetails != null) {
+                            launchBilling(skuDetails.getSku());
+                        }
+                    }
+                }
+        );
     }
 
     /**
@@ -207,13 +219,12 @@ public class MainActivity extends AppCompatActivity {
                 if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                     requestSkuDetails();
 
-                    List<Purchase> purchasesList = requestPurchases();
+                    List<Purchase> purchases = requestPurchases();
 
-                    for (int i = 0; i < purchasesList.size(); i++) {
-                        String purchaseId = purchasesList.get(i).getSku();
-                        if(TextUtils.equals(Constant.DISABLE_ADS_ID.value, purchaseId)) {
-                            onPayComplete();
-                        }
+                    for (Purchase purchase : purchases) {
+                       if (Constant.DISABLE_ADS_ID.value.equals(purchase.getSku()))  {
+                           onPayComplete();
+                       }
                     }
                 }
             }
@@ -238,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
         billingClient.querySkuDetailsAsync(skuDetailsParamsBuilder.build(), new SkuDetailsResponseListener() {
             @Override
             public void onSkuDetailsResponse(@NonNull BillingResult billingResult, @Nullable List<SkuDetails> list) {
-                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && list != null) {
                     for (SkuDetails skuDetails : list) {
                         skuDetailsMap.put(skuDetails.getSku(), skuDetails);
                     }
@@ -248,11 +259,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void launchBilling(String skuId) {
-        BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
-                .setSkuDetails(skuDetailsMap.get(skuId))
-                .build();
-        billingClient.launchBillingFlow(this, billingFlowParams);
+    /**
+     * Shows bulling flow
+     * @param skuId skuId
+     */
+    private void launchBilling(@NonNull String skuId) {
+        SkuDetails skuDetails = skuDetailsMap.get(skuId);
+
+        if (skuDetails != null) {
+            BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
+                    .setSkuDetails(skuDetails)
+                    .build();
+            BillingResult result = billingClient.launchBillingFlow(this, billingFlowParams);
+            System.out.println("Launch billing result: " + result.getResponseCode() + "\n" + result.getDebugMessage());
+        }
     }
 
     private void onPayComplete() {
