@@ -45,6 +45,7 @@ import com.paqua.loancalculator.dto.LoanAmortizationRq;
 import com.paqua.loancalculator.dto.MonthlyPayment;
 import com.paqua.loancalculator.storage.LoanStorage;
 import com.paqua.loancalculator.util.CustomDateUtils;
+import com.paqua.loancalculator.util.ErrorDialogUtils;
 import com.paqua.loancalculator.util.LoanCommonUtils;
 import com.paqua.loancalculator.util.OrientationUtils;
 
@@ -324,7 +325,7 @@ public class ResultActivity extends AppCompatActivity {
         try {
             calculateLoanAmortization();
         } catch (Exception e) {
-            showSomethingWentWrongDialog();
+            ErrorDialogUtils.showSomethingWentWrongDialog(ResultActivity.this);
             e.printStackTrace(); // TODO
         }
     }
@@ -353,7 +354,7 @@ public class ResultActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        showSomethingWentWrongDialog();
+                        ErrorDialogUtils.showSomethingWentWrongDialog(ResultActivity.this);
                         System.out.println("Something went wrong :( " + error);
                     }
                 }) {
@@ -366,29 +367,6 @@ public class ResultActivity extends AppCompatActivity {
         ));
 
         queue.add(jsonObjectRequest);
-    }
-
-    /**
-     * Show common dialog in case of errors
-     */
-    private void showSomethingWentWrongDialog() {
-        getSomethingWentWrongDialog().show();
-    }
-
-    /**
-     *
-     * @return Common alert dialog in case of errors
-     */
-    private AlertDialog getSomethingWentWrongDialog() {
-        return new AlertDialog.Builder(ResultActivity.this)
-                .setTitle("Something went wrong :(")
-                .setMessage("Please, try again later")
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // TODO audit or something
-                    }
-                })
-                .create();
     }
 
     /**

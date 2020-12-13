@@ -42,6 +42,7 @@ import com.paqua.loancalculator.dto.LoanAmortization;
 import com.paqua.loancalculator.storage.LoanStorage;
 import com.paqua.loancalculator.util.Constant;
 import com.paqua.loancalculator.util.CustomDateUtils;
+import com.paqua.loancalculator.util.ErrorDialogUtils;
 import com.paqua.loancalculator.util.LoanCommonUtils;
 import com.paqua.loancalculator.util.OrientationUtils;
 
@@ -271,7 +272,13 @@ public class MainActivity extends AppCompatActivity {
                     .setSkuDetails(skuDetails)
                     .build();
             BillingResult result = billingClient.launchBillingFlow(this, billingFlowParams);
-            System.out.println("Launch billing result: " + result.getResponseCode() + "\n" + result.getDebugMessage());
+
+            if (result.getResponseCode() != BillingClient.BillingResponseCode.OK) {
+                ErrorDialogUtils.showSomethingWentWrongDialog(
+                        MainActivity.this,
+                        "Error while launching billing :(",
+                        result.getResponseCode() + " " + result.getDebugMessage());
+            }
         }
     }
 

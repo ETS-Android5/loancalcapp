@@ -25,4 +25,5 @@ public class LoanCommonUtils {
         return context.getResources().getString(R.string.my_loan_text);
     }
 
+
 }
