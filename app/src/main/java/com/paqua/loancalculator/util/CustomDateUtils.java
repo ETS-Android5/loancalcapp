@@ -4,6 +4,7 @@ import android.widget.DatePicker;
 
 import androidx.annotation.NonNull;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -60,4 +61,29 @@ public class CustomDateUtils {
         return parsed != null ? DISPLAYING_DATE_FORMAT.format(parsed) : "";
     }
 
+
+    /**
+     * Converts string date to date
+     *
+     * @param date date in string API format
+     *
+     * @return parsed date
+     * @throws ParseException
+     */
+    public static Date getDateFromApiString(String date) throws ParseException {
+        return API_DATE_FORMAT.parse(date);
+    }
+
+    /**
+     * @return current date without time
+     */
+    public static Date getCurrentDateWithoutTime() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        return calendar.getTime();
+    }
 }

@@ -49,6 +49,11 @@ import com.paqua.loancalculator.util.ErrorDialogUtils;
 import com.paqua.loancalculator.util.LoanCommonUtils;
 import com.paqua.loancalculator.util.OrientationUtils;
 
+import net.time4j.CalendarUnit;
+import net.time4j.Duration;
+import net.time4j.PlainDate;
+import net.time4j.PlainTimestamp;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -57,11 +62,15 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.UUID;
 
 import static android.view.View.INVISIBLE;
@@ -74,6 +83,8 @@ import static com.paqua.loancalculator.util.Constant.USE_SAVED_DATA;
 import static com.paqua.loancalculator.util.ValidationUtils.hasValidSpinnerItem;
 import static com.paqua.loancalculator.util.ValidationUtils.setupRestoringBackgroundOnTextChange;
 import static com.paqua.loancalculator.util.ValidationUtils.validateForEmptyText;
+import static net.time4j.CalendarUnit.MONTHS;
+import static net.time4j.CalendarUnit.YEARS;
 
 public class ResultActivity extends AppCompatActivity {
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.00");
@@ -405,7 +416,18 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     private void setAlreadyPaidInfoInvisible() {
-        if (loan.getFirstPaymentDate() == null || loan.getFirstPaymentDate().length() == 0) {
+        Date currentDateWithoutTime = CustomDateUtils.getCurrentDateWithoutTime();
+
+        Date firstPaymentDate;
+        try {
+            firstPaymentDate = CustomDateUtils.getDateFromApiString(loan.getFirstPaymentDate());
+        } catch (ParseException e) {
+            firstPaymentDate = currentDateWithoutTime;
+            e.printStackTrace();
+        }
+
+        if ((loan.getFirstPaymentDate() == null || loan.getFirstPaymentDate().length() == 0)
+                && firstPaymentDate.before(currentDateWithoutTime)) {
             findViewById(R.id.alreadyPaidHeader).setVisibility(INVISIBLE);
             findViewById(R.id.principalPaidAmount).setVisibility(INVISIBLE);
             findViewById(R.id.interestPaidAmount).setVisibility(INVISIBLE);
@@ -469,6 +491,88 @@ public class ResultActivity extends AppCompatActivity {
         if (overPayment != null) {
             overPaymentAmount.setText(DECIMAL_FORMAT.format(overPayment));
         }
+
+        // Already paid amounts
+        if (loan.getFirstPaymentDate() != null && loan.getFirstPaymentDate().length() != 0) {
+            fillAlreadyPaidAmount();
+        }
+
+    }
+
+    private void fillAlreadyPaidAmount() {
+        Date currentDate = CustomDateUtils.getCurrentDateWithoutTime();
+
+        BigDecimal alreadyPaidPrincipal = BigDecimal.ZERO;
+        BigDecimal alreadyPaidInterest = BigDecimal.ZERO;
+
+        for (MonthlyPayment monthlyPayment : amortization.getMonthlyPayments()) {
+            Date paymentDate;
+            try {
+                 paymentDate = CustomDateUtils.getDateFromApiString(monthlyPayment.getPaymentDate());
+            } catch (Exception e) {
+                System.out.println("Error while parsing date " + monthlyPayment.getPaymentDate());
+                continue;
+            }
+
+            if (paymentDate.before(currentDate)) {
+                alreadyPaidPrincipal = alreadyPaidPrincipal.add(monthlyPayment.getDebtPaymentAmount());
+                alreadyPaidInterest = alreadyPaidInterest.add(monthlyPayment.getInterestPaymentAmount());
+            } else {
+                break;
+            }
+        }
+
+        TextView interest = findViewById(R.id.interestPaidAmount);
+        TextView principal = findViewById(R.id.principalPaidAmount);
+
+        principal.setText(DECIMAL_FORMAT.format(alreadyPaidPrincipal));
+        interest.setText(DECIMAL_FORMAT.format(alreadyPaidInterest));
+
+        Date firstPaymentDate;
+        try {
+            firstPaymentDate = CustomDateUtils.getDateFromApiString(loan.getFirstPaymentDate());
+        } catch (ParseException e) {
+            firstPaymentDate = currentDate;
+            e.printStackTrace();
+        }
+
+        Calendar firstPaymentDateCalendar = Calendar.getInstance(TimeZone.getDefault());
+        firstPaymentDateCalendar.setTime(firstPaymentDate);
+
+        Calendar currentDateCalendar = Calendar.getInstance(TimeZone.getDefault());
+        currentDateCalendar.setTime(currentDate);
+
+        PlainTimestamp start = PlainDate.of(
+                firstPaymentDateCalendar.get(Calendar.YEAR),
+                firstPaymentDateCalendar.get(Calendar.MONTH) + 1,
+                firstPaymentDateCalendar.get(Calendar.DAY_OF_MONTH)
+        ).atTime(0, 0);
+
+        PlainTimestamp end = PlainDate.of(
+                currentDateCalendar.get(Calendar.YEAR),
+                currentDateCalendar.get(Calendar.MONTH) + 1,
+                currentDateCalendar.get(Calendar.DAY_OF_MONTH)
+        ).atTime(0, 0);
+
+        Duration<CalendarUnit> duration = start.until(end, Duration.in(YEARS, MONTHS));
+
+        long years = duration.getPartialAmount(YEARS);
+        long months = duration.getPartialAmount(MONTHS);
+
+        TextView alreadyPaidTerm = findViewById(R.id.alreadyPaidTerm);
+        String termText;
+
+        if (years > 0 && months > 0) {
+            termText = "for " + years + " years " + months + " months";
+        } else if (years <= 0 && months > 0){
+            termText = "for " + months + " months";
+        } else if (years > 0) {
+            termText = "for " + years + " years";
+        } else {
+            termText = "";
+        }
+
+        alreadyPaidTerm.setText(termText);
     }
 
     /**
