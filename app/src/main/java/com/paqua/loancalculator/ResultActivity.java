@@ -412,34 +412,37 @@ public class ResultActivity extends AppCompatActivity {
 
         setVisibilityForAll(VISIBLE);
         setOverpaymentAmountVisibility();
-        setAlreadyPaidInfoInvisible();
+
+        if (loan.getFirstPaymentDate() == null || loan.getFirstPaymentDate().length() == 0) {
+            setAlreadyPaidInfoInvisible();
+        } else {
+            Date current = CustomDateUtils.getCurrentDateWithoutTime();
+            Date firstPaymentDate;
+            try {
+               firstPaymentDate = CustomDateUtils.getDateFromApiString(loan.getFirstPaymentDate());
+            } catch (Exception e) {
+                e.printStackTrace();
+                firstPaymentDate = current;
+            }
+            if (!firstPaymentDate.before(current)) {
+                setAlreadyPaidInfoInvisible();
+            }
+        }
     }
 
     private void setAlreadyPaidInfoInvisible() {
-        Date currentDateWithoutTime = CustomDateUtils.getCurrentDateWithoutTime();
+        findViewById(R.id.alreadyPaidHeader).setVisibility(INVISIBLE);
+        findViewById(R.id.principalPaidAmount).setVisibility(INVISIBLE);
+        findViewById(R.id.interestPaidAmount).setVisibility(INVISIBLE);
+        findViewById(R.id.principalPaidHeader).setVisibility(INVISIBLE);
+        findViewById(R.id.interestPaidHeader).setVisibility(INVISIBLE);
+        findViewById(R.id.alreadyPaidTerm).setVisibility(INVISIBLE);
 
-        Date firstPaymentDate;
-        try {
-            firstPaymentDate = CustomDateUtils.getDateFromApiString(loan.getFirstPaymentDate());
-        } catch (ParseException e) {
-            firstPaymentDate = currentDateWithoutTime;
-            e.printStackTrace();
-        }
-
-        if ((loan.getFirstPaymentDate() == null || loan.getFirstPaymentDate().length() == 0)
-                && firstPaymentDate.before(currentDateWithoutTime)) {
-            findViewById(R.id.alreadyPaidHeader).setVisibility(INVISIBLE);
-            findViewById(R.id.principalPaidAmount).setVisibility(INVISIBLE);
-            findViewById(R.id.interestPaidAmount).setVisibility(INVISIBLE);
-            findViewById(R.id.principalPaidHeader).setVisibility(INVISIBLE);
-            findViewById(R.id.interestPaidHeader).setVisibility(INVISIBLE);
-
-            // Change layout constraint
-            View scrollView = findViewById(R.id.scrollView2);
-            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) scrollView.getLayoutParams();
-            layoutParams.topToBottom = R.id.resetAllEarlyPayments;
-            scrollView.setLayoutParams(layoutParams);
-        }
+        // Change layout constraint
+        View scrollView = findViewById(R.id.scrollView2);
+        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) scrollView.getLayoutParams();
+        layoutParams.topToBottom = R.id.resetAllEarlyPayments;
+        scrollView.setLayoutParams(layoutParams);
     }
 
     /**
@@ -495,6 +498,8 @@ public class ResultActivity extends AppCompatActivity {
         // Already paid amounts
         if (loan.getFirstPaymentDate() != null && loan.getFirstPaymentDate().length() != 0) {
             fillAlreadyPaidAmount();
+        } else {
+            setAlreadyPaidInfoInvisible();
         }
 
     }
@@ -521,6 +526,7 @@ public class ResultActivity extends AppCompatActivity {
                 break;
             }
         }
+
 
         TextView interest = findViewById(R.id.interestPaidAmount);
         TextView principal = findViewById(R.id.principalPaidAmount);
@@ -573,6 +579,10 @@ public class ResultActivity extends AppCompatActivity {
         }
 
         alreadyPaidTerm.setText(termText);
+
+        if (alreadyPaidInterest.compareTo(BigDecimal.ZERO) <= 0 || alreadyPaidPrincipal.compareTo(BigDecimal.ZERO) <= 0) {
+            setAlreadyPaidInfoInvisible();
+        }
     }
 
     /**
