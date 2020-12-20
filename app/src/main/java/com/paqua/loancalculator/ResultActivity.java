@@ -51,16 +51,13 @@ import com.paqua.loancalculator.util.OrientationUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -404,6 +401,23 @@ public class ResultActivity extends AppCompatActivity {
 
         setVisibilityForAll(VISIBLE);
         setOverpaymentAmountVisibility();
+        setAlreadyPaidInfoInvisible();
+    }
+
+    private void setAlreadyPaidInfoInvisible() {
+        if (loan.getFirstPaymentDate() == null || loan.getFirstPaymentDate().length() == 0) {
+            findViewById(R.id.alreadyPaidHeader).setVisibility(INVISIBLE);
+            findViewById(R.id.principalPaidAmount).setVisibility(INVISIBLE);
+            findViewById(R.id.interestPaidAmount).setVisibility(INVISIBLE);
+            findViewById(R.id.principalPaidHeader).setVisibility(INVISIBLE);
+            findViewById(R.id.interestPaidHeader).setVisibility(INVISIBLE);
+
+            // Change layout constraint
+            View scrollView = findViewById(R.id.scrollView2);
+            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) scrollView.getLayoutParams();
+            layoutParams.topToBottom = R.id.resetAllEarlyPayments;
+            scrollView.setLayoutParams(layoutParams);
+        }
     }
 
     /**

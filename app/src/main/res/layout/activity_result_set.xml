@@ -29,7 +29,7 @@
         android:id="@+id/overPaymentWithEarlyHeader"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-condensed"
+        android:fontFamily="@font/base_font"
         android:text="@string/overpayment_header_text"
         android:textColor="#333333"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -43,7 +43,7 @@
         android:id="@+id/withEarlyPaymentHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-condensed"
+        android:fontFamily="@font/base_font"
         android:text="@string/if_extra_payments_header_text"
         android:textColor="#333333"
         android:textSize="18sp"
@@ -56,15 +56,16 @@
 
     <ScrollView
         android:id="@+id/scrollView2"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="5dp"
+        android:layout_width="412dp"
+        android:layout_height="494dp"
         android:layout_weight="1"
         android:scrollbars="none"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/resetAllEarlyPayments">
+        app:layout_constraintTop_toBottomOf="@+id/interestPaidAmount"
+        app:layout_constraintVertical_bias="0.0">
 
         <TableLayout
             android:id="@+id/amortizationTable"
@@ -104,7 +105,7 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-condensed"
+        android:fontFamily="@font/base_font"
         android:text="@string/monthly_payment_header_text"
         android:textColor="#333333"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -118,7 +119,7 @@
         android:id="@+id/overPaymentLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-condensed"
+        android:fontFamily="@font/base_font"
         android:text="@string/overpayment_header_text"
         android:textColor="#333333"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -133,7 +134,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/amount_background"
-        android:fontFamily="sans-serif-condensed"
+        android:fontFamily="@font/base_font"
         android:text="0000000"
         android:textColor="#333333"
         android:textSize="21sp"
@@ -150,7 +151,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
         android:background="@drawable/amount_background"
-        android:fontFamily="sans-serif-condensed"
+        android:fontFamily="@font/base_font"
         android:text="0000000"
         android:textColor="#333333"
         android:textSize="21sp"
@@ -165,7 +166,7 @@
         android:id="@+id/hintToEarlyPayment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-condensed"
+        android:fontFamily="@font/base_font"
         android:text="@string/hint_add_extra_payment_text"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -252,5 +253,97 @@
         app:layout_constraintStart_toStartOf="@+id/descriotionRounded"
         app:layout_constraintTop_toBottomOf="@+id/overPaymentAmount"
         app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/alreadyPaidHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="17dp"
+        android:fontFamily="@font/base_font"
+        android:text="Already paid:"
+        android:textColor="@color/coolDarkColor"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/hintToEarlyPayment"
+        app:layout_constraintTop_toBottomOf="@+id/hintToEarlyPayment"
+        app:layout_constraintVertical_bias="0.003" />
+
+    <TextView
+        android:id="@+id/principalPaidHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/base_font"
+        android:text="Principal:"
+        android:textColor="@color/coolDarkColor"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/alreadyPaidHeader"
+        app:layout_constraintTop_toBottomOf="@+id/alreadyPaidHeader"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/interestPaidHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/base_font"
+        android:text="Interest:"
+        android:textColor="@color/coolDarkColor"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.264"
+        app:layout_constraintStart_toEndOf="@+id/principalPaidHeader"
+        app:layout_constraintTop_toBottomOf="@+id/alreadyPaidHeader"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/principalPaidAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/amount_background"
+        android:fontFamily="@font/base_font"
+        android:text="00000000"
+        android:textColor="@color/coolDarkColor"
+        android:textSize="21sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/principalPaidHeader"
+        app:layout_constraintTop_toBottomOf="@+id/principalPaidHeader"
+        app:layout_constraintVertical_bias="0.001" />
+
+    <TextView
+        android:id="@+id/interestPaidAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/amount_background"
+        android:fontFamily="@font/base_font"
+        android:text="0000000"
+        android:textColor="@color/coolDarkColor"
+        android:textSize="21sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/interestPaidHeader"
+        app:layout_constraintTop_toBottomOf="@+id/interestPaidHeader"
+        app:layout_constraintVertical_bias="0.001" />
+
+    <TextView
+        android:id="@+id/alreadyPaidTerm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="1dp"
+        android:fontFamily="@font/base_font"
+        android:text="for 3 years and 5 months"
+        android:textColor="@color/coolDarkColor"
+        android:textSize="7sp"
+        app:layout_constraintBottom_toBottomOf="@+id/alreadyPaidHeader"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.003"
+        app:layout_constraintStart_toEndOf="@+id/alreadyPaidHeader"
+        app:layout_constraintTop_toTopOf="@+id/alreadyPaidHeader"
+        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
