@@ -9,8 +9,8 @@
 
     <TextView
         android:id="@+id/firstPaymentDateHeader"
-        android:layout_width="282dp"
-        android:layout_height="51dp"
+        android:layout_width="284dp"
+        android:layout_height="35dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
@@ -26,8 +26,8 @@
 
     <DatePicker
         android:id="@+id/datePicker"
-        android:layout_width="283dp"
-        android:layout_height="207dp"
+        android:layout_width="230dp"
+        android:layout_height="140dp"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
@@ -39,6 +39,6 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/firstPaymentDateHeader"
-        app:layout_constraintVertical_bias="0.036" />
+        app:layout_constraintVertical_bias="0.029" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
