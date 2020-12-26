@@ -47,4 +47,13 @@
     <string name="my_loan_text">My loan</string>
     <string name="enter_first_payment_date">Enter first payment date (optional)</string>
     <string name="date_table_column_text">Date</string>
+    <string name="one_year_postfix">year</string>
+    <string name="years_postfix">years</string>
+    <string name="for_term_prefix">for</string>
+    <string name="one_month_postfix">month</string>
+    <string name="months_postfix">months</string>
+    <string name="already_paid_text">Already paid</string>
+    <string name="already_paid_principal">Principal:</string>
+    <string name="already_paid_interest">Interest:</string>
+    <string name="disable_ads_text">Disable ads</string>
 </resources>

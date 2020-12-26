@@ -44,12 +44,16 @@ public class LoanCommonUtils {
         String retVal;
         if (years > 0 && months > 0) {
             retVal = getCurrentLanguage().equals("ru") ?
-                    "for" + getRussianYearString(years) + " " + getRussianMonthString(months) :
-                    "for " + years + " years " + months + " months";
+                    context.getResources().getString(R.string.for_term_prefix) + " " + getRussianYearString(years) + " " + getRussianMonthString(months) :
+                    context.getResources().getString(R.string.for_term_prefix) + " " + getYearString(years, context) + " " + getMonthString(months, context);
         } else if (years <= 0 && months > 0){
-            retVal = "for " + months + " months";
+            retVal = getCurrentLanguage().equals("ru") ?
+                    context.getResources().getString(R.string.for_term_prefix) + " " + getRussianMonthString(months) :
+                    context.getResources().getString(R.string.for_term_prefix) + " " + getMonthString(months, context);
         } else if (years > 0) {
-            retVal = "for " + years + " years";
+            retVal = getCurrentLanguage().equals("ru") ?
+                    context.getResources().getString(R.string.for_term_prefix) + " " + getRussianMonthString(years) :
+                    context.getResources().getString(R.string.for_term_prefix) + " " + getYearString(years, context);
         } else {
             retVal = "";
         }
@@ -100,25 +104,25 @@ public class LoanCommonUtils {
     }
 
     @Deprecated
-    private static String getYearString(long years) {
+    private static String getYearString(long years, Context context) {
         if (years == 1) {
-            return years + " " + "year";
+            return years + " " + context.getResources().getString(R.string.one_year_postfix);
         } else {
-            return years + " " + "years";
+            return years + " " + context.getResources().getString(R.string.years_postfix);
         }
     }
 
     @Deprecated
-    private static String getMonthString(long months) {
+    private static String getMonthString(long months, Context context) {
         if (months == 1) {
-            return months + " " + "month";
+            return months + " " + context.getResources().getString(R.string.one_month_postfix);
         } else {
-            return months + " " + "months";
+            return months + " " + context.getResources().getString(R.string.months_postfix);
         }
     }
 
     @Deprecated
-    private static String getCurrentLanguage(){
+    private static String getCurrentLanguage() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
             return LocaleList.getDefault().get(0).getLanguage();
         } else{

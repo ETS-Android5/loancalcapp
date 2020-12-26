@@ -43,4 +43,13 @@
     <string name="my_loan_text">Mi préstamo</string>
     <string name="enter_first_payment_date">Ingrese la primera fecha de pago (opcional)</string>
     <string name="date_table_column_text">fecha</string>
+    <string name="one_year_postfix">año</string>
+    <string name="years_postfix">años</string>
+    <string name="for_term_prefix">por</string>
+    <string name="one_month_postfix">mes</string>
+    <string name="months_postfix">meses</string>
+    <string name="already_paid_text">ya pagado</string>
+    <string name="already_paid_principal">Deuda principal</string>
+    <string name="already_paid_interest">Interesar</string>
+    <string name="disable_ads_text">Desactivar los anuncios</string>
 </resources>

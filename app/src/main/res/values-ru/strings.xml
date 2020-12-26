@@ -47,4 +47,9 @@
     <string name="my_loan_text">Мой кредит</string>
     <string name="enter_first_payment_date">Введите дату первого платежа (необязательно)</string>
     <string name="date_table_column_text">Дата</string>
+    <string name="for_term_prefix">за</string>
+    <string name="already_paid_text">Уже заплатили</string>
+    <string name="already_paid_principal">Основной долг</string>
+    <string name="already_paid_interest">Проценты</string>
+    <string name="disable_ads_text">Отключить рекламу</string>
 </resources>

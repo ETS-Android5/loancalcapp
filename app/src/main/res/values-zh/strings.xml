@@ -43,4 +43,13 @@
     <string name="my_loan_text">我的贷款</string>
     <string name="enter_first_payment_date">輸入首次付款日期（可選）</string>
     <string name="date_table_column_text">日期</string>
+    <string name="one_year_postfix">年</string>
+    <string name="years_postfix">年份</string>
+    <string name="for_term_prefix">对于</string>
+    <string name="one_month_postfix">月</string>
+    <string name="months_postfix">月</string>
+    <string name="already_paid_text">已付款</string>
+    <string name="already_paid_principal">主要债务</string>
+    <string name="already_paid_interest">利益</string>
+    <string name="disable_ads_text">停用广告</string>
 </resources>
