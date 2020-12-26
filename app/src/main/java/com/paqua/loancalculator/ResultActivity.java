@@ -504,6 +504,7 @@ public class ResultActivity extends AppCompatActivity {
 
     }
 
+    @Deprecated /* needs to be refactored */
     private void fillAlreadyPaidAmount() {
         Date currentDate = CustomDateUtils.getCurrentDateWithoutTime();
 
@@ -526,7 +527,6 @@ public class ResultActivity extends AppCompatActivity {
                 break;
             }
         }
-
 
         TextView interest = findViewById(R.id.interestPaidAmount);
         TextView principal = findViewById(R.id.principalPaidAmount);
@@ -566,19 +566,8 @@ public class ResultActivity extends AppCompatActivity {
         long months = duration.getPartialAmount(MONTHS);
 
         TextView alreadyPaidTerm = findViewById(R.id.alreadyPaidTerm);
-        String termText;
 
-        if (years > 0 && months > 0) {
-            termText = "for " + years + " years " + months + " months";
-        } else if (years <= 0 && months > 0){
-            termText = "for " + months + " months";
-        } else if (years > 0) {
-            termText = "for " + years + " years";
-        } else {
-            termText = "";
-        }
-
-        alreadyPaidTerm.setText(termText);
+        alreadyPaidTerm.setText(LoanCommonUtils.getTermString(years, months, getApplicationContext()));
 
         if (alreadyPaidInterest.compareTo(BigDecimal.ZERO) <= 0 || alreadyPaidPrincipal.compareTo(BigDecimal.ZERO) <= 0) {
             setAlreadyPaidInfoInvisible();
