@@ -54,6 +54,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static android.view.View.GONE;
 import static com.paqua.loancalculator.util.Constant.LOAN_AMORTIZATION_OBJECT;
 import static com.paqua.loancalculator.util.Constant.LOAN_OBJECT;
 import static com.paqua.loancalculator.util.Constant.USE_SAVED_DATA;
@@ -69,24 +70,9 @@ public class MainActivity extends AppCompatActivity {
     private InterstitialAd interstitialAd;
     private Map<Integer, Map.Entry<Loan, LoanAmortization>> loanBySavedIndex;
     private boolean adIsDisabled = false;
-    private Map<String, SkuDetails> skuDetailsMap = new HashMap<>();
+    private final Map<String, SkuDetails> skuDetailsMap = new HashMap<>();
     private Calendar firstPaymentDate;
-    private PurchasesUpdatedListener purchasesUpdateListener = new PurchasesUpdatedListener() {
-        @Override
-        public void onPurchasesUpdated(@NonNull BillingResult billingResult, @Nullable List<Purchase> list) {
-            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && list != null) {
-                for (int i = 0; i < list.size(); i++) {
-                    String purchaseId = list.get(i).getSku();
-                    if (TextUtils.equals(Constant.DISABLE_ADS_ID.value, purchaseId)) {
-                        onPayComplete();
-                    }
-                }
-            } else {
-                adIsDisabled = false;
-                findViewById(R.id.turnOffAds).setVisibility(View.VISIBLE);
-            }
-        }
-    };
+    private final PurchasesUpdatedListener purchasesUpdateListener = getPurchasesUpdatedListener();
     private BillingClient billingClient;
 
     @Override
@@ -491,5 +477,24 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean isAdDisabled() {
         return adIsDisabled;
+    }
+
+    private PurchasesUpdatedListener getPurchasesUpdatedListener() {
+        return new PurchasesUpdatedListener() {
+            @Override
+            public void onPurchasesUpdated(@NonNull BillingResult billingResult, @Nullable List<Purchase> list) {
+                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && list != null) {
+                    for (int i = 0; i < list.size(); i++) {
+                        String purchaseId = list.get(i).getSku();
+                        if (TextUtils.equals(Constant.DISABLE_ADS_ID.value, purchaseId)) {
+                            onPayComplete();
+                        }
+                    }
+                } else {
+                    adIsDisabled = false;
+                    findViewById(R.id.turnOffAds).setVisibility(View.VISIBLE);
+                }
+            }
+        };
     }
 }

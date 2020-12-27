@@ -73,6 +73,7 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.UUID;
 
+import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static com.paqua.loancalculator.util.Constant.GET_LOAN_AMROTIZATION_URL;
@@ -116,11 +117,15 @@ public class ResultActivity extends AppCompatActivity {
 
         initFromMainActivity();
 
-        calculateAndInitAmortizationTable();
-
         initResetAllEarlyPaymentsView();
 
         initSaveLoanButtonOnClick();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        calculateAndInitAmortizationTable();
     }
 
     /**
@@ -341,9 +346,9 @@ public class ResultActivity extends AppCompatActivity {
     /**
      * Makes REST API request and builds the amortization table
      * @throws JSONException
-     * @throws IOException
      */
     private void calculateLoanAmortization() throws JSONException {
+        findViewById(R.id.progressBar).setVisibility(VISIBLE);
         RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
 
         LoanAmortizationRq lastLoanRequestParam = new LoanAmortizationRq(loan);
@@ -362,6 +367,7 @@ public class ResultActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        findViewById(R.id.progressBar).setVisibility(GONE);
                         ErrorDialogUtils.showSomethingWentWrongDialog(ResultActivity.this);
                         System.out.println("Something went wrong :( " + error);
                     }
@@ -384,6 +390,7 @@ public class ResultActivity extends AppCompatActivity {
      * @param response
      */
     private void calculateLoanAmortizationCallback(JSONObject response) {
+        findViewById(R.id.progressBar).setVisibility(GONE);
         Gson gson = new Gson();
         amortization = gson.fromJson(response.toString(), LoanAmortization.class);
         System.out.println(amortization);
