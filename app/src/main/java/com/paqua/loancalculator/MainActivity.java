@@ -340,7 +340,7 @@ public class MainActivity extends AppCompatActivity {
 
         Map<Loan, LoanAmortization> saved = LoanStorage.getAll(this);
 
-        if (saved != null && !saved.isEmpty()) {
+        if (!saved.isEmpty()) {
            int i = 1;
            for (Map.Entry<Loan, LoanAmortization> item : saved.entrySet()) {
                Loan loan = item.getKey();

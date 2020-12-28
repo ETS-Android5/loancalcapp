@@ -146,4 +146,6 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="action_settings">Settings</string>
+    <string name="faq_1_question_formula">What formula (algorithm) is used to calculate loan amortization schedule?</string>
+    <string name="faq_1_answer_formula">The formula for calculating the payment amount is shown below.</string>
 </resources>

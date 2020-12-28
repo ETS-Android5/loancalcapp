@@ -52,4 +52,6 @@
     <string name="already_paid_principal">Основной долг</string>
     <string name="already_paid_interest">Проценты</string>
     <string name="disable_ads_text">Отключить рекламу</string>
+    <string name="faq_1_question_formula">Какая формула (алгоритм) используется для расчета графика процентов?</string>
+    <string name="faq_1_answer_formula">Формула расчета суммы платежа приведена ниже.</string>
 </resources>
