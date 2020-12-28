@@ -54,7 +54,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static android.view.View.GONE;
 import static com.paqua.loancalculator.util.Constant.LOAN_AMORTIZATION_OBJECT;
 import static com.paqua.loancalculator.util.Constant.LOAN_OBJECT;
 import static com.paqua.loancalculator.util.Constant.USE_SAVED_DATA;
@@ -106,6 +105,20 @@ public class MainActivity extends AppCompatActivity {
 
         initUnderlinedTextView();
         initSavedLoansView();
+        initFaqOnClickListener();
+    }
+
+    /**
+     * Setups faq button on click callback(starts faq activity)
+     */
+    private void initFaqOnClickListener() {
+        findViewById(R.id.faq).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, FAQActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     /**
