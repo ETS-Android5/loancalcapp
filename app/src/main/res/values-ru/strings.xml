@@ -54,4 +54,5 @@
     <string name="disable_ads_text">Отключить рекламу</string>
     <string name="faq_1_question_formula">Какая формула (алгоритм) используется для расчета графика процентов?</string>
     <string name="faq_1_answer_formula">Формула расчета суммы платежа приведена ниже.</string>
+    <string name="faq_1_answer_where">где</string>
 </resources>

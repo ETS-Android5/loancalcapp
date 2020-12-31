@@ -29,8 +29,8 @@
 
         <TextView
             android:id="@+id/faq_1_answer_formula"
-            android:layout_width="411dp"
-            android:layout_height="23dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:fontFamily="@font/base_font"
             android:text="@string/faq_1_answer_formula"
             android:textColor="@color/coolDarkColor"
@@ -40,6 +40,7 @@
             app:layout_constraintTop_toBottomOf="@+id/faq_1_question_formula" />
 
         <ImageView
+            android:id="@+id/formula"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/payment_amount_formula"
@@ -47,6 +48,31 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/faq_1_answer_formula" />
 
+        <TextView
+            android:id="@+id/faq_1_answer_where"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/base_font"
+            android:text="@string/faq_1_answer_where"
+            android:textColor="@color/coolDarkColor"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/faq_1_answer_formula"
+            app:layout_constraintTop_toBottomOf="@+id/formula" />
+
+        <TextView
+            android:id="@+id/faq_1_answer_where_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/base_font"
+            android:text="@string/faq_1_answer_where_detail"
+            android:textColor="@color/coolDarkColor"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/faq_1_answer_where"
+            app:layout_constraintTop_toBottomOf="@+id/faq_1_answer_where" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

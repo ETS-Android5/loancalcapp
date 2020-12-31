@@ -148,4 +148,10 @@
     <string name="action_settings">Settings</string>
     <string name="faq_1_question_formula">What formula (algorithm) is used to calculate loan amortization schedule?</string>
     <string name="faq_1_answer_formula">The formula for calculating the payment amount is shown below.</string>
+    <string name="faq_1_answer_where">where</string>
+    <string name="faq_1_answer_where_detail">
+        - A = payment Amount per period<br/>
+        - P = initial Principal (loan amount) <br/>
+        - r = interest rate per period <br/>
+        - n = total number of payments or periods</string>
 </resources>
