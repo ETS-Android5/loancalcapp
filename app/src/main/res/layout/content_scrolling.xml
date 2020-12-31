@@ -17,6 +17,8 @@
             android:id="@+id/faq_1_question_formula"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
             android:layout_marginTop="4dp"
             android:fontFamily="@font/bold_font"
             android:text="@string/faq_1_question_formula"
@@ -31,11 +33,15 @@
             android:id="@+id/faq_1_answer_formula"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="6dp"
             android:fontFamily="@font/base_font"
             android:text="@string/faq_1_answer_formula"
             android:textColor="@color/coolDarkColor"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/faq_1_question_formula" />
 
@@ -69,10 +75,29 @@
             android:text="@string/faq_1_answer_where_detail"
             android:textColor="@color/coolDarkColor"
             android:textSize="14sp"
+            android:lines="4"
+            android:maxLines="5"
+            android:singleLine="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/faq_1_answer_where"
             app:layout_constraintTop_toBottomOf="@+id/faq_1_answer_where" />
+
+        <TextView
+            android:id="@+id/faq_1_answer_warning"
+            android:layout_width="wrap_content"
+            android:layout_height="54dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/base_font"
+            android:text="@string/faq_1_answer_warning"
+            android:textColor="@color/coolDarkColor"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/faq_1_answer_where_detail" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

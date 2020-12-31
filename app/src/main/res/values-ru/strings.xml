@@ -55,4 +55,12 @@
     <string name="faq_1_question_formula">Какая формула (алгоритм) используется для расчета графика процентов?</string>
     <string name="faq_1_answer_formula">Формула расчета суммы платежа приведена ниже.</string>
     <string name="faq_1_answer_where">где</string>
+    <string name="faq_1_answer_where_detail">
+        - A = Аннуитетный платеж\n
+        - P = Запрашиваемая сумма займа\n
+        - r = Процентная ставка (в месяц)\n
+        - n = Срок кредита в месяцах
+    </string>
+    <string name="faq_1_answer_warning">* Расчет может отличаться в зависимости от условий конкретного банка.</string>
+
 </resources>

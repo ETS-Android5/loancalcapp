@@ -150,8 +150,9 @@
     <string name="faq_1_answer_formula">The formula for calculating the payment amount is shown below.</string>
     <string name="faq_1_answer_where">where</string>
     <string name="faq_1_answer_where_detail">
-        - A = payment Amount per period<br/>
-        - P = initial Principal (loan amount) <br/>
-        - r = interest rate per period <br/>
+        - A = payment Amount per period\n
+        - P = initial Principal (loan amount)\n
+        - r = interest rate per period\n
         - n = total number of payments or periods</string>
+    <string name="faq_1_answer_warning">* The calculation may differ depending on the conditions of a particular bank.</string>
 </resources>
