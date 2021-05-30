@@ -1,4 +1,1 @@
-# Лучший на рынке кредитный калькулятор
-
-## Разработан лучшей командой на рынке
-Redme
+# Android application - Loan Calculator with Extra Payments
