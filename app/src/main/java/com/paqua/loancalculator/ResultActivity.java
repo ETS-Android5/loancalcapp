@@ -76,7 +76,8 @@ import java.util.UUID;
 import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
-import static com.paqua.loancalculator.util.Constant.GET_LOAN_AMROTIZATION_URL;
+import static com.paqua.loancalculator.util.Constant.GET_LOAN_AMROTIZATION_PAQUA_URL;
+import static com.paqua.loancalculator.util.Constant.GET_LOAN_AMROTIZATION_YANDEX_URL;
 import static com.paqua.loancalculator.util.Constant.LOAN_AMORTIZATION_OBJECT;
 import static com.paqua.loancalculator.util.Constant.LOAN_OBJECT;
 import static com.paqua.loancalculator.util.Constant.SAVE_LOAN_NAME_FORMAT;
@@ -353,13 +354,37 @@ public class ResultActivity extends AppCompatActivity {
 
         LoanAmortizationRq lastLoanRequestParam = new LoanAmortizationRq(loan);
 
-        JSONObject requestParams = new JSONObject(
+        final JSONObject requestParams = new JSONObject(
                 new GsonBuilder().enableComplexMapKeySerialization()
                         .create()
                         .toJson(lastLoanRequestParam));
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.POST, GET_LOAN_AMROTIZATION_URL.value, requestParams, new Response.Listener<JSONObject>() {
+                (Request.Method.POST, GET_LOAN_AMROTIZATION_YANDEX_URL.value, requestParams, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        calculateLoanAmortizationCallback(response);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        tryCallPaquaUrl(requestParams);
+                    }
+                }) {
+        };
+
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
+                5,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        ));
+
+        queue.add(jsonObjectRequest);
+    }
+
+    private void tryCallPaquaUrl(final JSONObject requestParams) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.POST, GET_LOAN_AMROTIZATION_PAQUA_URL.value, requestParams, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         calculateLoanAmortizationCallback(response);
@@ -373,14 +398,13 @@ public class ResultActivity extends AppCompatActivity {
                     }
                 }) {
         };
-
         jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
                 DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
                 5,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         ));
 
-        queue.add(jsonObjectRequest);
+        Volley.newRequestQueue(ResultActivity.this).add(jsonObjectRequest);
     }
 
     /**
