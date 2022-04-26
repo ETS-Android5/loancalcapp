@@ -91,6 +91,7 @@ import static net.time4j.CalendarUnit.YEARS;
 public class ResultActivity extends AppCompatActivity {
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.00");
     private static final DecimalFormatSymbols SYMBOLS = DECIMAL_FORMAT.getDecimalFormatSymbols();
+    private static final int API_REQUEST_TIMEOUT = 10_000;
 
     static {
         SYMBOLS.setGroupingSeparator(' ');
@@ -368,43 +369,20 @@ public class ResultActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        tryCallPaquaUrl(requestParams);
-                    }
-                }) {
-        };
-
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
-                DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
-                5,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-        ));
-
-        queue.add(jsonObjectRequest);
-    }
-
-    private void tryCallPaquaUrl(final JSONObject requestParams) {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.POST, GET_LOAN_AMROTIZATION_PAQUA_URL.value, requestParams, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        calculateLoanAmortizationCallback(response);
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
                         findViewById(R.id.progressBar).setVisibility(GONE);
                         ErrorDialogUtils.showSomethingWentWrongDialog(ResultActivity.this);
                         System.out.println("Something went wrong :( " + error);
                     }
                 }) {
         };
+
         jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
-                DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
-                5,
+                API_REQUEST_TIMEOUT,
+                3,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         ));
 
-        Volley.newRequestQueue(ResultActivity.this).add(jsonObjectRequest);
+        queue.add(jsonObjectRequest);
     }
 
     /**
