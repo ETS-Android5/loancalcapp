@@ -77,7 +77,6 @@ import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static com.paqua.loancalculator.util.Constant.GET_LOAN_AMROTIZATION_PAQUA_URL;
-import static com.paqua.loancalculator.util.Constant.GET_LOAN_AMROTIZATION_YANDEX_URL;
 import static com.paqua.loancalculator.util.Constant.LOAN_AMORTIZATION_OBJECT;
 import static com.paqua.loancalculator.util.Constant.LOAN_OBJECT;
 import static com.paqua.loancalculator.util.Constant.SAVE_LOAN_NAME_FORMAT;
@@ -91,6 +90,7 @@ import static net.time4j.CalendarUnit.YEARS;
 public class ResultActivity extends AppCompatActivity {
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.00");
     private static final DecimalFormatSymbols SYMBOLS = DECIMAL_FORMAT.getDecimalFormatSymbols();
+    private static final int API_REQUEST_TIMEOUT = 10_000;
 
     static {
         SYMBOLS.setGroupingSeparator(' ');
@@ -360,30 +360,6 @@ public class ResultActivity extends AppCompatActivity {
                         .toJson(lastLoanRequestParam));
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.POST, GET_LOAN_AMROTIZATION_YANDEX_URL.value, requestParams, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        calculateLoanAmortizationCallback(response);
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        tryCallPaquaUrl(requestParams);
-                    }
-                }) {
-        };
-
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
-                DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
-                5,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-        ));
-
-        queue.add(jsonObjectRequest);
-    }
-
-    private void tryCallPaquaUrl(final JSONObject requestParams) {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.POST, GET_LOAN_AMROTIZATION_PAQUA_URL.value, requestParams, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -398,13 +374,14 @@ public class ResultActivity extends AppCompatActivity {
                     }
                 }) {
         };
+
         jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
-                DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
-                5,
+                API_REQUEST_TIMEOUT,
+                3,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         ));
 
-        Volley.newRequestQueue(ResultActivity.this).add(jsonObjectRequest);
+        queue.add(jsonObjectRequest);
     }
 
     /**
