@@ -77,7 +77,6 @@ import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static com.paqua.loancalculator.util.Constant.GET_LOAN_AMROTIZATION_PAQUA_URL;
-import static com.paqua.loancalculator.util.Constant.GET_LOAN_AMROTIZATION_YANDEX_URL;
 import static com.paqua.loancalculator.util.Constant.LOAN_AMORTIZATION_OBJECT;
 import static com.paqua.loancalculator.util.Constant.LOAN_OBJECT;
 import static com.paqua.loancalculator.util.Constant.SAVE_LOAN_NAME_FORMAT;
@@ -361,7 +360,7 @@ public class ResultActivity extends AppCompatActivity {
                         .toJson(lastLoanRequestParam));
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.POST, GET_LOAN_AMROTIZATION_YANDEX_URL.value, requestParams, new Response.Listener<JSONObject>() {
+                (Request.Method.POST, GET_LOAN_AMROTIZATION_PAQUA_URL.value, requestParams, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         calculateLoanAmortizationCallback(response);
